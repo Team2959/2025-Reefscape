@@ -59,6 +59,8 @@ public class DriveSubsystem extends SubsystemBase {
                 RobotMap.kZeroedBackRight, "Back Right");
 
         m_odometry = new SwerveDriveOdometry(m_kinematics, getAngle(), getPositions());
+
+        // need to add path planner stuff!
     }
 
     public void initalize() {
