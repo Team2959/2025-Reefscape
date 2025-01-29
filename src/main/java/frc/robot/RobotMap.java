@@ -36,11 +36,15 @@ public final class RobotMap {
   
 
     // Operator input USB ports
- 
+    public static final int kLeftJoystick = 0;
+    public static final int kRightJoystick = 1;
+    public static final int kButtonBox = 2;
+
 
     // Driver Buttons
 
     // Co-Piolt Button board
+    //public static final int kgoToL4Button = 5;
 
     // Zeroed values, should be in radians
     // source is google document in Electrical for team - module data
