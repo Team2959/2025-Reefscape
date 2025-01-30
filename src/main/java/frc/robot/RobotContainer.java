@@ -67,6 +67,8 @@ public class RobotContainer {
 
     // Configure the trigger bindings
     configureBindings();
+
+    updateDashboard();
   }
 
   /**
@@ -107,7 +109,6 @@ public class RobotContainer {
     return Autos.exampleAuto(m_exampleSubsystem);
   }
 
-
   public double getDriveXInput()
   {
     // We getY() here because of the FRC coordinate system being turned 90 degrees
@@ -130,4 +131,13 @@ public class RobotContainer {
             * DriveSubsystem.kMaxAngularSpeedRadiansPerSecond
             * m_speedMultiplier;
   }
+
+  public void updateDashboard()
+{
+  m_robot.addPeriodic(() -> {
+    m_liftSubsystem.dashboardUpdate();
+   
+}, 1, 0.303);
+
+}
 }
