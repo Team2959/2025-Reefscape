@@ -51,9 +51,9 @@ public class CoralDeliverySubsystem extends SubsystemBase {
       .pid(kIndexP, kIndexI, kIndexD);
     
     m_rightCoralControlConfig = new SparkMaxConfig();
-    m_rightCoralControlConfig.idleMode(IdleMode.kCoast);
+    m_rightCoralControlConfig.idleMode(IdleMode.kBrake);
     m_leftCoralControlConfig = new SparkMaxConfig();
-    m_leftCoralControlConfig.idleMode(IdleMode.kCoast);
+    m_leftCoralControlConfig.idleMode(IdleMode.kBrake);
 
     m_indexSparkMax.configure(m_indexConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_rightCoralControlSparkMax.configure(m_rightCoralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

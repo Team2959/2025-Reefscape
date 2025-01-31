@@ -59,7 +59,7 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   public AlgaeClawSubsystem() {
     final String name = "Algae Claw Subsystem";
 
-    m_solenoid = new Solenoid(PneumaticsModuleType.CTREPCM, 0); //Random Channel
+    m_solenoid = new Solenoid(PneumaticsModuleType.REVPH, 0); //Random Channel
     m_clawShootConfig = new SparkMaxConfig();
     m_clawShootConfig.idleMode(IdleMode.kBrake);
     m_clawShootConfig.closedLoop
