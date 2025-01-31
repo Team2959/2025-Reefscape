@@ -76,13 +76,13 @@ public class LiftSubsystem extends SubsystemBase {
     m_liftFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
  
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
-    NetworkTable datatable = inst.getTable("serveMod1");
+    NetworkTable datatable = inst.getTable("lift Subsystem");
 
     m_sparkLiftRotations = datatable.getDoubleTopic(name + "/Rotations").publish();
     m_sparkLiftCurrent = datatable.getDoubleTopic(name + "/Current").publish();
     m_sparkVelocity = datatable.getDoubleTopic(name + "/Velocity").publish();
 
-    var targetRotations = datatable.getDoubleTopic(name + "target rotations");
+    var targetRotations = datatable.getDoubleTopic(name + "/target rotations");
     targetRotations.publish().set(0);
     m_targetRotations = targetRotations.subscribe(0.0);
    
