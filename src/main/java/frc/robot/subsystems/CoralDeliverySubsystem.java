@@ -14,21 +14,36 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.networktables.BooleanPublisher;
+import edu.wpi.first.networktables.BooleanSubscriber;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.LiftSubsystem.liftTargetPositions;
+import frc.robot.RobotMap;
 
 public class CoralDeliverySubsystem extends SubsystemBase {
   /** Creates a new CoralDeliverySubsystem. */
-  public enum coralIndexTargetPositions 
+  public enum CoralIndexTargetPositions 
   {
     Left,
     Right,
     Center
   };
 
-  private final SparkMax m_indexSparkMax = new SparkMax(21, MotorType.kBrushless);
-  private final SparkMax m_rightCoralControlSparkMax = new SparkMax(22, MotorType.kBrushless);
-  private final SparkMax m_leftCoralControlSparkMax = new SparkMax(23, MotorType.kBrushless);
+  public enum CoralControlTargetSpeeds 
+  {
+    Intake,
+    Feed,
+    L1LargeSpeed,
+    L1SmallSpeed,
+  };
+
+  private final SparkMax m_indexSparkMax = new SparkMax(RobotMap.kCoralDeliveryIndexMotor, MotorType.kBrushless);
+  private final SparkMax m_rightCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryRightCoralControlMotor, MotorType.kBrushless);
+  private final SparkMax m_leftCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryLeftCoralControlMotor, MotorType.kBrushless);
   private SparkRelativeEncoder m_indexEncoder;
   private SparkRelativeEncoder m_rightCoralControlEncoder;
   private SparkRelativeEncoder m_leftCoralControlEncoder;
@@ -36,11 +51,28 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   private final SparkMaxConfig m_rightCoralControlConfig;
   private final SparkMaxConfig m_leftCoralControlConfig;
   private SparkClosedLoopController m_indexController;
+  private final DigitalInput m_coralDetect = new DigitalInput(RobotMap.kCoralDetectInput);
+
 
   private final double kIndexP = 0;
   private final double kIndexI = 0;
   private final double kIndexD = 0;
   private double m_lastTargetPosition;
+
+  private final DoublePublisher m_indexPositionPub;
+  private final DoubleSubscriber m_rightVelocitySub;
+  private final DoubleSubscriber m_leftVelocitySub;
+  private final BooleanPublisher m_coralDetectPub;
+  private final BooleanSubscriber m_goToTargetVelocitySub;
+  private final BooleanPublisher m_goToTargetVelocityPub;
+  private final DoubleSubscriber m_indexPSub;
+  private final DoubleSubscriber m_indexISub;
+  private final DoubleSubscriber m_indexDSub;
+  private final BooleanPublisher m_updateIndexPIDPub;
+  private final BooleanSubscriber m_updateIndexPIDSub;
+  private final DoubleSubscriber m_indexTargetRotationsSub;
+  private final BooleanSubscriber m_goToTargetIndexPositionSub;
+  private final BooleanPublisher m_goToTargetIndexPositionPub;
 
   public CoralDeliverySubsystem() {
  
@@ -64,14 +96,92 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     m_leftCoralControlEncoder = (SparkRelativeEncoder) m_leftCoralControlSparkMax.getEncoder(); 
 
     m_indexController = m_indexSparkMax.getClosedLoopController();
+
+    final String name = "Coral Delivery Subsystem";
+    NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    NetworkTable datatable = inst.getTable(name);
+
+    m_indexPositionPub = datatable.getDoubleTopic(name + "/Index Position").publish();
+    m_coralDetectPub = datatable.getBooleanTopic(name + "/Coral Detect").publish();
+
+    var leftVelocitySub = datatable.getDoubleTopic(name + "/Left Velocity");
+    leftVelocitySub.publish().set(0);
+    m_leftVelocitySub = leftVelocitySub.subscribe(0);
+
+    var rightVelocitySub = datatable.getDoubleTopic(name + "/Right Velocity");
+    rightVelocitySub.publish().set(0);
+    m_rightVelocitySub = rightVelocitySub.subscribe(0);
+
+    var goToTargetVelocity = datatable.getBooleanTopic(name + "/go To Target Rotations");
+    m_goToTargetVelocityPub = goToTargetVelocity.publish();
+    m_goToTargetVelocityPub.set(false);
+    m_goToTargetVelocitySub = goToTargetVelocity.subscribe(false);
+
+    var indexPSub = datatable.getDoubleTopic(name + "indexP");
+    indexPSub.publish().set(kIndexP);
+    m_indexPSub = indexPSub.subscribe(kIndexP);
+
+    var indexISub = datatable.getDoubleTopic(name + "indexI");
+    indexISub.publish().set(kIndexI);
+    m_indexISub = indexISub.subscribe(kIndexI);
+
+    var indexDSub = datatable.getDoubleTopic(name + "indexD");
+    indexDSub.publish().set(kIndexD);
+    m_indexDSub = indexDSub.subscribe(kIndexD);
+
+    var updateIndexPIDPub = datatable.getBooleanTopic(name + "/update Index PID");
+    m_updateIndexPIDPub = updateIndexPIDPub.publish();
+    m_updateIndexPIDPub.set(false);
+    m_updateIndexPIDSub = updateIndexPIDPub.subscribe(false);
+
+    var indexTargetPositionSub = datatable.getDoubleTopic(name + "/Index Target Position");
+    indexTargetPositionSub.publish().set(0);
+    m_indexTargetRotationsSub = indexTargetPositionSub.subscribe(0);
+
+    var goToTargetIndexPosition = datatable.getBooleanTopic(name + "/Go To Target Index Position");
+    m_goToTargetIndexPositionPub = goToTargetIndexPosition.publish();
+    m_goToTargetIndexPositionPub.set(false);
+    m_goToTargetIndexPositionSub = goToTargetIndexPosition.subscribe(false);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    updateDashboard();
   }
 
-  public double setTargetIndexPosition (coralIndexTargetPositions targetIndexPosition)
+  private void updateDashboard ()
+  {
+    m_coralDetectPub.set(m_coralDetect.get());
+    m_indexPositionPub.set(m_indexEncoder.getPosition());
+
+    double leftVelocityTarget = m_leftVelocitySub.get();
+    double rightVelocityTarget = m_rightVelocitySub.get();
+    double indexPositionTarget = m_indexTargetRotationsSub.get();
+
+    if(m_goToTargetVelocitySub.get())
+    {
+      m_leftCoralControlSparkMax.set(leftVelocityTarget);
+      m_rightCoralControlSparkMax.set(rightVelocityTarget);
+      m_goToTargetVelocityPub.set(false);
+    }
+
+    if (m_updateIndexPIDSub.get())
+    {
+      m_indexConfig.closedLoop.pid(m_indexPSub.get(), m_indexISub.get(), m_indexDSub.get());
+        m_indexSparkMax.configure(m_indexConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+      
+      m_updateIndexPIDPub.set(false);
+    }
+
+    if (m_goToTargetIndexPositionSub.get())
+    {
+      m_indexController.setReference(indexPositionTarget, SparkMax.ControlType.kPosition);
+      m_goToTargetIndexPositionPub.set(false);
+    }
+  }
+
+  public double setTargetIndexPosition (CoralIndexTargetPositions targetIndexPosition)
   {
     var targetPosition = CoralIndexPositionValue(targetIndexPosition);
     m_indexController.setReference(targetPosition, SparkMax.ControlType.kPosition);
@@ -79,7 +189,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     return m_lastTargetPosition;
   }
 
-  private static int CoralIndexPositionValue(coralIndexTargetPositions target)
+  private static int CoralIndexPositionValue(CoralIndexTargetPositions target)
   {
     switch (target) {
       case Left:
@@ -88,6 +198,22 @@ public class CoralDeliverySubsystem extends SubsystemBase {
         return 45;
       case Center:
         return 0;
+      default:
+        return 0;
+    }
+  }
+  
+  private static double CoralControlSpeedValue (CoralControlTargetSpeeds target)
+  {
+    switch (target) {
+      case Intake:
+        return 0.5; //random numbers
+      case Feed:
+        return 0.5;
+      case L1LargeSpeed:
+        return 0.25;
+      case L1SmallSpeed:
+        return 0.75;       
       default:
         return 0;
     }
@@ -103,13 +229,30 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     m_indexController.setReference(m_indexEncoder.getPosition(), SparkMax.ControlType.kPosition);
   }
 
-  public void setLeftCoralControlVelocity(double targetVelocity)
+  public void setLeftCoralControlVelocity(CoralControlTargetSpeeds targetSpeed)
   {
-    m_leftCoralControlSparkMax.set(targetVelocity);
+    var targetLeftEnumSpeed = CoralControlSpeedValue(targetSpeed);
+    m_leftCoralControlSparkMax.set(-targetLeftEnumSpeed);
   }
 
-  public void setRightCoralControlVelocity(double targetVelocity)
+  public void setRightCoralControlVelocity(CoralControlTargetSpeeds targetSpeed)
   {
-    m_rightCoralControlSparkMax.set(targetVelocity);
+    var targetRightEnumSpeed = CoralControlSpeedValue(targetSpeed);
+    m_rightCoralControlSparkMax.set(targetRightEnumSpeed);
+  }
+
+  public void stopRightCoralControlMotor ()
+  {
+    m_rightCoralControlSparkMax.set(0);
+  }
+
+  public void stopLeftCoralControlMotor ()
+  {
+    m_leftCoralControlSparkMax.set(0);
+  }
+
+  public boolean getOpticSensor()
+  {
+    return m_coralDetect.get();
   }
 }

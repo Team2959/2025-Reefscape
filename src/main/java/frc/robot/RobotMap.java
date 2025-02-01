@@ -18,22 +18,23 @@ public final class RobotMap {
 
     // CAN motor addresses
         // SparkMax
- 
-        // Victor SPX
- 
-        // Talon SRX
-
-        // Amp
-
-    // PWM motor addresses
-        // Servos
+    public static final int kLiftLeadMotor = 5;
+    public static final int kLiftFollowerMotor = 6;
+    public static final int kAlgaeClawIntakeMotor = 8;
+    public static final int kAlgaeClawShootMotor = 7;
+    public static final int kCoralDeliveryRightCoralControlMotor = 22;
+    public static final int kCoralDeliveryLeftCoralControlMotor = 23;
+    public static final int kCoralDeliveryIndexMotor = 21;
 
     // Analog Input addresses
+    
 
     // REV Pneumatic Hub solenoid addresses
+    public static final int kAlgaeClawSolenoid = 1;
 
     // Digital IO addresses
-  
+    public static final int kCoralDetectInput = 1;
+    public static final int kLiftDetectInput = 2;
 
     // Operator input USB ports
     public static final int kLeftJoystick = 0;

@@ -20,7 +20,9 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotMap;
 
 public class LiftSubsystem extends SubsystemBase {
   
@@ -32,12 +34,13 @@ public class LiftSubsystem extends SubsystemBase {
       Base
   };
 
-  private final SparkMax m_lift = new SparkMax(5, MotorType.kBrushless);
-  private final SparkMax m_liftFollower = new SparkMax(6, MotorType.kBrushless);
+  private final SparkMax m_lift = new SparkMax(RobotMap.kLiftLeadMotor, MotorType.kBrushless);
+  private final SparkMax m_liftFollower = new SparkMax(RobotMap.kLiftFollowerMotor, MotorType.kBrushless);
   private final SparkMaxConfig m_config;
   private SparkClosedLoopController m_liftController;
   private SparkRelativeEncoder m_liftEncoder;
   private double m_lastTargetPosition;
+  private final DigitalInput m_liftDetect = new DigitalInput(RobotMap.kLiftDetectInput);
 
   private final double kLiftP = 0;
   private final double kLiftI = 0;

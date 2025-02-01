@@ -5,14 +5,11 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.LiftDirectDriveCommand;
 import frc.robot.commands.LiftDriveToPositionCommand;
 import frc.robot.commands.TeleOpDriveCommand;
 import frc.robot.cwtech.Conditioning;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.LiftSubsystem;
 import frc.robot.subsystems.LiftSubsystem.liftTargetPositions;
 import edu.wpi.first.wpilibj.Joystick;
@@ -32,7 +29,6 @@ public class RobotContainer {
   private static double kDriveYExponent = 2;
   private static double kDriveXExponent = 2;
   
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
 
@@ -82,12 +78,12 @@ public class RobotContainer {
    */
   private void configureBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+    // new Trigger(m_exampleSubsystem::exampleCondition)
+    //     .onTrue(new ExampleCommand(m_exampleSubsystem));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
     m_driveSubsystem.setDefaultCommand(new TeleOpDriveCommand(m_driveSubsystem,
       () -> getDriveXInput(), () -> getDriveYInput(), () -> getTurnInput(),
@@ -106,7 +102,8 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    // return Autos.exampleAuto(m_exampleSubsystem);
+    return null;
   }
 
   public double getDriveXInput()
