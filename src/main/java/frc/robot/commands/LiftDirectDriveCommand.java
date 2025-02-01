@@ -36,6 +36,15 @@ public class LiftDirectDriveCommand extends Command {
         {
             power = 0;
         }
+        else if ( power < 0)
+        {
+            power += 0.1;
+        }
+        else
+        {
+            power -= 0.1;
+        }
+        
         power = power * 0.5;
         m_liftsubsystem.directDrive(power);
     }

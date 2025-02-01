@@ -30,7 +30,7 @@ public class RobotContainer {
   private static double kDriveXExponent = 2;
   
   private final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
-  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
+  // private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
 
   Conditioning m_driveXConditioning = new Conditioning();
   Conditioning m_driveYConditioning = new Conditioning();
@@ -85,9 +85,9 @@ public class RobotContainer {
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    m_driveSubsystem.setDefaultCommand(new TeleOpDriveCommand(m_driveSubsystem,
-      () -> getDriveXInput(), () -> getDriveYInput(), () -> getTurnInput(),
-      () -> m_robot.isTeleopEnabled()));
+    // m_driveSubsystem.setDefaultCommand(new TeleOpDriveCommand(m_driveSubsystem,
+    //   () -> getDriveXInput(), () -> getDriveYInput(), () -> getTurnInput(),
+    //   () -> m_robot.isTeleopEnabled()));
 
     m_liftSubsystem.setDefaultCommand(
       new LiftDirectDriveCommand(m_liftSubsystem, () -> m_driverController.getLeftY()));

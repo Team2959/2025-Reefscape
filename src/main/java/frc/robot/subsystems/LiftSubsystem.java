@@ -75,7 +75,7 @@ public class LiftSubsystem extends SubsystemBase {
 
     var followerConfig = new SparkMaxConfig();
     followerConfig.idleMode(IdleMode.kBrake)
-      .follow(5, true);
+      .follow(RobotMap.kLiftLeadMotor, true);
     m_liftFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
  
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
