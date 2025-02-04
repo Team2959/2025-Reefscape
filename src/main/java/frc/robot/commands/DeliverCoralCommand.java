@@ -4,41 +4,41 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.CoralDeliverySubsystem;
 import frc.robot.subsystems.CoralDeliverySubsystem.CoralControlTargetSpeeds;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class IntakeCoralCommand extends Command {
-  /** Creates a new IntakeCoralCommand. */
+public class DeliverCoralCommand extends WaitCommand {
+  /** Creates a new DeliverCoralCommand. */
   private CoralDeliverySubsystem m_coralDeliverySubsystem;
-  public IntakeCoralCommand(CoralDeliverySubsystem coralDeliverySubsystem) {
-    // Use addRequirements() here to declare subsystem dependencies.
+  private CoralControlTargetSpeeds m_targetLeftSpeed;
+  private CoralControlTargetSpeeds m_targetRightSpeed;
+
+  public DeliverCoralCommand(double seconds, CoralDeliverySubsystem coralDeliverySubsystem, CoralControlTargetSpeeds coralControlLeftTargetSpeed, CoralControlTargetSpeeds coralControlRightTargetSpeed)
+  {
+    super(seconds);
     coralDeliverySubsystem = m_coralDeliverySubsystem;
+    coralControlLeftTargetSpeed = m_targetLeftSpeed;
+    coralControlRightTargetSpeed = m_targetRightSpeed;
+    // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_coralDeliverySubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-    m_coralDeliverySubsystem.setRightCoralControlVelocity(CoralControlTargetSpeeds.Intake);
-    m_coralDeliverySubsystem.setLeftCoralControlVelocity(CoralControlTargetSpeeds.Intake);
+  public void initialize()
+  {
+    super.initialize();
+    m_coralDeliverySubsystem.setLeftCoralControlVelocity(m_targetLeftSpeed);
+    m_coralDeliverySubsystem.setRightCoralControlVelocity(m_targetRightSpeed);
   }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
+  public void end(boolean interrupted)
+  {
     m_coralDeliverySubsystem.stopLeftCoralControlMotor();
     m_coralDeliverySubsystem.stopRightCoralControlMotor();
-  }
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return m_coralDeliverySubsystem.getOpticSensor();
   }
 }

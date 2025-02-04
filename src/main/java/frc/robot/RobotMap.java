@@ -40,12 +40,13 @@ public final class RobotMap {
     public static final int kLeftJoystick = 0;
     public static final int kRightJoystick = 1;
     public static final int kButtonBox = 2;
-
+    public static final int kXboxTester = 3;
 
     // Driver Buttons
 
     // Co-Piolt Button board
-    //public static final int kgoToL4Button = 5;
+    public static final int kplaceAtL4Button = 5;
+    public static final int kintakeAlgaeButton = 6;
 
     // Zeroed values, should be in radians
     // source is google document in Electrical for team - module data

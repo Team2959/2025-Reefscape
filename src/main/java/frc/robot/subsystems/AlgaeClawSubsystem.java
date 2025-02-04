@@ -77,14 +77,9 @@ public class AlgaeClawSubsystem extends SubsystemBase {
     m_clawShootSpeed = m_clawShootSpeedSub.get();
   }
 
-  public void shootAlgae ()
-  {
-    m_clawShootSparkMax.set(m_clawShootSpeed);
-  }
-
   public void intakeAlgae ()
   {
-    m_clawShootSparkMax.set(-m_clawShootSpeed);
+    m_clawShootSparkMax.set(-m_clawIntakeSpeed);
     m_clawIntakeSparkMax.set(-m_clawIntakeSpeed);
   }
 
@@ -96,6 +91,12 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   public void feedAlgaeOut ()
   {
     m_clawIntakeSparkMax.set(m_clawIntakeSpeed);
+  }
+
+  public void feedAlgaeIntoProcessor ()
+  {
+    feedAlgaeOut();
+    m_clawShootSparkMax.set(m_clawShootSpeed);
   }
 
   public void extendSolenoid ()

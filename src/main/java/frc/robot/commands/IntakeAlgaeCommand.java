@@ -5,24 +5,22 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CoralDeliverySubsystem;
-import frc.robot.subsystems.CoralDeliverySubsystem.CoralControlTargetSpeeds;
+import frc.robot.subsystems.AlgaeClawSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class IntakeCoralCommand extends Command {
-  /** Creates a new IntakeCoralCommand. */
-  private CoralDeliverySubsystem m_coralDeliverySubsystem;
-  public IntakeCoralCommand(CoralDeliverySubsystem coralDeliverySubsystem) {
+public class IntakeAlgaeCommand extends Command {
+  /** Creates a new IntakeAlgaeCommand. */
+  AlgaeClawSubsystem m_algaeClawSubsystem;
+  public IntakeAlgaeCommand(AlgaeClawSubsystem algaeClawSubsystem) {
+    algaeClawSubsystem = m_algaeClawSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
-    coralDeliverySubsystem = m_coralDeliverySubsystem;
-    addRequirements(m_coralDeliverySubsystem);
+    addRequirements(m_algaeClawSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_coralDeliverySubsystem.setRightCoralControlVelocity(CoralControlTargetSpeeds.Intake);
-    m_coralDeliverySubsystem.setLeftCoralControlVelocity(CoralControlTargetSpeeds.Intake);
+    m_algaeClawSubsystem.intakeAlgae();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -32,13 +30,13 @@ public class IntakeCoralCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_coralDeliverySubsystem.stopLeftCoralControlMotor();
-    m_coralDeliverySubsystem.stopRightCoralControlMotor();
+    m_algaeClawSubsystem.stopClawIntakeMotor();
+    m_algaeClawSubsystem.stopClawShootMotor();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_coralDeliverySubsystem.getOpticSensor();
+    return false;
   }
 }

@@ -4,13 +4,17 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.DeliverCoralCommand;
+import frc.robot.commands.IntakeAlgaeCommand;
 import frc.robot.commands.LiftDirectDriveCommand;
 import frc.robot.commands.LiftDriveToPositionCommand;
 import frc.robot.commands.TeleOpDriveCommand;
 import frc.robot.cwtech.Conditioning;
+import frc.robot.subsystems.AlgaeClawSubsystem;
+import frc.robot.subsystems.CoralDeliverySubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftSubsystem;
+import frc.robot.subsystems.CoralDeliverySubsystem.CoralControlTargetSpeeds;
 import frc.robot.subsystems.LiftSubsystem.liftTargetPositions;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,27 +32,28 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private static double kDriveYExponent = 2;
   private static double kDriveXExponent = 2;
+  private static double m_coralDeliveryWaitSeconds = 1;
   
   private final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
   // private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
+  private final CoralDeliverySubsystem m_coralDeliverySubsystem = new CoralDeliverySubsystem();
+  private final AlgaeClawSubsystem m_algaeClawSubsystem = new AlgaeClawSubsystem();
 
-  Conditioning m_driveXConditioning = new Conditioning();
-  Conditioning m_driveYConditioning = new Conditioning();
-  Conditioning m_turnConditioning = new Conditioning();
-  double m_speedMultiplier = 0.85;
-
-  Joystick m_leftJoystick = new Joystick(RobotMap.kLeftJoystick);
-  Joystick m_rightJoystick = new Joystick(RobotMap.kRightJoystick);
-  //Joystick m_buttonBox = new Joystick(RobotMap.kButtonBox);
-
-  //JoystickButton m_goToL4Button =new JoystickButton(m_buttonBox, RobotMap.kgoToL4Button);
-
-
-  Robot m_robot;
+  private final Conditioning m_driveXConditioning = new Conditioning();
+  private final Conditioning m_driveYConditioning = new Conditioning();
+  private final Conditioning m_turnConditioning = new Conditioning();
+  private static double m_speedMultiplier = 1.0;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  private final CommandXboxController m_driverController = new CommandXboxController(RobotMap.kXboxTester);
+  private final Joystick m_leftJoystick = new Joystick(RobotMap.kLeftJoystick);
+  private final Joystick m_rightJoystick = new Joystick(RobotMap.kRightJoystick);
+  private final Joystick m_buttonBox = new Joystick(RobotMap.kButtonBox); 
+
+  private final JoystickButton m_placeAtL4Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL4Button);
+  private final JoystickButton m_intakeAlgaeButton = new JoystickButton(m_buttonBox, RobotMap.kintakeAlgaeButton);
+
+  private final Robot m_robot;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer(Robot robot) {
@@ -92,7 +97,10 @@ public class RobotContainer {
     m_liftSubsystem.setDefaultCommand(
       new LiftDirectDriveCommand(m_liftSubsystem, () -> m_driverController.getLeftY()));
 
-    //m_goToL4Button.onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L4));
+    m_placeAtL4Button.onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L4)
+      .andThen(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)));
+
+    m_intakeAlgaeButton.whileTrue(new IntakeAlgaeCommand(m_algaeClawSubsystem));
   }
 
   /**
@@ -130,11 +138,9 @@ public class RobotContainer {
   }
 
   public void updateDashboard()
-{
-  m_robot.addPeriodic(() -> {
-    m_liftSubsystem.dashboardUpdate();
-   
-}, 1, 0.303);
-
-}
+  {
+    m_robot.addPeriodic(() -> {
+      m_liftSubsystem.dashboardUpdate();
+    }, 1, 0.303);
+  }
 }
