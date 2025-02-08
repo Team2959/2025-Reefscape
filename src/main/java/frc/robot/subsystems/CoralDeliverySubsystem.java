@@ -35,21 +35,18 @@ public class CoralDeliverySubsystem extends SubsystemBase {
 
   public enum CoralControlTargetSpeeds 
   {
+    Stop,
     Intake,
     Feed,
-    L1LargeSpeed,
-    L1SmallSpeed,
+    L1FastSpeed,  // Fast/slow are for ensuring the coral spins either left or right out of the feeder, depending on desired delivery
+    L1SlowSpeed   // If spit left, right side motor fast, left side motor slow
   };
 
   private final SparkMax m_indexSparkMax = new SparkMax(RobotMap.kCoralDeliveryIndexMotor, MotorType.kBrushless);
   private final SparkMax m_rightCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryRightCoralControlMotor, MotorType.kBrushless);
   private final SparkMax m_leftCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryLeftCoralControlMotor, MotorType.kBrushless);
   private SparkRelativeEncoder m_indexEncoder;
-  private SparkRelativeEncoder m_rightCoralControlEncoder;
-  private SparkRelativeEncoder m_leftCoralControlEncoder;
   private final SparkMaxConfig m_indexConfig;
-  private final SparkMaxConfig m_rightCoralControlConfig;
-  private final SparkMaxConfig m_leftCoralControlConfig;
   private SparkClosedLoopController m_indexController;
   private final DigitalInput m_coralDetect = new DigitalInput(RobotMap.kCoralDetectInput);
 
@@ -82,18 +79,14 @@ public class CoralDeliverySubsystem extends SubsystemBase {
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .pid(kIndexP, kIndexI, kIndexD);
     
-    m_rightCoralControlConfig = new SparkMaxConfig();
-    m_rightCoralControlConfig.idleMode(IdleMode.kBrake);
-    m_leftCoralControlConfig = new SparkMaxConfig();
-    m_leftCoralControlConfig.idleMode(IdleMode.kBrake);
+    var coralControlConfig = new SparkMaxConfig();
+    coralControlConfig.idleMode(IdleMode.kBrake);
 
     m_indexSparkMax.configure(m_indexConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_rightCoralControlSparkMax.configure(m_rightCoralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_leftCoralControlSparkMax.configure(m_leftCoralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_rightCoralControlSparkMax.configure(coralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_leftCoralControlSparkMax.configure(coralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_indexEncoder = (SparkRelativeEncoder) m_indexSparkMax.getEncoder(); 
-    m_rightCoralControlEncoder = (SparkRelativeEncoder) m_rightCoralControlSparkMax.getEncoder(); 
-    m_leftCoralControlEncoder = (SparkRelativeEncoder) m_leftCoralControlSparkMax.getEncoder(); 
 
     m_indexController = m_indexSparkMax.getClosedLoopController();
 
@@ -169,7 +162,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     if (m_updateIndexPIDSub.get())
     {
       m_indexConfig.closedLoop.pid(m_indexPSub.get(), m_indexISub.get(), m_indexDSub.get());
-        m_indexSparkMax.configure(m_indexConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+      m_indexSparkMax.configure(m_indexConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
       
       m_updateIndexPIDPub.set(false);
     }
@@ -210,10 +203,11 @@ public class CoralDeliverySubsystem extends SubsystemBase {
         return 0.5; //random numbers
       case Feed:
         return 0.5;
-      case L1LargeSpeed:
-        return 0.25;
-      case L1SmallSpeed:
-        return 0.75;       
+      case L1FastSpeed:
+        return 0.75;
+      case L1SlowSpeed:
+        return 0.25;  
+      case Stop:     
       default:
         return 0;
     }
@@ -243,12 +237,12 @@ public class CoralDeliverySubsystem extends SubsystemBase {
 
   public void stopRightCoralControlMotor ()
   {
-    m_rightCoralControlSparkMax.set(0);
+    setRightCoralControlVelocity(CoralControlTargetSpeeds.Stop);
   }
 
   public void stopLeftCoralControlMotor ()
   {
-    m_leftCoralControlSparkMax.set(0);
+    setLeftCoralControlVelocity(CoralControlTargetSpeeds.Stop);
   }
 
   public boolean getOpticSensor()
