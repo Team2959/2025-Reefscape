@@ -47,6 +47,8 @@ public final class RobotMap {
     // Co-Piolt Button board
     public static final int kplaceAtL4Button = 5;
     public static final int kintakeAlgaeButton = 6;
+    public static final int kleftTroughPlaceButton = 7;
+    public static final int krightTroughPlaceButton = 8;
 
     // Zeroed values, should be in radians
     // source is google document in Electrical for team - module data
