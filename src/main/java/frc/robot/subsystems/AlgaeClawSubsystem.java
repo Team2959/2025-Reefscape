@@ -37,8 +37,7 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   private Solenoid m_solenoid;
 
   private double m_clawFeedMotorSpeed = 0.2; //random number
-  private double m_clawShootSpeed = 0.2; //random number
-  private double m_clawProcessorShootSpeed = 0.1; 
+  private double m_clawShootSpeed = 5000; //random number
 
   private final double kClawShootP = 0;
   private final double kClawShootI = 0;
@@ -145,7 +144,12 @@ public class AlgaeClawSubsystem extends SubsystemBase {
     }
   }
 
-  public void setClawShootSpeed(double targetRPM)
+  public void setClawShootSpeed()
+  {
+    setClawShootSpeed(m_clawShootSpeed);
+  }
+
+  private void setClawShootSpeed(double targetRPM)
   {
     m_clawShootController.setReference(targetRPM, ControlType.kVelocity);
   }
@@ -164,7 +168,7 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   public void feedAlgaeIntoProcessor ()
   {
     setAlgaeFeedMotorSpeed(m_clawFeedMotorSpeed);
-    setClawShootSpeed(m_clawProcessorShootSpeed);
+    setClawShootSpeed();
   }
 
   public void extendSolenoid ()

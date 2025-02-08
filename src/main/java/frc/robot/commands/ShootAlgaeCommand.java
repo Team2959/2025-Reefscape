@@ -8,11 +8,11 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.AlgaeClawSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ShootAlgaeIntoProcessorCommand extends WaitCommand {
+public class ShootAlgaeCommand extends WaitCommand {
   /** Creates a new ShootAlgaeIntoProcessorCommand. */
   private AlgaeClawSubsystem m_algaeClawSubsystem;
 
-  public ShootAlgaeIntoProcessorCommand(AlgaeClawSubsystem algaeClawSubsystem) {
+  public ShootAlgaeCommand(AlgaeClawSubsystem algaeClawSubsystem) {
     super(1);
     algaeClawSubsystem = m_algaeClawSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
