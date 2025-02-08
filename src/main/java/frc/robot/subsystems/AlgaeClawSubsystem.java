@@ -153,7 +153,7 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   public void intakeAlgae ()
   {
     m_clawShootSparkMax.set(-m_clawFeedMotorSpeed);
-    m_clawFeedSparkMax.set(-m_clawFeedMotorSpeed);
+    setAlgaeFeedMotorSpeed(-m_clawFeedMotorSpeed);
   }
   
   public void setAlgaeFeedMotorSpeed (double targetSpeed)
@@ -184,6 +184,6 @@ public class AlgaeClawSubsystem extends SubsystemBase {
 
   public void stopClawIntakeMotor ()
   {
-    m_clawShootSparkMax.set(0);
+    setAlgaeFeedMotorSpeed(0);
   }
 }
