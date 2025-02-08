@@ -20,7 +20,9 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
@@ -117,9 +119,18 @@ public class LiftSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
+  @Override
+  public void initSendable(SendableBuilder builder)
+  {
+    super.initSendable(builder);
+
+    builder.addDoubleProperty("Applied Output", () -> m_lift.getAppliedOutput(), null);
+  }
+
   public void dashboardUpdate() {
+    // SmartDashboard.putData(this);
     m_sparkLiftRotations.set(m_liftEncoder.getPosition());
-    m_sparkLiftCurrent.set(m_lift.getOutputCurrent());
+    m_sparkLiftCurrent.set(m_lift.getAppliedOutput());
     m_sparkVelocity.set(m_liftEncoder.getVelocity());
 
     double target = m_targetRotations.get();
@@ -133,9 +144,8 @@ public class LiftSubsystem extends SubsystemBase {
     if (m_updateLiftPIDSub.get())
     {
       m_config.closedLoop.pid(m_liftP.get(), m_liftI.get(), m_liftD.get());
-        m_lift.configure(m_config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-
-        m_updateLiftPIDPub.set(false);
+      m_lift.configure(m_config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+      m_updateLiftPIDPub.set(false);
     }
   }
 

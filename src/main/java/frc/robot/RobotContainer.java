@@ -36,8 +36,8 @@ public class RobotContainer {
   
   private final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
   // private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
-  private final CoralDeliverySubsystem m_coralDeliverySubsystem = new CoralDeliverySubsystem();
-  private final AlgaeClawSubsystem m_algaeClawSubsystem = new AlgaeClawSubsystem();
+  // private final CoralDeliverySubsystem m_coralDeliverySubsystem = new CoralDeliverySubsystem();
+  // private final AlgaeClawSubsystem m_algaeClawSubsystem = new AlgaeClawSubsystem();
 
   private final Conditioning m_driveXConditioning = new Conditioning();
   private final Conditioning m_driveYConditioning = new Conditioning();
@@ -50,8 +50,10 @@ public class RobotContainer {
   private final Joystick m_rightJoystick = new Joystick(RobotMap.kRightJoystick);
   private final Joystick m_buttonBox = new Joystick(RobotMap.kButtonBox); 
 
-  private final JoystickButton m_placeAtL4Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL4Button);
-  private final JoystickButton m_intakeAlgaeButton = new JoystickButton(m_buttonBox, RobotMap.kintakeAlgaeButton);
+  // private final JoystickButton m_placeAtL4Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL4Button);
+ // private final JoystickButton m_intakeAlgaeButton = new JoystickButton(m_buttonBox, RobotMap.kintakeAlgaeButton);
+ // private final JoystickButton m_leftTroughPlaceButton = new JoystickButton(m_buttonBox, RobotMap.kleftTroughPlaceButton);
+ // private final JoystickButton m_rightTroughPlaceButton = new JoystickButton(m_buttonBox, RobotMap.krightTroughPlaceButton);
 
   private final Robot m_robot;
 
@@ -97,10 +99,13 @@ public class RobotContainer {
     m_liftSubsystem.setDefaultCommand(
       new LiftDirectDriveCommand(m_liftSubsystem, () -> m_driverController.getLeftY()));
 
-    m_placeAtL4Button.onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L4)
-      .andThen(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)));
+    // m_placeAtL4Button.onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L4)
+    //   .andThen(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)));
 
-    m_intakeAlgaeButton.whileTrue(new IntakeAlgaeCommand(m_algaeClawSubsystem));
+    //  m_leftTroughPlaceButton.onTrue(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1SmallSpeed, CoralControlTargetSpeeds.L1LargeSpeed));
+    //  m_rightTroughPlaceButton.onTrue(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1LargeSpeed, CoralControlTargetSpeeds.L1SmallSpeed));
+
+    // m_intakeAlgaeButton.whileTrue(new IntakeAlgaeCommand(m_algaeClawSubsystem));
   }
 
   /**
