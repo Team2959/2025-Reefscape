@@ -51,6 +51,8 @@ public class RobotContainer {
   private final Joystick m_buttonBox = new Joystick(RobotMap.kButtonBox); 
 
   // private final JoystickButton m_placeAtL4Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL4Button);
+    // private final JoystickButton m_placeAtL3Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL3Button);
+  // private final JoystickButton m_placeAtL2Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL2Button);
  // private final JoystickButton m_intakeAlgaeButton = new JoystickButton(m_buttonBox, RobotMap.kintakeAlgaeButton);
  // private final JoystickButton m_leftTroughPlaceButton = new JoystickButton(m_buttonBox, RobotMap.kleftTroughPlaceButton);
  // private final JoystickButton m_rightTroughPlaceButton = new JoystickButton(m_buttonBox, RobotMap.krightTroughPlaceButton);
@@ -100,6 +102,12 @@ public class RobotContainer {
       new LiftDirectDriveCommand(m_liftSubsystem, () -> m_driverController.getLeftY()));
 
     // m_placeAtL4Button.onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L4)
+    //   .andThen(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)));
+
+    // m_placeAtL3Button.onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L3)
+    //   .andThen(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)));
+    
+    // m_placeAtL2Button.onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L2)
     //   .andThen(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)));
 
     //  m_leftTroughPlaceButton.onTrue(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1SmallSpeed, CoralControlTargetSpeeds.L1LargeSpeed));

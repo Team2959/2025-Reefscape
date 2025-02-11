@@ -76,8 +76,7 @@ public class LiftSubsystem extends SubsystemBase {
     m_liftController = m_lift.getClosedLoopController();
 
     var followerConfig = new SparkMaxConfig();
-    followerConfig.idleMode(IdleMode.kBrake)
-      .follow(RobotMap.kLiftLeadMotor, true);
+    followerConfig.idleMode(IdleMode.kBrake);
     m_liftFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
  
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -152,6 +151,8 @@ public class LiftSubsystem extends SubsystemBase {
   public void directDrive(double power) 
   {
     m_lift.set(power);
+    m_liftFollower.set(-power);
+
   }
 
   public double setTargetPosition(liftTargetPositions target)

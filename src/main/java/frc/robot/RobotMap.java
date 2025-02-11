@@ -11,9 +11,9 @@ public final class RobotMap {
     // Steer motor CAN == module # + 10
     // CAN coder CAN == module #
     public static final int kFrontLeftModule = 4;
-    public static final int kBackLeftModule = 2;
-    public static final int kBackRigvhtModule = 3;
-    public static final int kFrontRightModule = 1;
+    public static final int kBackLeftModule = 1;
+    public static final int kBackRigvhtModule = 2;
+    public static final int kFrontRightModule = 3;
     // unused module - 5
 
     // CAN motor addresses
@@ -46,6 +46,9 @@ public final class RobotMap {
 
     // Co-Piolt Button board
     public static final int kplaceAtL4Button = 5;
+    public static final int kplaceAtL3Button = 9;
+    public static final int kplaceAtL2Button = 10
+    ;
     public static final int kintakeAlgaeButton = 6;
     public static final int kleftTroughPlaceButton = 7;
     public static final int krightTroughPlaceButton = 8;
@@ -53,8 +56,8 @@ public final class RobotMap {
     // Zeroed values, should be in radians
     // source is google document in Electrical for team - module data
     public static final double kDegreesToRadians = Math.PI * 2.0 / 360.0;
-    public static final double kZeroedFrontLeft = 295.3 * kDegreesToRadians;    // for FL module 4
-    public static final double kZeroedFrontRight = 145.5 * kDegreesToRadians;   // for FR module 1
-    public static final double kZeroedBackLeft = 310.9 * kDegreesToRadians;     // for BL module 2
-    public static final double kZeroedBackRight = 76.8 * kDegreesToRadians;    // for BR module 3
+    public static final double kZeroedFrontLeft = 179.2 * kDegreesToRadians;    // for FL module 4
+    public static final double kZeroedFrontRight = 4.4 * kDegreesToRadians;   // for FR module 3
+    public static final double kZeroedBackLeft = 139.2 * kDegreesToRadians;     // for BL module 1
+    public static final double kZeroedBackRight = 213.6 * kDegreesToRadians;    // for BR module 2
 };

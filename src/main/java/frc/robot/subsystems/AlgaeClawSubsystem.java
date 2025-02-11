@@ -17,6 +17,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.BooleanSubscriber;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -54,6 +55,7 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   private final DoubleSubscriber m_ClawShootDSub;
   private final BooleanSubscriber m_updateClawShootPIDSub;
   private final BooleanPublisher m_updateClawShootPIDPub;
+  private final DoublePublisher m_clawShootSpeedEncoderReadingPub;
 
   public AlgaeClawSubsystem() {
     final String name = "Algae Claw Subsystem";
@@ -107,10 +109,12 @@ public class AlgaeClawSubsystem extends SubsystemBase {
     clawShootDSub.publish().set(kClawShootD);
     m_ClawShootDSub = clawShootDSub.subscribe(kClawShootD);
 
-    var updateClawShootPID = datatable.getBooleanTopic("update PID");
+    var updateClawShootPID = datatable.getBooleanTopic(name + "update PID");
     m_updateClawShootPIDPub = updateClawShootPID.publish();
     m_updateClawShootPIDPub.set(false);
     m_updateClawShootPIDSub = updateClawShootPID.subscribe(false);
+
+    m_clawShootSpeedEncoderReadingPub = datatable.getDoubleTopic(name + "Shoot Encoder Reading").publish();
   }
 
   @Override
@@ -123,6 +127,7 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   {
     m_clawFeedMotorSpeed = m_clawFeedSpeedSub.get();
     m_clawShootSpeed = m_clawShootRPMSub.get();
+    m_clawShootSpeedEncoderReadingPub.set(m_clawShootEncoder.getVelocity());
 
     if (m_clawFeedGoToSpeedSub.get())
     {
