@@ -32,7 +32,6 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private static double kDriveYExponent = 2;
   private static double kDriveXExponent = 2;
-  private static double m_coralDeliveryWaitSeconds = 1;
   
   private final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
   // private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();

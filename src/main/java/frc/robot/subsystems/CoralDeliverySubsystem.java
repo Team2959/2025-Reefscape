@@ -41,6 +41,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     L1FastSpeed,  // Fast/slow are for ensuring the coral spins either left or right out of the feeder, depending on desired delivery
     L1SlowSpeed   // If spit left, right side motor fast, left side motor slow
   };
+  public static double DeliveryWaitSeconds = 1;
 
   private final SparkMax m_indexSparkMax = new SparkMax(RobotMap.kCoralDeliveryIndexMotor, MotorType.kBrushless);
   private final SparkMax m_rightCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryRightCoralControlMotor, MotorType.kBrushless);
