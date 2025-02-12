@@ -44,7 +44,7 @@ public class LiftSubsystem extends SubsystemBase {
   private double m_lastTargetPosition;
   private final DigitalInput m_liftDetect = new DigitalInput(RobotMap.kLiftDetectInput);
 
-  private final double kLiftP = 0;
+  private final double kLiftP = 1.0;
   private final double kLiftI = 0;
   private final double kLiftD = 0;
 
@@ -76,7 +76,7 @@ public class LiftSubsystem extends SubsystemBase {
     m_liftController = m_lift.getClosedLoopController();
 
     var followerConfig = new SparkMaxConfig();
-    followerConfig.idleMode(IdleMode.kBrake);
+    followerConfig.idleMode(IdleMode.kBrake).follow(RobotMap.kLiftLeadMotor, true);
     m_liftFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
  
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -151,8 +151,6 @@ public class LiftSubsystem extends SubsystemBase {
   public void directDrive(double power) 
   {
     m_lift.set(power);
-    m_liftFollower.set(-power);
-
   }
 
   public double setTargetPosition(liftTargetPositions target)
@@ -167,11 +165,11 @@ public class LiftSubsystem extends SubsystemBase {
   {
     switch (target) {
       case L4:
-        return 1000;
-      case L3:
-        return 750;
-      case L2:
         return 500;
+      case L3:
+        return 250;
+      case L2:
+        return 50;
       default:
         return 50;
     }
