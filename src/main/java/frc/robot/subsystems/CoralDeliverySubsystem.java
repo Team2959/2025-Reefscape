@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.MAXMotionConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.networktables.BooleanPublisher;
@@ -43,20 +44,23 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   };
 
   private final SparkMax m_indexSparkMax = new SparkMax(RobotMap.kCoralDeliveryIndexMotor, MotorType.kBrushless);
-  private final SparkMax m_rightCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryRightCoralControlMotor, MotorType.kBrushless);
-  private final SparkMax m_leftCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryLeftCoralControlMotor, MotorType.kBrushless);
+  //private final SparkMax m_rightCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryRightCoralControlMotor, MotorType.kBrushless);
+  //private final SparkMax m_leftCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryLeftCoralControlMotor, MotorType.kBrushless);
   private SparkRelativeEncoder m_indexEncoder;
   private final SparkMaxConfig m_indexConfig;
   private SparkClosedLoopController m_indexController;
   private final DigitalInput m_coralDetect = new DigitalInput(RobotMap.kCoralDetectInput);
 
 
-  private final double kIndexP = 0;
-  private final double kIndexI = 0;
+  private final double kIndexP = 0.008;
+  private final double kIndexI = 0.000001;
   private final double kIndexD = 0;
+  private final double kIndexFf = 0.0008;
   private double m_lastTargetPosition;
 
   private final DoublePublisher m_indexPositionPub;
+  private final DoublePublisher m_indexVelocityPub;
+  private final DoublePublisher m_indexAppliedOutputPub;
   private final DoubleSubscriber m_rightVelocitySub;
   private final DoubleSubscriber m_leftVelocitySub;
   private final BooleanPublisher m_coralDetectPub;
@@ -74,17 +78,19 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   public CoralDeliverySubsystem() {
  
     m_indexConfig = new SparkMaxConfig();
-    m_indexConfig.idleMode(IdleMode.kBrake);
+    m_indexConfig.idleMode(IdleMode.kCoast);
     m_indexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-      .pid(kIndexP, kIndexI, kIndexD);
+      .pidf(kIndexP, kIndexI, kIndexD, kIndexFf);
+    var maxMotion = new MAXMotionConfig().maxVelocity(4000).maxAcceleration(3000);
+    m_indexConfig.closedLoop.apply(maxMotion);
     
     var coralControlConfig = new SparkMaxConfig();
     coralControlConfig.idleMode(IdleMode.kBrake);
 
     m_indexSparkMax.configure(m_indexConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_rightCoralControlSparkMax.configure(coralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_leftCoralControlSparkMax.configure(coralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    //m_rightCoralControlSparkMax.configure(coralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    //m_leftCoralControlSparkMax.configure(coralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_indexEncoder = (SparkRelativeEncoder) m_indexSparkMax.getEncoder(); 
 
@@ -95,6 +101,8 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     NetworkTable datatable = inst.getTable(name);
 
     m_indexPositionPub = datatable.getDoubleTopic(name + "/Index Position").publish();
+    m_indexVelocityPub = datatable.getDoubleTopic(name + "/Index Velocity").publish();
+    m_indexAppliedOutputPub = datatable.getDoubleTopic(name + "/Index Applied Output").publish();
     m_coralDetectPub = datatable.getBooleanTopic(name + "/Coral Detect").publish();
 
     var leftVelocitySub = datatable.getDoubleTopic(name + "/Left Velocity");
@@ -110,15 +118,15 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     m_goToTargetVelocityPub.set(false);
     m_goToTargetVelocitySub = goToTargetVelocity.subscribe(false);
 
-    var indexPSub = datatable.getDoubleTopic(name + "indexP");
+    var indexPSub = datatable.getDoubleTopic(name + "/index P");
     indexPSub.publish().set(kIndexP);
     m_indexPSub = indexPSub.subscribe(kIndexP);
 
-    var indexISub = datatable.getDoubleTopic(name + "indexI");
+    var indexISub = datatable.getDoubleTopic(name + "/index I");
     indexISub.publish().set(kIndexI);
     m_indexISub = indexISub.subscribe(kIndexI);
 
-    var indexDSub = datatable.getDoubleTopic(name + "indexD");
+    var indexDSub = datatable.getDoubleTopic(name + "/index D");
     indexDSub.publish().set(kIndexD);
     m_indexDSub = indexDSub.subscribe(kIndexD);
 
@@ -147,6 +155,8 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   {
     m_coralDetectPub.set(m_coralDetect.get());
     m_indexPositionPub.set(m_indexEncoder.getPosition());
+    m_indexVelocityPub.set(m_indexEncoder.getVelocity());
+    m_indexAppliedOutputPub.set(m_indexSparkMax.getAppliedOutput());
 
     double leftVelocityTarget = m_leftVelocitySub.get();
     double rightVelocityTarget = m_rightVelocitySub.get();
@@ -154,8 +164,8 @@ public class CoralDeliverySubsystem extends SubsystemBase {
 
     if(m_goToTargetVelocitySub.get())
     {
-      m_leftCoralControlSparkMax.set(leftVelocityTarget);
-      m_rightCoralControlSparkMax.set(rightVelocityTarget);
+      //m_leftCoralControlSparkMax.set(leftVelocityTarget);
+      //m_rightCoralControlSparkMax.set(rightVelocityTarget);
       m_goToTargetVelocityPub.set(false);
     }
 
@@ -220,19 +230,19 @@ public class CoralDeliverySubsystem extends SubsystemBase {
 
   public void stopAtIndexCurrentPosition()
   {
-    m_indexController.setReference(m_indexEncoder.getPosition(), SparkMax.ControlType.kPosition);
+    m_indexController.setReference(m_indexEncoder.getPosition(), SparkMax.ControlType.kMAXMotionPositionControl);
   }
 
   public void setLeftCoralControlVelocity(CoralControlTargetSpeeds targetSpeed)
   {
     var targetLeftEnumSpeed = CoralControlSpeedValue(targetSpeed);
-    m_leftCoralControlSparkMax.set(-targetLeftEnumSpeed);
+    //m_leftCoralControlSparkMax.set(-targetLeftEnumSpeed);
   }
 
   public void setRightCoralControlVelocity(CoralControlTargetSpeeds targetSpeed)
   {
     var targetRightEnumSpeed = CoralControlSpeedValue(targetSpeed);
-    m_rightCoralControlSparkMax.set(targetRightEnumSpeed);
+    //m_rightCoralControlSparkMax.set(targetRightEnumSpeed);
   }
 
   public void stopRightCoralControlMotor ()
@@ -248,5 +258,10 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   public boolean getOpticSensor()
   {
     return m_coralDetect.get();
+  }
+
+  public void directDrive(double power)
+  {
+    m_indexSparkMax.set(power);
   }
 }
