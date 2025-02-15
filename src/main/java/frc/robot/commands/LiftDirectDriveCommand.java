@@ -45,7 +45,7 @@ public class LiftDirectDriveCommand extends Command {
             power -= 0.1;
         }
         
-        power = power * power * power;
+        power = -power * power * power;
         m_liftsubsystem.directDrive(power);
     }
 

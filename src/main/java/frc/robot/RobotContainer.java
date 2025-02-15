@@ -33,15 +33,16 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
+
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private static double kDriveYExponent = 2;
   private static double kDriveXExponent = 2;
   private static double m_coralDeliveryWaitSeconds = 1;
   
- // private final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
+  private final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
   // private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
-  private final CoralDeliverySubsystem m_coralDeliverySubsystem = new CoralDeliverySubsystem();
+  //private final CoralDeliverySubsystem m_coralDeliverySubsystem = new CoralDeliverySubsystem();
   // private final AlgaeClawSubsystem m_algaeClawSubsystem = new AlgaeClawSubsystem();
  // private final AprilTagPID m_aprilTagPID = new AprilTagPID(m_driveSubsystem);
 
@@ -106,8 +107,8 @@ public class RobotContainer {
 
     //m_coralDeliverySubsystem.setDefaultCommand(
     // new CoralIndexDirectDriveCommand(m_coralDeliverySubsystem, () -> m_driverController.getLeftY()));
-    //m_liftSubsystem.setDefaultCommand(
-    //  new LiftDirectDriveCommand(m_liftSubsystem, () -> m_driverController.getLeftY()));
+    m_liftSubsystem.setDefaultCommand(
+      new LiftDirectDriveCommand(m_liftSubsystem, () -> m_driverController.getLeftY()));
 
     // m_placeAtL4Button.onTrue(new AlignWithReefCommand(m_driveSubsystem, m_aprilTagPID)
      //  .andThen(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L4)
