@@ -4,17 +4,22 @@
 
 package frc.robot;
 
+import frc.robot.commands.AlignWithReefCommand;
+import frc.robot.commands.CoralIndexDirectDriveCommand;
 import frc.robot.commands.DeliverCoralCommand;
+import frc.robot.commands.IndexCoralCommand;
 import frc.robot.commands.IntakeAlgaeCommand;
 import frc.robot.commands.LiftDirectDriveCommand;
 import frc.robot.commands.LiftDriveToPositionCommand;
 import frc.robot.commands.TeleOpDriveCommand;
+import frc.robot.cwtech.AprilTagPID;
 import frc.robot.cwtech.Conditioning;
 import frc.robot.subsystems.AlgaeClawSubsystem;
 import frc.robot.subsystems.CoralDeliverySubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftSubsystem;
 import frc.robot.subsystems.CoralDeliverySubsystem.CoralControlTargetSpeeds;
+import frc.robot.subsystems.CoralDeliverySubsystem.CoralIndexTargetPositions;
 import frc.robot.subsystems.LiftSubsystem.liftTargetPositions;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -28,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
+
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private static double kDriveYExponent = 2;
@@ -35,8 +41,9 @@ public class RobotContainer {
   
   private final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
   // private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
-  // private final CoralDeliverySubsystem m_coralDeliverySubsystem = new CoralDeliverySubsystem();
+  //private final CoralDeliverySubsystem m_coralDeliverySubsystem = new CoralDeliverySubsystem();
   // private final AlgaeClawSubsystem m_algaeClawSubsystem = new AlgaeClawSubsystem();
+ // private final AprilTagPID m_aprilTagPID = new AprilTagPID(m_driveSubsystem);
 
   private final Conditioning m_driveXConditioning = new Conditioning();
   private final Conditioning m_driveYConditioning = new Conditioning();
@@ -50,6 +57,8 @@ public class RobotContainer {
   private final Joystick m_buttonBox = new Joystick(RobotMap.kButtonBox); 
 
   // private final JoystickButton m_placeAtL4Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL4Button);
+    // private final JoystickButton m_placeAtL3Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL3Button);
+  // private final JoystickButton m_placeAtL2Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL2Button);
  // private final JoystickButton m_intakeAlgaeButton = new JoystickButton(m_buttonBox, RobotMap.kintakeAlgaeButton);
  // private final JoystickButton m_leftTroughPlaceButton = new JoystickButton(m_buttonBox, RobotMap.kleftTroughPlaceButton);
  // private final JoystickButton m_rightTroughPlaceButton = new JoystickButton(m_buttonBox, RobotMap.krightTroughPlaceButton);
@@ -95,10 +104,21 @@ public class RobotContainer {
     //   () -> getDriveXInput(), () -> getDriveYInput(), () -> getTurnInput(),
     //   () -> m_robot.isTeleopEnabled()));
 
+    //m_coralDeliverySubsystem.setDefaultCommand(
+    // new CoralIndexDirectDriveCommand(m_coralDeliverySubsystem, () -> m_driverController.getLeftY()));
     m_liftSubsystem.setDefaultCommand(
       new LiftDirectDriveCommand(m_liftSubsystem, () -> m_driverController.getLeftY()));
 
-    // m_placeAtL4Button.onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L4)
+    // m_placeAtL4Button.onTrue(new AlignWithReefCommand(m_driveSubsystem, m_aprilTagPID)
+     //  .andThen(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L4)
+     //  .andThen(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)
+    //   .andThen(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.Base)
+    //   .andThen(new IndexCoralCommand(m_coralDeliverySubsystem, CoralIndexTargetPositions.Center))))));
+
+    // m_placeAtL3Button.onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L3)
+    //   .andThen(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)));
+    
+    // m_placeAtL2Button.onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L2)
     //   .andThen(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)));
 
     //  m_leftTroughPlaceButton.onTrue(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1SmallSpeed, CoralControlTargetSpeeds.L1LargeSpeed));
@@ -144,7 +164,7 @@ public class RobotContainer {
   public void updateDashboard()
   {
     m_robot.addPeriodic(() -> {
-      m_liftSubsystem.dashboardUpdate();
+    //  m_liftSubsystem.dashboardUpdate();
     }, 1, 0.303);
   }
 }

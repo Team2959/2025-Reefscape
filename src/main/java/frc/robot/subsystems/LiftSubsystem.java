@@ -6,9 +6,11 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkMaxAlternateEncoder;
 import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.AlternateEncoderConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -40,11 +42,12 @@ public class LiftSubsystem extends SubsystemBase {
   private final SparkMax m_liftFollower = new SparkMax(RobotMap.kLiftFollowerMotor, MotorType.kBrushless);
   private final SparkMaxConfig m_config;
   private SparkClosedLoopController m_liftController;
-  private SparkRelativeEncoder m_liftEncoder;
+  // private SparkRelativeEncoder m_liftEncoder;
+  private SparkMaxAlternateEncoder m_liftEncoder;
   private double m_lastTargetPosition;
   private final DigitalInput m_liftDetect = new DigitalInput(RobotMap.kLiftDetectInput);
 
-  private final double kLiftP = 0;
+  private final double kLiftP = 1.0;
   private final double kLiftI = 0;
   private final double kLiftD = 0;
 
@@ -67,17 +70,20 @@ public class LiftSubsystem extends SubsystemBase {
     m_config = new SparkMaxConfig();
     m_config.idleMode(IdleMode.kBrake);
     m_config.closedLoop
-      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+      .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
       .pid(kLiftP, kLiftI, kLiftD);
+    var alternateEncoderConfig = new AlternateEncoderConfig();
+    alternateEncoderConfig.setSparkMaxDataPortConfig();
+    m_config.apply(alternateEncoderConfig);
    
     m_lift.configure(m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    m_liftEncoder = (SparkRelativeEncoder) m_lift.getEncoder(); 
+    // m_liftEncoder = (SparkRelativeEncoder) m_lift.getAlternateEncoder(); 
+    m_liftEncoder = (SparkMaxAlternateEncoder) m_lift.getAlternateEncoder(); 
     m_liftController = m_lift.getClosedLoopController();
 
     var followerConfig = new SparkMaxConfig();
-    followerConfig.idleMode(IdleMode.kBrake)
-      .follow(RobotMap.kLiftLeadMotor, true);
+    followerConfig.idleMode(IdleMode.kBrake).follow(RobotMap.kLiftLeadMotor, true);
     m_liftFollower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
  
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -117,6 +123,7 @@ public class LiftSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    dashboardUpdate();
   }
 
   @Override
@@ -166,13 +173,13 @@ public class LiftSubsystem extends SubsystemBase {
   {
     switch (target) {
       case L4:
-        return 1000;
+        return 4;
       case L3:
-        return 750;
+        return 3;
       case L2:
-        return 500;
+        return 2;
       default:
-        return 50;
+        return 1;
     }
   }
 

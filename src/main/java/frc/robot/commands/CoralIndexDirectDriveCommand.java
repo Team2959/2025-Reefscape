@@ -7,21 +7,22 @@ package frc.robot.commands;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.CoralDeliverySubsystem;
 import frc.robot.subsystems.LiftSubsystem;
 
-public class LiftDirectDriveCommand extends Command {
-    private LiftSubsystem m_liftsubsystem;
+public class CoralIndexDirectDriveCommand extends Command {
+    private CoralDeliverySubsystem m_coralSubsystem;
     private Supplier<Double> m_yJoystickSupplier;
 
-    public LiftDirectDriveCommand(
-        LiftSubsystem liftSubsystem,
+    public CoralIndexDirectDriveCommand(
+        CoralDeliverySubsystem coralSubsystem,
         Supplier<Double> yJoystick)
     {
-        m_liftsubsystem = liftSubsystem;
+        m_coralSubsystem = coralSubsystem;
 
         m_yJoystickSupplier = yJoystick;
 
-        addRequirements(liftSubsystem);
+        addRequirements(coralSubsystem);
     }
 
     @Override
@@ -31,7 +32,7 @@ public class LiftDirectDriveCommand extends Command {
     @Override
     public void execute()
     {
-        double power = m_yJoystickSupplier.get();
+        double power = -m_yJoystickSupplier.get();
         if (Math.abs(power) < 0.1)
         {
             power = 0;
@@ -45,13 +46,12 @@ public class LiftDirectDriveCommand extends Command {
             power -= 0.1;
         }
         
-        power = -power * power * power;
-        m_liftsubsystem.directDrive(power);
+        m_coralSubsystem.directDrive(power);
     }
 
     @Override
     public void end(boolean interrupted) {
-        m_liftsubsystem.directDrive(0);
+        m_coralSubsystem.directDrive(0);
     }
     @Override
     public boolean isFinished() {
