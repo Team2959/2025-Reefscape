@@ -4,9 +4,8 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.cwtech.AprilTagPID;
 import frc.robot.subsystems.CoralDeliverySubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftSubsystem;
@@ -23,16 +22,17 @@ public class CoralPlacementSequentialCommand extends SequentialCommandGroup {
     LiftSubsystem liftSubsystem,
     DriveSubsystem drivesubsystem,
     CoralDeliverySubsystem coralDeliverySubsystem,
-    liftTargetPositions targetLevel
- 
+    liftTargetPositions targetLevel,
+    AprilTagPID aprilTagPID 
     )
   {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
+      new AlignWithReefCommand(drivesubsystem, aprilTagPID),
       new LockWheelsCommand(drivesubsystem).alongWith(new LiftDriveToPositionCommand(liftSubsystem, targetLevel)),
       new DeliverCoralCommand(CoralDeliverySubsystem.DeliveryWaitSeconds, coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed),
-      new LiftDriveToPositionCommand(liftSubsystem, liftTargetPositions.Base).alongWith(new IndexCoralCommand(coralDeliverySubsystem,CoralIndexTargetPositions.Center ) )
+      new LiftDriveToPositionCommand(liftSubsystem, liftTargetPositions.Base).alongWith(new IndexCoralCommand(coralDeliverySubsystem,CoralIndexTargetPositions.Center))
     );
   }
 }
