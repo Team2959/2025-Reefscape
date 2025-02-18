@@ -143,7 +143,11 @@ public class AlgaeClawSubsystem extends SubsystemBase {
 
     if (m_updateClawShootPIDSub.get())
     {
-      m_clawShootConfig.closedLoop.pid(m_ClawShootPSub.get(), m_ClawShootISub.get(), m_ClawShootDSub.get());
+      var newP = m_ClawShootPSub.get();
+      var newI = m_ClawShootISub.get();
+      var newD = m_ClawShootDSub.get();
+
+      m_clawShootConfig.closedLoop.pid(newP, newI, newD);
       m_clawShootSparkMax.configure(m_clawShootConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
       m_updateClawShootPIDPub.set(false);
     }

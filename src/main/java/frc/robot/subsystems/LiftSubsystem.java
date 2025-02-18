@@ -150,7 +150,11 @@ public class LiftSubsystem extends SubsystemBase {
 
     if (m_updateLiftPIDSub.get())
     {
-      m_config.closedLoop.pid(m_liftP.get(), m_liftI.get(), m_liftD.get());
+      var newP = m_liftP.get();
+      var newI = m_liftI.get();
+      var newD = m_liftD.get();
+
+      m_config.closedLoop.pid(newP, newI, newD);
       m_lift.configure(m_config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
       m_updateLiftPIDPub.set(false);
     }

@@ -172,7 +172,11 @@ public class CoralDeliverySubsystem extends SubsystemBase {
 
     if (m_updateIndexPIDSub.get())
     {
-      m_indexConfig.closedLoop.pid(m_indexPSub.get(), m_indexISub.get(), m_indexDSub.get());
+      var newP = m_indexPSub.get();
+      var newI = m_indexISub.get();
+      var newD = m_indexDSub.get();
+
+      m_indexConfig.closedLoop.pid(newP, newI, newD);
       m_indexSparkMax.configure(m_indexConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
       
       m_updateIndexPIDPub.set(false);
