@@ -52,11 +52,12 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   private SparkClosedLoopController m_indexController;
   private final DigitalInput m_coralDetect = new DigitalInput(RobotMap.kCoralDetectInput);
 
-
   private final double kIndexP = 0.008;
   private final double kIndexI = 0.000001;
   private final double kIndexD = 0;
   private final double kIndexFf = 0.0008;
+  private final double kIndexMaxVelocity = 4000;
+  private final double kIndexMaxAcceleration = 3000;
   private double m_lastTargetPosition;
 
   private final DoublePublisher m_indexPositionPub;
@@ -70,6 +71,9 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   private final DoubleSubscriber m_indexPSub;
   private final DoubleSubscriber m_indexISub;
   private final DoubleSubscriber m_indexDSub;
+  private final DoubleSubscriber m_indexFFSub;
+  private final DoubleSubscriber m_indexMaxVelocity;
+  private final DoubleSubscriber m_indexMaxAcceleration;
   private final BooleanPublisher m_updateIndexPIDPub;
   private final BooleanSubscriber m_updateIndexPIDSub;
   private final DoubleSubscriber m_indexTargetRotationsSub;
@@ -83,7 +87,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     m_indexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .pidf(kIndexP, kIndexI, kIndexD, kIndexFf);
-    var maxMotion = new MAXMotionConfig().maxVelocity(4000).maxAcceleration(3000);
+    var maxMotion = new MAXMotionConfig().maxVelocity(kIndexMaxVelocity).maxAcceleration(kIndexMaxAcceleration);
     m_indexConfig.closedLoop.apply(maxMotion);
     
     var coralControlConfig = new SparkMaxConfig();
@@ -131,6 +135,18 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     indexDSub.publish().set(kIndexD);
     m_indexDSub = indexDSub.subscribe(kIndexD);
 
+    var indexFFSub = datatable.getDoubleTopic(name + "/index FF");
+    indexFFSub.publish().set(kIndexFf);
+    m_indexFFSub = indexFFSub.subscribe(kIndexFf);
+
+    var indexMaxVelocity = datatable.getDoubleTopic(name + "/index Max Velocity");
+    indexMaxVelocity.publish().set(kIndexMaxVelocity);
+    m_indexMaxVelocity = indexMaxVelocity.subscribe(kIndexMaxVelocity);
+
+    var indexMaxAcceleration = datatable.getDoubleTopic(name + "/index Max Acceleration");
+    indexMaxAcceleration.publish().set(kIndexMaxAcceleration);
+    m_indexMaxAcceleration = indexMaxAcceleration.subscribe(kIndexMaxAcceleration);
+
     var updateIndexPIDPub = datatable.getBooleanTopic(name + "/update Index PID");
     m_updateIndexPIDPub = updateIndexPIDPub.publish();
     m_updateIndexPIDPub.set(false);
@@ -172,11 +188,13 @@ public class CoralDeliverySubsystem extends SubsystemBase {
 
     if (m_updateIndexPIDSub.get())
     {
-      var newP = m_indexPSub.get();
-      var newI = m_indexISub.get();
-      var newD = m_indexDSub.get();
+      var updatedMaxVelocity = m_indexMaxVelocity.get();
+      var updatedMaxAcceleration = m_indexMaxAcceleration.get();
 
-      m_indexConfig.closedLoop.pid(newP, newI, newD);
+      m_indexConfig.closedLoop.pidf(m_indexPSub.get(), m_indexISub.get(), m_indexDSub.get(), m_indexFFSub.get());
+      var updatedMaxMotion = new MAXMotionConfig().maxVelocity(updatedMaxVelocity).maxAcceleration(updatedMaxAcceleration);
+      m_indexConfig.closedLoop.apply(updatedMaxMotion);
+
       m_indexSparkMax.configure(m_indexConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
       
       m_updateIndexPIDPub.set(false);
@@ -184,17 +202,21 @@ public class CoralDeliverySubsystem extends SubsystemBase {
 
     if (m_goToTargetIndexPositionSub.get())
     {
-      m_indexController.setReference(indexPositionTarget, SparkMax.ControlType.kPosition);
+      moveIndexerToPosition(indexPositionTarget);
       m_goToTargetIndexPositionPub.set(false);
     }
   }
 
-  public double setTargetIndexPosition (CoralIndexTargetPositions targetIndexPosition)
+  public void setTargetIndexPosition(CoralIndexTargetPositions targetIndexPosition)
   {
     var targetPosition = CoralIndexPositionValue(targetIndexPosition);
-    m_indexController.setReference(targetPosition, SparkMax.ControlType.kPosition);
-    m_lastTargetPosition = targetPosition;
-    return m_lastTargetPosition;
+    moveIndexerToPosition(targetPosition);
+  }
+
+  private void moveIndexerToPosition(double indexPositionTarget)
+  {
+    m_indexController.setReference(indexPositionTarget, SparkMax.ControlType.kMAXMotionPositionControl);
+    m_lastTargetPosition = indexPositionTarget;
   }
 
   private static int CoralIndexPositionValue(CoralIndexTargetPositions target)

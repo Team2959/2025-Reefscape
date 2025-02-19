@@ -28,7 +28,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 
 public class SwerveModuleThrifty {
-    private static final double kSteerP = 0.35;
+    private static final double kSteerP = 1.8;
     private static final double kSteerI = 0.0;
     private static final double kSteerD = 0.0;
     private static final double kSteerFF = 0.0;

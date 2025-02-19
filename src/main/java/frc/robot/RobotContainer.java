@@ -40,9 +40,9 @@ public class RobotContainer {
   private static double kDriveYExponent = 2;
   private static double kDriveXExponent = 2;
   
-  private final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
+ // private final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
   // private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
-  //private final CoralDeliverySubsystem m_coralDeliverySubsystem = new CoralDeliverySubsystem();
+  private final CoralDeliverySubsystem m_coralDeliverySubsystem = new CoralDeliverySubsystem();
   // private final AlgaeClawSubsystem m_algaeClawSubsystem = new AlgaeClawSubsystem();
  // private final AprilTagPID m_aprilTagPID = new AprilTagPID(m_driveSubsystem);
 
@@ -53,11 +53,11 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(RobotMap.kXboxTester);
-  private final Joystick m_leftJoystick = new Joystick(RobotMap.kLeftJoystick);
-  private final Joystick m_rightJoystick = new Joystick(RobotMap.kRightJoystick);
-  private final Joystick m_buttonBox = new Joystick(RobotMap.kButtonBox); 
+ // private final Joystick m_leftJoystick = new Joystick(RobotMap.kLeftJoystick);
+ // private final Joystick m_rightJoystick = new Joystick(RobotMap.kRightJoystick);
+ // private final Joystick m_buttonBox = new Joystick(RobotMap.kButtonBox); 
 
-   private final JoystickButton m_placeAtL4Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL4Button);
+  // private final JoystickButton m_placeAtL4Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL4Button);
     // private final JoystickButton m_placeAtL3Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL3Button);
   // private final JoystickButton m_placeAtL2Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL2Button);
  // private final JoystickButton m_intakeAlgaeButton = new JoystickButton(m_buttonBox, RobotMap.kintakeAlgaeButton);
@@ -105,10 +105,10 @@ public class RobotContainer {
     //   () -> getDriveXInput(), () -> getDriveYInput(), () -> getTurnInput(),
     //   () -> m_robot.isTeleopEnabled()));
 
-    //m_coralDeliverySubsystem.setDefaultCommand(
-    // new CoralIndexDirectDriveCommand(m_coralDeliverySubsystem, () -> m_driverController.getLeftY()));
-    m_liftSubsystem.setDefaultCommand(
-      new LiftDirectDriveCommand(m_liftSubsystem, () -> m_driverController.getLeftY()));
+    m_coralDeliverySubsystem.setDefaultCommand(
+     new CoralIndexDirectDriveCommand(m_coralDeliverySubsystem, () -> m_driverController.getLeftY()));
+  //  m_liftSubsystem.setDefaultCommand(
+   //   new LiftDirectDriveCommand(m_liftSubsystem, () -> m_driverController.getLeftY()));
 
    // m_placeAtL4Button.onTrue(new CoralPlacementSequentialCommand(m_liftSubsystem, m_driveSubsystem, m_coralDeliverySubsystem, liftTargetPositions.L4, m_aprilTagPID));
 
@@ -132,24 +132,27 @@ public class RobotContainer {
   public double getDriveXInput()
   {
     // We getY() here because of the FRC coordinate system being turned 90 degrees
-    return m_driveXConditioning.condition(-m_leftJoystick.getY())
-            * DriveSubsystem.kMaxSpeedMetersPerSecond
-            * m_speedMultiplier;
+    //return m_driveXConditioning.condition(-m_leftJoystick.getY())
+    //        * DriveSubsystem.kMaxSpeedMetersPerSecond
+    //        * m_speedMultiplier;
+    return 0;
   }
 
   public double getDriveYInput()
   {
     // We getX() here becasuse of the FRC coordinate system being turned 90 degrees
-    return m_driveYConditioning.condition(-m_leftJoystick.getX())
-            * DriveSubsystem.kMaxSpeedMetersPerSecond
-            * m_speedMultiplier;
+   // return m_driveYConditioning.condition(-m_leftJoystick.getX())
+   //         * DriveSubsystem.kMaxSpeedMetersPerSecond
+    //        * m_speedMultiplier;
+    return 0;
   }
 
   public double getTurnInput()
   {
-    return m_turnConditioning.condition(-m_rightJoystick.getX())
-            * DriveSubsystem.kMaxAngularSpeedRadiansPerSecond
-            * m_speedMultiplier;
+  //  return m_turnConditioning.condition(-m_rightJoystick.getX())
+  //          * DriveSubsystem.kMaxAngularSpeedRadiansPerSecond
+   //         * m_speedMultiplier;
+   return 0;
   }
 
   public void updateDashboard()
