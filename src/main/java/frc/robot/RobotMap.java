@@ -44,6 +44,10 @@ public final class RobotMap {
 
     // Driver Buttons
 
+    // public static final int kRightResetNavXButton = 10;
+    // public static final int kRightResetRestAbsoluteEncoderButton = null;
+
+
     // Co-Piolt Button board
     public static final int kplaceAtL4Button = 5;
     public static final int kplaceAtL3Button = 9;
