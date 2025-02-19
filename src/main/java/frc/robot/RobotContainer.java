@@ -6,7 +6,6 @@ package frc.robot;
 
 import frc.robot.commands.AlignWithReefCommand;
 import frc.robot.commands.CoralIndexDirectDriveCommand;
-import frc.robot.commands.CoralPlacementSequentialCommand;
 import frc.robot.commands.DeliverCoralCommand;
 import frc.robot.commands.IndexCoralCommand;
 import frc.robot.commands.IntakeAlgaeCommand;
@@ -57,7 +56,7 @@ public class RobotContainer {
   private final Joystick m_rightJoystick = new Joystick(RobotMap.kRightJoystick);
   private final Joystick m_buttonBox = new Joystick(RobotMap.kButtonBox); 
 
-   private final JoystickButton m_placeAtL4Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL4Button);
+  // private final JoystickButton m_placeAtL4Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL4Button);
     // private final JoystickButton m_placeAtL3Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL3Button);
   // private final JoystickButton m_placeAtL2Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL2Button);
  // private final JoystickButton m_intakeAlgaeButton = new JoystickButton(m_buttonBox, RobotMap.kintakeAlgaeButton);
@@ -76,7 +75,6 @@ public class RobotContainer {
     m_driveYConditioning.setExponent(kDriveYExponent);
     m_turnConditioning.setDeadband(0.2);
     m_turnConditioning.setExponent(1.4);
-
     // Configure the trigger bindings
     configureBindings();
 
@@ -105,12 +103,26 @@ public class RobotContainer {
     //   () -> getDriveXInput(), () -> getDriveYInput(), () -> getTurnInput(),
     //   () -> m_robot.isTeleopEnabled()));
 
-    //m_coralDeliverySubsystem.setDefaultCommand(
+    // JoystickButton m_resetNavX = new JoystickButton(m_rightJoystick, RobotMap.kRightResetNavXButton);
+    // JoystickButton m_resetAbsoluteEncoder = new JoystickButton(m_rightJoystick, RobotMap.kRightResetAbsoluteEncoderButton);
+    // m_coralDeliverySubsystem.setDefaultCommand(
     // new CoralIndexDirectDriveCommand(m_coralDeliverySubsystem, () -> m_driverController.getLeftY()));
+    // m_resetNavX.onTrue(new InstantCommand(() -> {m_driveSubsystem.resetNavX();}));
+
     m_liftSubsystem.setDefaultCommand(
       new LiftDirectDriveCommand(m_liftSubsystem, () -> m_driverController.getLeftY()));
 
-   // m_placeAtL4Button.onTrue(new CoralPlacementSequentialCommand(m_liftSubsystem, m_driveSubsystem, m_coralDeliverySubsystem, liftTargetPositions.L4, m_aprilTagPID));
+    // m_placeAtL4Button.onTrue(new AlignWithReefCommand(m_driveSubsystem, m_aprilTagPID)
+     //  .andThen(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L4)
+     //  .andThen(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)
+    //   .andThen(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.Base)
+    //   .andThen(new IndexCoralCommand(m_coralDeliverySubsystem, CoralIndexTargetPositions.Center))))));
+
+    // m_placeAtL3Button.onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L3)
+    //   .andThen(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)));
+    
+    // m_placeAtL2Button.onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L2)
+    //   .andThen(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)));
 
     //  m_leftTroughPlaceButton.onTrue(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1SmallSpeed, CoralControlTargetSpeeds.L1LargeSpeed));
     //  m_rightTroughPlaceButton.onTrue(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1LargeSpeed, CoralControlTargetSpeeds.L1SmallSpeed));
