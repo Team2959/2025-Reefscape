@@ -220,4 +220,9 @@ public class LiftSubsystem extends SubsystemBase {
   {
     m_liftController.setReference(m_liftEncoder.getPosition(), SparkMax.ControlType.kPosition);
   }
+
+  public boolean isLiftAtBottom()
+  {
+    return m_liftDetect.get();
+  }
 }
