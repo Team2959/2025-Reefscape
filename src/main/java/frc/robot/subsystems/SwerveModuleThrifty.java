@@ -33,6 +33,8 @@ public class SwerveModuleThrifty {
     private static final double kSteerD = 0.0;
     private static final double kSteerFF = 0.0;
     private static final double kSteerIZone = 1.0;
+    private static final double kSteerMaxVelocity = 0;
+    private static final double kSteerMaxAcceleration = 0;
 
     // kraken 14T/16T build with free speed of 20.4 ft/s 
     private static final double kMaxSpeedMetersPerSecond = 6.21;
@@ -65,7 +67,10 @@ public class SwerveModuleThrifty {
     private final DoubleSubscriber m_targetAngleSub;
     private final DoubleSubscriber m_SteerKpSub;
     private final DoubleSubscriber m_SteerKiSub;
+    private final DoubleSubscriber m_SteerKdSub;
     private final DoubleSubscriber m_SteerFfSub;
+    private final DoubleSubscriber m_SteerMaxVelocitySub;
+    private final DoubleSubscriber m_SteerMaxAccelerationSub;
     private final BooleanSubscriber m_updatesteerPIDSub;
     private final BooleanPublisher m_updatesteerPIDPub;
 
@@ -142,15 +147,31 @@ public class SwerveModuleThrifty {
         m_encoderRawAbsoluteAnglePub = datatable.getDoubleTopic(m_name + "/absolute encoder angle").publish();
         m_krakenPositionPub = datatable.getDoubleTopic(m_name + "/kraken position").publish();
         m_krakenVelocityPub = datatable.getDoubleTopic(m_name + "/kraken velocity").publish();
+      
         var steerKpTopic = datatable.getDoubleTopic("steer Kp");
         steerKpTopic.publish().set(kSteerP);
         m_SteerKpSub = steerKpTopic.subscribe(kSteerP);
+       
         var steerKiTopic = datatable.getDoubleTopic("steer Ki");
         steerKiTopic.publish().set(kSteerI);
         m_SteerKiSub = steerKiTopic.subscribe(kSteerI);
+       
+        var steerDTopic = datatable.getDoubleTopic("steer D");
+        steerDTopic.publish().set(kSteerD);
+        m_SteerKdSub = steerDTopic.subscribe(kSteerD);
+        
         var steerFfTopic = datatable.getDoubleTopic("steer FF");
         steerFfTopic.publish().set(kSteerFF);
         m_SteerFfSub = steerFfTopic.subscribe(kSteerFF);
+
+        var steerMaxVelocityTopic = datatable.getDoubleTopic("steer Max Velocity");
+        steerMaxVelocityTopic.publish().set(kSteerMaxVelocity);
+        m_SteerMaxVelocitySub = steerMaxVelocityTopic.subscribe(kSteerMaxVelocity);
+
+        var steerMaxAccelerationTopic = datatable.getDoubleTopic("steer Max Acceleration");
+        steerMaxAccelerationTopic.publish().set(kSteerMaxAcceleration);
+        m_SteerMaxAccelerationSub = steerMaxAccelerationTopic.subscribe(kSteerMaxAcceleration);
+        
         var updatesteerPIDTopic = datatable.getBooleanTopic("update Steer PID");
         m_updatesteerPIDPub = updatesteerPIDTopic.publish();
         m_updatesteerPIDPub.set(false);
@@ -170,7 +191,7 @@ public class SwerveModuleThrifty {
         if (m_updatesteerPIDSub.get())
         {
             double steerKp = m_SteerKpSub.get();
-            m_steerConfig.closedLoop.pidf(steerKp, m_SteerKiSub.get(), 0.0, m_SteerFfSub.get());
+            m_steerConfig.closedLoop.pidf(steerKp, m_SteerKiSub.get(), m_SteerKdSub.get(), m_SteerFfSub.get());
             m_steerMotor.configure(m_steerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
             m_updatesteerPIDPub.set(false);

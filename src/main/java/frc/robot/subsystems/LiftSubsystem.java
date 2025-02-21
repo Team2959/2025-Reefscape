@@ -50,14 +50,21 @@ public class LiftSubsystem extends SubsystemBase {
   private final double kLiftP = 1.0;
   private final double kLiftI = 0;
   private final double kLiftD = 0;
+  private final double kLiftFF = 0;
+  private final double kMaxVelocity = 0;
+  private final double kMaxAcceleration = 1;
 
   private final DoublePublisher m_sparkLiftRotations;
   private final DoublePublisher m_sparkLiftCurrent;
   private final DoublePublisher m_sparkVelocity;
+  private final BooleanPublisher m_mechanicalSwitchPub;
   private final DoubleSubscriber m_targetRotations;
   private final DoubleSubscriber m_liftP;
   private final DoubleSubscriber m_liftI;
   private final DoubleSubscriber m_liftD;
+  private final DoubleSubscriber m_liftFF;
+  private final DoubleSubscriber m_maxVelocitySub;
+  private final DoubleSubscriber m_maxAccelerationSub;
   private final BooleanSubscriber m_goToTargetRotationsSub;
   private final BooleanPublisher m_goToTargetRotationsPub;
   private final BooleanPublisher m_updateLiftPIDPub;
@@ -92,6 +99,7 @@ public class LiftSubsystem extends SubsystemBase {
     m_sparkLiftRotations = datatable.getDoubleTopic(name + "/Rotations").publish();
     m_sparkLiftCurrent = datatable.getDoubleTopic(name + "/Current").publish();
     m_sparkVelocity = datatable.getDoubleTopic(name + "/Velocity").publish();
+    m_mechanicalSwitchPub = datatable.getBooleanTopic(name + "/Mechanical Switch Value").publish();
 
     var targetRotations = datatable.getDoubleTopic(name + "/target rotations");
     targetRotations.publish().set(0);
@@ -108,6 +116,18 @@ public class LiftSubsystem extends SubsystemBase {
     var liftD = datatable.getDoubleTopic(name + "liftD");
     liftD.publish().set(kLiftD);
     m_liftD = liftD.subscribe(kLiftD);
+
+    var liftFF = datatable.getDoubleTopic(name + "liftFF");
+    liftFF.publish().set(kLiftD);
+    m_liftFF = liftFF.subscribe(kLiftFF);
+
+    var maxVelocitySub = datatable.getDoubleTopic(name + "Max Velocity");
+    maxVelocitySub.publish().set(kMaxVelocity);
+    m_maxVelocitySub = maxVelocitySub.subscribe(kMaxVelocity);
+
+    var maxAccelerationSub = datatable.getDoubleTopic(name + "Max Acceleration");
+    maxAccelerationSub.publish().set(kMaxAcceleration);
+    m_maxAccelerationSub = maxAccelerationSub.subscribe(kMaxAcceleration);
 
     var goToTargetRotations = datatable.getBooleanTopic(name + "/goToTargetRotations");
     m_goToTargetRotationsPub = goToTargetRotations.publish();
@@ -139,6 +159,7 @@ public class LiftSubsystem extends SubsystemBase {
     m_sparkLiftRotations.set(m_liftEncoder.getPosition());
     m_sparkLiftCurrent.set(m_lift.getAppliedOutput());
     m_sparkVelocity.set(m_liftEncoder.getVelocity());
+    m_mechanicalSwitchPub.set(m_liftDetect.get());
 
     double target = m_targetRotations.get();
 
@@ -153,6 +174,9 @@ public class LiftSubsystem extends SubsystemBase {
       var newP = m_liftP.get();
       var newI = m_liftI.get();
       var newD = m_liftD.get();
+      var newFF = m_liftFF.get();
+      var newMaxVelocity = m_maxVelocitySub.get();
+      var newMaxAccceleration = m_maxAccelerationSub.get();
 
       m_config.closedLoop.pid(newP, newI, newD);
       m_lift.configure(m_config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);

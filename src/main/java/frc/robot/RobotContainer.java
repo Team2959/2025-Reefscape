@@ -40,8 +40,8 @@ public class RobotContainer {
   private static double kDriveXExponent = 2;
   
  // private final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
-  // private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
-  private final CoralDeliverySubsystem m_coralDeliverySubsystem = new CoralDeliverySubsystem();
+   private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
+  //private final CoralDeliverySubsystem m_coralDeliverySubsystem = new CoralDeliverySubsystem();
   // private final AlgaeClawSubsystem m_algaeClawSubsystem = new AlgaeClawSubsystem();
  // private final AprilTagPID m_aprilTagPID = new AprilTagPID(m_driveSubsystem);
 
@@ -52,8 +52,8 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(RobotMap.kXboxTester);
- // private final Joystick m_leftJoystick = new Joystick(RobotMap.kLeftJoystick);
- // private final Joystick m_rightJoystick = new Joystick(RobotMap.kRightJoystick);
+  private final Joystick m_leftJoystick = new Joystick(RobotMap.kLeftJoystick);
+  private final Joystick m_rightJoystick = new Joystick(RobotMap.kRightJoystick);
  // private final Joystick m_buttonBox = new Joystick(RobotMap.kButtonBox); 
 
   // private final JoystickButton m_placeAtL4Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL4Button);
@@ -99,12 +99,12 @@ public class RobotContainer {
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    // m_driveSubsystem.setDefaultCommand(new TeleOpDriveCommand(m_driveSubsystem,
-    //   () -> getDriveXInput(), () -> getDriveYInput(), () -> getTurnInput(),
-    //   () -> m_robot.isTeleopEnabled()));
+     m_driveSubsystem.setDefaultCommand(new TeleOpDriveCommand(m_driveSubsystem,
+       () -> getDriveXInput(), () -> getDriveYInput(), () -> getTurnInput(),
+       () -> m_robot.isTeleopEnabled()));
 
-    m_coralDeliverySubsystem.setDefaultCommand(
-     new CoralIndexDirectDriveCommand(m_coralDeliverySubsystem, () -> m_driverController.getLeftY()));
+  //  m_coralDeliverySubsystem.setDefaultCommand(
+   //  new CoralIndexDirectDriveCommand(m_coralDeliverySubsystem, () -> m_driverController.getLeftY()));
     // m_liftSubsystem.setDefaultCommand(
     //   new LiftDirectDriveCommand(m_liftSubsystem, () -> m_driverController.getLeftY()));
 
@@ -140,27 +140,24 @@ public class RobotContainer {
   public double getDriveXInput()
   {
     // We getY() here because of the FRC coordinate system being turned 90 degrees
-    //return m_driveXConditioning.condition(-m_leftJoystick.getY())
-    //        * DriveSubsystem.kMaxSpeedMetersPerSecond
-    //        * m_speedMultiplier;
-    return 0;
+    return m_driveXConditioning.condition(-m_leftJoystick.getY())
+            * DriveSubsystem.kMaxSpeedMetersPerSecond
+            * m_speedMultiplier;
   }
 
   public double getDriveYInput()
   {
     // We getX() here becasuse of the FRC coordinate system being turned 90 degrees
-   // return m_driveYConditioning.condition(-m_leftJoystick.getX())
-   //         * DriveSubsystem.kMaxSpeedMetersPerSecond
-    //        * m_speedMultiplier;
-    return 0;
+    return m_driveYConditioning.condition(-m_leftJoystick.getX())
+            * DriveSubsystem.kMaxSpeedMetersPerSecond
+            * m_speedMultiplier;
   }
 
   public double getTurnInput()
   {
-  //  return m_turnConditioning.condition(-m_rightJoystick.getX())
-  //          * DriveSubsystem.kMaxAngularSpeedRadiansPerSecond
-   //         * m_speedMultiplier;
-   return 0;
+    return m_turnConditioning.condition(-m_rightJoystick.getX())
+            * DriveSubsystem.kMaxAngularSpeedRadiansPerSecond
+            * m_speedMultiplier;
   }
 
   public void updateDashboard()
