@@ -44,7 +44,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   };
   public static double DeliveryWaitSeconds = 1;
 
-  private final SparkMax m_indexSparkMax = new SparkMax(RobotMap.kCoralDeliveryIndexMotor, MotorType.kBrushless);
+  private final SparkMax m_indexSparkMax = new SparkMax(RobotMap.kCoralDeliveryIndexMotor, MotorType.kBrushed);
   //private final SparkMax m_rightCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryRightCoralControlMotor, MotorType.kBrushless);
   //private final SparkMax m_leftCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryLeftCoralControlMotor, MotorType.kBrushless);
   private SparkRelativeEncoder m_indexEncoder;
@@ -215,7 +215,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
 
   private void moveIndexerToPosition(double indexPositionTarget)
   {
-    m_indexController.setReference(indexPositionTarget, SparkMax.ControlType.kMAXMotionPositionControl);
+    m_indexController.setReference(indexPositionTarget, SparkMax.ControlType.kPosition);
     m_lastTargetPosition = indexPositionTarget;
   }
 

@@ -27,7 +27,10 @@ public final class RobotMap {
     public static final int kCoralDeliveryIndexMotor = 21;
 
     // Analog Input addresses
-    
+    public static final int kFrontLeftAnalogInput = 0;
+    public static final int kBackLeftAnalogInput = 1;
+    public static final int kBackRightAnalogInput = 2;
+    public static final int kFrontRightAnalogInput = 3;
 
     // REV Pneumatic Hub solenoid addresses
     public static final int kAlgaeClawSolenoid = 1;

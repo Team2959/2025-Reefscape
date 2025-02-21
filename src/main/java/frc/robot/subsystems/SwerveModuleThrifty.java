@@ -69,9 +69,9 @@ public class SwerveModuleThrifty {
     private final BooleanSubscriber m_updatesteerPIDSub;
     private final BooleanPublisher m_updatesteerPIDPub;
 
-    public SwerveModuleThrifty(int motorAssembly, double steerOffset, String name)
+    public SwerveModuleThrifty(int motorAssembly, double steerOffset, int analogInput, String name)
     {
-        this(motorAssembly, motorAssembly+ 10, motorAssembly, steerOffset, name);
+        this(motorAssembly, motorAssembly+ 10, analogInput, steerOffset, name);
     }
 
     // https://github.com/Team364/BaseFalconSwerve/blob/main/src/main/java/frc/robot/SwerveModule.java
