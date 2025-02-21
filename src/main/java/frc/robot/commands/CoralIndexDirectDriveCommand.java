@@ -5,10 +5,8 @@
 package frc.robot.commands;
 
 import java.util.function.Supplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoralDeliverySubsystem;
-import frc.robot.subsystems.LiftSubsystem;
 
 public class CoralIndexDirectDriveCommand extends Command {
     private CoralDeliverySubsystem m_coralSubsystem;

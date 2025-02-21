@@ -175,14 +175,10 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     m_indexVelocityPub.set(m_indexEncoder.getVelocity());
     m_indexAppliedOutputPub.set(m_indexSparkMax.getAppliedOutput());
 
-    double leftVelocityTarget = m_leftVelocitySub.get();
-    double rightVelocityTarget = m_rightVelocitySub.get();
-    double indexPositionTarget = m_indexTargetRotationsSub.get();
-
     if(m_goToTargetVelocitySub.get())
     {
-      //m_leftCoralControlSparkMax.set(leftVelocityTarget);
-      //m_rightCoralControlSparkMax.set(rightVelocityTarget);
+      //m_leftCoralControlSparkMax.set(m_leftVelocitySub.get());
+      //m_rightCoralControlSparkMax.set(m_rightVelocitySub.get());
       m_goToTargetVelocityPub.set(false);
     }
 
@@ -202,6 +198,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
 
     if (m_goToTargetIndexPositionSub.get())
     {
+      double indexPositionTarget = m_indexTargetRotationsSub.get();
       moveIndexerToPosition(indexPositionTarget);
       m_goToTargetIndexPositionPub.set(false);
     }

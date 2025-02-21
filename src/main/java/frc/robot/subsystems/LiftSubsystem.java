@@ -7,8 +7,8 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkMaxAlternateEncoder;
-import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.MAXMotionConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.AlternateEncoderConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -24,7 +24,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
@@ -42,7 +41,6 @@ public class LiftSubsystem extends SubsystemBase {
   private final SparkMax m_liftFollower = new SparkMax(RobotMap.kLiftFollowerMotor, MotorType.kBrushless);
   private final SparkMaxConfig m_config;
   private SparkClosedLoopController m_liftController;
-  // private SparkRelativeEncoder m_liftEncoder;
   private SparkMaxAlternateEncoder m_liftEncoder;
   private double m_lastTargetPosition;
   private final DigitalInput m_liftDetect = new DigitalInput(RobotMap.kLiftDetectInput);
@@ -85,7 +83,6 @@ public class LiftSubsystem extends SubsystemBase {
    
     m_lift.configure(m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    // m_liftEncoder = (SparkRelativeEncoder) m_lift.getAlternateEncoder(); 
     m_liftEncoder = (SparkMaxAlternateEncoder) m_lift.getAlternateEncoder(); 
     m_liftController = m_lift.getClosedLoopController();
 
@@ -178,7 +175,9 @@ public class LiftSubsystem extends SubsystemBase {
       var newMaxVelocity = m_maxVelocitySub.get();
       var newMaxAccceleration = m_maxAccelerationSub.get();
 
-      m_config.closedLoop.pid(newP, newI, newD);
+      m_config.closedLoop.pidf(newP, newI, newD, newFF);
+      var updatedMaxMotion = new MAXMotionConfig().maxVelocity(newMaxVelocity).maxAcceleration(newMaxAccceleration);
+      m_config.closedLoop.apply(updatedMaxMotion);
       m_lift.configure(m_config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
       m_updateLiftPIDPub.set(false);
     }

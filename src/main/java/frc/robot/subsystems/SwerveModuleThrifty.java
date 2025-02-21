@@ -185,8 +185,6 @@ public class SwerveModuleThrifty {
         m_encoderRawAbsoluteAnglePub.set(getThriftyEncoder().getDegrees());
         m_absoluteAnglePub.set(getAbsoluteEncoderPosition().getDegrees());
         m_sparkRelativeAnglePub.set(getRelativeEncoderPosition().getDegrees());
-        double target = m_targetAngleSub.get();
-        setSteerAngleInRadians(target * 2 * Math.PI / 360.0);
 
         if (m_updatesteerPIDSub.get())
         {
@@ -194,6 +192,9 @@ public class SwerveModuleThrifty {
             m_steerConfig.closedLoop.pidf(steerKp, m_SteerKiSub.get(), m_SteerKdSub.get(), m_SteerFfSub.get());
             m_steerMotor.configure(m_steerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
 
+            double target = m_targetAngleSub.get();
+            setSteerAngleInRadians(target * 2 * Math.PI / 360.0);
+    
             m_updatesteerPIDPub.set(false);
         }
     }
@@ -240,17 +241,17 @@ public class SwerveModuleThrifty {
 
    public double getDrivePosition()
     {
-       return m_driveMotor.getPosition().getValueAsDouble() * kDrivePositionFactor;
+        return m_driveMotor.getPosition().getValueAsDouble() * kDrivePositionFactor;
     }
 
    public SwerveModuleState getSwerveModuleState()
     {
-       return new SwerveModuleState(getDriveVelocity(), getRelativeEncoderPosition());
+        return new SwerveModuleState(getDriveVelocity(), getRelativeEncoderPosition());
     }
 
    public SwerveModulePosition getPosition()
     {
-       return new SwerveModulePosition(getDrivePosition(), getRelativeEncoderPosition());
+        return new SwerveModulePosition(getDrivePosition(), getRelativeEncoderPosition());
     }
 
     /*
