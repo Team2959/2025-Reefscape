@@ -51,7 +51,7 @@ public class RobotContainer {
   private static double m_speedMultiplier = 1.0;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController = new CommandXboxController(RobotMap.kXboxTester);
+ // private final CommandXboxController m_driverController = new CommandXboxController(RobotMap.kXboxTester);
   private final Joystick m_leftJoystick = new Joystick(RobotMap.kLeftJoystick);
   private final Joystick m_rightJoystick = new Joystick(RobotMap.kRightJoystick);
  // private final Joystick m_buttonBox = new Joystick(RobotMap.kButtonBox); 

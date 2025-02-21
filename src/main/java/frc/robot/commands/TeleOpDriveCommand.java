@@ -37,7 +37,7 @@ public class TeleOpDriveCommand extends Command {
     public void execute() {
         if (m_isTeleopEnabled.get())
             m_driveSubsystem.drive(m_xJoystickSupplier.get(), m_yJoystickSupplier.get(), m_turnJoystickSupplier.get(),
-                    true);
+                    false);
     }
 
     @Override

@@ -159,7 +159,7 @@ public class LiftSubsystem extends SubsystemBase {
     m_sparkLiftRotations.set(m_liftEncoder.getPosition());
     m_sparkLiftCurrent.set(m_lift.getAppliedOutput());
     m_sparkVelocity.set(m_liftEncoder.getVelocity());
-    m_mechanicalSwitchPub.set(m_liftDetect.get());
+    m_mechanicalSwitchPub.set(isLiftAtBottom());
 
     double target = m_targetRotations.get();
 
