@@ -137,6 +137,11 @@ public class RobotContainer {
     return null;
   }
 
+  public void driveInitialize()
+  {
+    m_driveSubsystem.initalize();
+  }
+
   public double getDriveXInput()
   {
     // We getY() here because of the FRC coordinate system being turned 90 degrees

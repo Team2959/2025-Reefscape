@@ -44,7 +44,8 @@ public class SwerveModuleThrifty {
     // private static final double kDrivePositionFactor = (2.0 * Math.PI * kWheelRadius * kGearboxRatio);
     private static final double kGearboxRatio = 1.0 / 5.14; // One turn of the wheel is 5.14 turns of the motor, output gear 16T, pinion gear 14T
     private static final double kWheelCircumference = 0.3; // m
-    private static final double kDrivePositionFactor = kWheelCircumference * kGearboxRatio;
+    private static final double kInvertedMotorMultiplier = -1.0;
+    private static final double kDrivePositionFactor = kInvertedMotorMultiplier * kWheelCircumference * kGearboxRatio;
     private static final int kDriveCurrentLimitAmps = 100;
     private static final int kSteerCurrentLimitAmps = 40; 
     private static final double kSteerMotorRotationsPerRevolution = 25;
@@ -215,16 +216,15 @@ public class SwerveModuleThrifty {
 
     private Rotation2d getAbsoluteEncoderPosition()
     {
+        // convert from absolute Thrifty coder turning counter-clockwise as positive to
+        //  relative encoder in assembly turning clockwise as positive
+
         double startingAngle = m_steerOffset - getThriftyEncoder().getRadians();
     
         if (startingAngle < 0)
         {
           startingAngle = startingAngle + (2 * Math.PI);
         }
-
-        // need to convert from absolute CAN coder turning clockwise as positive to
-        //  relative encoder in assembly turning counter-clockwise as positive
-        startingAngle = 2 * Math.PI - startingAngle;
 
         return Rotation2d.fromRadians(startingAngle);
     }
@@ -259,7 +259,7 @@ public class SwerveModuleThrifty {
      */
     public void setDesiredState(SwerveModuleState referenceState)
     {
-        referenceState.optimize(getAbsoluteEncoderPosition());
+        referenceState.optimize(getRelativeEncoderPosition());
        
         setDriveVelocity(referenceState.speedMetersPerSecond);
 
@@ -270,7 +270,7 @@ public class SwerveModuleThrifty {
     {
         // https://github.com/CrossTheRoadElec/Phoenix6-Examples/blob/main/java/VelocityClosedLoop/src/main/java/frc/robot/Robot.java
         // ToDo: convert target speed to desired rps      
-        m_driveMotor.setControl(m_velocityVoltage.withVelocity(targetSpeed));
+        m_driveMotor.setControl(m_velocityVoltage.withVelocity(kInvertedMotorMultiplier * targetSpeed));
     }
 
     public void setSteerAngleInRadians(double targetAngleInRadians)
