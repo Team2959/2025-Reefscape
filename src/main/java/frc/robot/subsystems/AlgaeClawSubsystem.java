@@ -124,18 +124,18 @@ public class AlgaeClawSubsystem extends SubsystemBase {
 
   private void dashboardUpdate ()
   {
-    m_clawFeedMotorSpeed = m_clawFeedSpeedSub.get();
-    m_clawShootSpeed = m_clawShootRPMSub.get();
     m_clawShootSpeedEncoderReadingPub.set(m_clawShootEncoder.getVelocity());
 
     if (m_clawFeedGoToSpeedSub.get())
     {
+      m_clawFeedMotorSpeed = m_clawFeedSpeedSub.get();
       setAlgaeFeedMotorSpeed (m_clawFeedMotorSpeed);
       m_clawFeedGoToSpeedPub.set(false);
     }
 
     if (m_clawShootGoToSpeedSub.get())
     {
+      m_clawShootSpeed = m_clawShootRPMSub.get();
       setClawShootSpeed(m_clawShootSpeed);
       m_clawShootGoToSpeedPub.set(false);
     }
@@ -175,8 +175,8 @@ public class AlgaeClawSubsystem extends SubsystemBase {
 
   public void feedAlgaeIntoProcessor ()
   {
-    setAlgaeFeedMotorSpeed(m_clawFeedMotorSpeed);
     setClawShootSpeed();
+    setAlgaeFeedMotorSpeed(m_clawFeedMotorSpeed);
   }
 
   public void extendSolenoid ()
@@ -191,11 +191,11 @@ public class AlgaeClawSubsystem extends SubsystemBase {
 
   public void stopClawShootMotor ()
   {
-    m_clawShootSparkMax.set(0);
+    m_clawShootSparkMax.stopMotor();
   }
 
   public void stopClawIntakeMotor ()
   {
-    setAlgaeFeedMotorSpeed(0);
+    m_clawFeedSparkMax.stopMotor();
   }
 }

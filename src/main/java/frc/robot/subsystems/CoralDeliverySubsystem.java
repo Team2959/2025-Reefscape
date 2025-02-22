@@ -220,11 +220,11 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   {
     switch (target) {
       case Left:
-        return -45; //random numbers
+        return -55;
       case Right:
-        return 45;
-      case Center:
         return 0;
+      case Center:
+        return -25;
       default:
         return 0;
     }
@@ -234,9 +234,9 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   {
     switch (target) {
       case Intake:
-        return 0.5; //random numbers
-      case Feed:
         return 0.5;
+      case Feed:
+        return 1.0;
       case L1FastSpeed:
         return 0.75;
       case L1SlowSpeed:
