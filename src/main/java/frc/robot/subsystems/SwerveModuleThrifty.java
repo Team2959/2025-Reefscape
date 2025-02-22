@@ -36,9 +36,6 @@ public class SwerveModuleThrifty {
     private static final double kSteerMaxVelocity = 0;
     private static final double kSteerMaxAcceleration = 0;
 
-    // kraken 14T/16T build with free speed of 20.4 ft/s 
-    private static final double kMaxSpeedMetersPerSecond = 6.21;
-
     // measured circumference as 12.375 inches = radius 1.97
     // private static final double kWheelRadius = 1.90 * 0.0254; // 2" * 0.0254 m / inch
     // private static final double kDrivePositionFactor = (2.0 * Math.PI * kWheelRadius * kGearboxRatio);

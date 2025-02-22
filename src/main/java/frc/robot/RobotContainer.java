@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.commands.AlignWithReefCommand;
+import frc.robot.commands.Autos;
 import frc.robot.commands.CoralIndexDirectDriveCommand;
 import frc.robot.commands.DeliverCoralCommand;
 import frc.robot.commands.IndexCoralCommand;
@@ -21,7 +22,12 @@ import frc.robot.subsystems.LiftSubsystem;
 import frc.robot.subsystems.CoralDeliverySubsystem.CoralControlTargetSpeeds;
 import frc.robot.subsystems.CoralDeliverySubsystem.CoralIndexTargetPositions;
 import frc.robot.subsystems.LiftSubsystem.liftTargetPositions;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -39,11 +45,13 @@ public class RobotContainer {
   private static double kDriveYExponent = 2;
   private static double kDriveXExponent = 2;
   
-  // private final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
-  private final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
-  // private final CoralDeliverySubsystem m_coralDeliverySubsystem = new CoralDeliverySubsystem();
-  // private final AlgaeClawSubsystem m_algaeClawSubsystem = new AlgaeClawSubsystem();
-  // private final AprilTagPID m_aprilTagPID = new AprilTagPID(m_driveSubsystem);
+  public final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
+  public final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
+  public final CoralDeliverySubsystem m_coralDeliverySubsystem = new CoralDeliverySubsystem();
+  public final AlgaeClawSubsystem m_algaeClawSubsystem = new AlgaeClawSubsystem();
+  public final AprilTagPID m_aprilTagPID = new AprilTagPID(m_driveSubsystem);
+
+  private final SendableChooser<Command> m_autoChooser;
 
   private final Conditioning m_driveXConditioning = new Conditioning();
   private final Conditioning m_driveYConditioning = new Conditioning();
@@ -68,6 +76,10 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer(Robot robot) {
     m_robot = robot;
+    
+    Autos.registerPathPlannerNamedCommands(this);
+    m_autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", m_autoChooser); //Does this need to be updated to not use smart dashboard?
 
     m_driveXConditioning.setDeadband(0.15);
     m_driveXConditioning.setExponent(kDriveXExponent);
@@ -134,7 +146,7 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     // return Autos.exampleAuto(m_exampleSubsystem);
-    return null;
+    return m_autoChooser.getSelected();
   }
 
   public void driveInitialize()

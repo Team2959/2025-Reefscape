@@ -4,6 +4,10 @@
 
 package frc.robot.subsystems;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
@@ -15,6 +19,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
@@ -25,13 +30,14 @@ public class DriveSubsystem extends SubsystemBase {
     private final SwerveModuleThrifty m_backLeft;
     private final SwerveModuleThrifty m_backRight;
     private final AHRS m_navX;
+    private final RobotConfig m_config;
 
     private boolean m_initalized = false;
 
     private SwerveDriveKinematics m_kinematics;
     private SwerveDriveOdometry m_odometry;
 
-    public static final double kMaxSpeedMetersPerSecond = 4;
+    public static final double kMaxSpeedMetersPerSecond = 5.836; //Based off of 6000 rpm for Kraken x60
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;// kMaxSpeedMetersPerSecond /
                                                                           // Math.hypot(0.381, 0.381);
     private static final double kHalfTrackWidthMeters = 0.5715 / 2.0;
@@ -59,8 +65,39 @@ public class DriveSubsystem extends SubsystemBase {
                 RobotMap.kZeroedBackRight, RobotMap.kBackRightAnalogInput, "Back Right");
 
         m_odometry = new SwerveDriveOdometry(m_kinematics, getAngle(), getPositions());
+    
+    try{
+      m_config = RobotConfig.fromGUISettings();
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
+      throw new ExceptionInInitializerError("didn't load path planner gui settings");
+    }
 
-        // need to add path planner stuff!
+    // Configure AutoBuilder last
+    AutoBuilder.configure(
+        this::getPose, // Robot pose supplier
+        this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+        this::getChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+            (speeds, feedforwards) -> driveBotRelative(speeds), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+            new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants fromm Pathplanner site
+                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants from Pathplanner site
+            ),
+            m_config, // The robot configuration
+            () -> {
+              // Boolean supplier that controls when the path will be mirrored for the red alliance
+              // This will flip the path being followed to the red side of the field.
+              // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+              var alliance = DriverStation.getAlliance();
+              if (alliance.isPresent()) {
+                return alliance.get() == DriverStation.Alliance.Red;
+              }
+              return false;
+            },
+            this // Reference to this subsystem to set requirements
+    );
     }
 
     public void initalize() {
@@ -96,7 +133,7 @@ public class DriveSubsystem extends SubsystemBase {
         // SmartDashboard.putNumber(getName() + "/Distance X", botpose.getX());
         // SmartDashboard.putNumber(getName() + "/Distance Y", botpose.getY());
         // SmartDashboard.putNumber(getName() + "/Distance Z", botpose.getZ());
-        // dashboardUpdate();
+        dashboardUpdate();
     }
 
     public void dashboardUpdate() {
@@ -148,7 +185,7 @@ public class DriveSubsystem extends SubsystemBase {
     public Pose2d getPose() {
         return m_odometry.getPoseMeters();
     }
-
+    
     public void setDesiredState(SwerveModuleState[] states) {
         m_frontLeft.setDesiredState(states[0]);
         m_frontRight.setDesiredState(states[1]);
