@@ -266,8 +266,7 @@ public class SwerveModuleThrifty {
     public void setDriveVelocity(double targetSpeed)
     {
         // https://github.com/CrossTheRoadElec/Phoenix6-Examples/blob/main/java/VelocityClosedLoop/src/main/java/frc/robot/Robot.java
-        // ToDo: convert target speed to desired rps      
-        m_driveMotor.setControl(m_velocityVoltage.withVelocity(kInvertedMotorMultiplier * targetSpeed));
+        m_driveMotor.setControl(m_velocityVoltage.withVelocity(kInvertedMotorMultiplier * targetSpeed / kDrivePositionFactor));
     }
 
     public void setSteerAngleInRadians(double targetAngleInRadians)
