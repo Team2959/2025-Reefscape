@@ -143,26 +143,16 @@ public class LiftSubsystem extends SubsystemBase {
     dashboardUpdate();
   }
 
-  @Override
-  public void initSendable(SendableBuilder builder)
-  {
-    super.initSendable(builder);
-
-    builder.addDoubleProperty("Applied Output", () -> m_lift.getAppliedOutput(), null);
-  }
-
   public void dashboardUpdate() {
-    // SmartDashboard.putData(this);
     m_sparkLiftRotations.set(m_liftEncoder.getPosition());
     m_sparkLiftCurrent.set(m_lift.getAppliedOutput());
     m_sparkVelocity.set(m_liftEncoder.getVelocity());
     m_mechanicalSwitchPub.set(isLiftAtBottom());
 
-    double target = m_targetRotations.get();
-
     if(m_goToTargetRotationsSub.get())
     {
-      m_liftController.setReference(target, SparkMax.ControlType.kPosition);
+      double target = m_targetRotations.get();
+      goToTargetPosition(target);
       m_goToTargetRotationsPub.set(false);
     }
 
@@ -191,9 +181,14 @@ public class LiftSubsystem extends SubsystemBase {
   public double setTargetPosition(liftTargetPositions target)
   {
     var targetPosition = LiftPositionValue(target);
-    m_liftController.setReference(targetPosition, SparkMax.ControlType.kPosition);
+    goToTargetPosition(targetPosition);
     m_lastTargetPosition = targetPosition;
     return m_lastTargetPosition;
+  }
+
+  private void goToTargetPosition(double target)
+  {
+    m_liftController.setReference(target, SparkMax.ControlType.kPosition);
   }
 
   private static int LiftPositionValue(liftTargetPositions target)
@@ -217,7 +212,7 @@ public class LiftSubsystem extends SubsystemBase {
 
   public void stopAtCurrentPosition()
   {
-    m_liftController.setReference(m_liftEncoder.getPosition(), SparkMax.ControlType.kPosition);
+    goToTargetPosition(m_liftEncoder.getPosition());
   }
 
   public boolean isLiftAtBottom()

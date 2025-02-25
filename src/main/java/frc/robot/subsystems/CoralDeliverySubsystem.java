@@ -46,17 +46,17 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   public static double DeliveryWaitSeconds = 1;
 
   private final SparkMax m_indexSparkMax = new SparkMax(RobotMap.kCoralDeliveryIndexMotor, MotorType.kBrushed);
-  //private final SparkMax m_rightCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryRightCoralControlMotor, MotorType.kBrushless);
-  //private final SparkMax m_leftCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryLeftCoralControlMotor, MotorType.kBrushless);
+  private final SparkMax m_rightCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryRightCoralControlMotor, MotorType.kBrushless);
+  private final SparkMax m_leftCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryLeftCoralControlMotor, MotorType.kBrushless);
   private SparkMaxAlternateEncoder m_indexEncoder;
   private final SparkMaxConfig m_indexConfig;
   private SparkClosedLoopController m_indexController;
   private final DigitalInput m_coralDetect = new DigitalInput(RobotMap.kCoralDetectInput);
 
-  private final double kIndexP = 0.008;
-  private final double kIndexI = 0.000001;
+  private final double kIndexP = 0.01;
+  private final double kIndexI = 0.0;
   private final double kIndexD = 0;
-  private final double kIndexFf = 0.0008;
+  private final double kIndexFf = 0.0;
   private final double kIndexMaxVelocity = 4000;
   private final double kIndexMaxAcceleration = 3000;
   private double m_lastTargetPosition;
@@ -98,8 +98,8 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     coralControlConfig.idleMode(IdleMode.kBrake);
 
     m_indexSparkMax.configure(m_indexConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    //m_rightCoralControlSparkMax.configure(coralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    //m_leftCoralControlSparkMax.configure(coralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_rightCoralControlSparkMax.configure(coralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_leftCoralControlSparkMax.configure(coralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_indexEncoder = (SparkMaxAlternateEncoder)m_indexSparkMax.getAlternateEncoder();
     m_indexController = m_indexSparkMax.getClosedLoopController();
@@ -180,8 +180,8 @@ public class CoralDeliverySubsystem extends SubsystemBase {
 
     if(m_goToTargetVelocitySub.get())
     {
-      //m_leftCoralControlSparkMax.set(m_leftVelocitySub.get());
-      //m_rightCoralControlSparkMax.set(m_rightVelocitySub.get());
+      m_leftCoralControlSparkMax.set(m_leftVelocitySub.get());
+      m_rightCoralControlSparkMax.set(m_rightVelocitySub.get());
       m_goToTargetVelocityPub.set(false);
     }
 
@@ -202,7 +202,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     if (m_goToTargetIndexPositionSub.get())
     {
       double indexPositionTarget = m_indexTargetRotationsSub.get();
-      moveIndexerToPosition(indexPositionTarget);
+      goToIndexerPosition(indexPositionTarget);
       m_goToTargetIndexPositionPub.set(false);
     }
   }
@@ -210,13 +210,12 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   public void setTargetIndexPosition(CoralIndexTargetPositions targetIndexPosition)
   {
     var targetPosition = CoralIndexPositionValue(targetIndexPosition);
-    moveIndexerToPosition(targetPosition);
+    goToIndexerPosition(targetPosition);
+    m_lastTargetPosition = targetPosition;
   }
 
-  private void moveIndexerToPosition(double indexPositionTarget)
-  {
-    m_indexController.setReference(indexPositionTarget, SparkMax.ControlType.kPosition);
-    m_lastTargetPosition = indexPositionTarget;
+  private void goToIndexerPosition(double target){
+    m_indexController.setReference(target, SparkMax.ControlType.kPosition);
   }
 
   private static int CoralIndexPositionValue(CoralIndexTargetPositions target)
@@ -257,19 +256,19 @@ public class CoralDeliverySubsystem extends SubsystemBase {
 
   public void stopAtIndexCurrentPosition()
   {
-    m_indexController.setReference(m_indexEncoder.getPosition(), SparkMax.ControlType.kMAXMotionPositionControl);
+    goToIndexerPosition(m_indexEncoder.getPosition());
   }
 
   public void setLeftCoralControlVelocity(CoralControlTargetSpeeds targetSpeed)
   {
     var targetLeftEnumSpeed = CoralControlSpeedValue(targetSpeed);
-    //m_leftCoralControlSparkMax.set(-targetLeftEnumSpeed);
+    m_leftCoralControlSparkMax.set(-targetLeftEnumSpeed);
   }
 
   public void setRightCoralControlVelocity(CoralControlTargetSpeeds targetSpeed)
   {
     var targetRightEnumSpeed = CoralControlSpeedValue(targetSpeed);
-    //m_rightCoralControlSparkMax.set(targetRightEnumSpeed);
+    m_rightCoralControlSparkMax.set(targetRightEnumSpeed);
   }
 
   public void stopRightCoralControlMotor ()
