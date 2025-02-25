@@ -9,7 +9,8 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkRelativeEncoder;
+import com.revrobotics.spark.SparkMaxAlternateEncoder;
+import com.revrobotics.spark.config.AlternateEncoderConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.MAXMotionConfig;
@@ -47,7 +48,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   private final SparkMax m_indexSparkMax = new SparkMax(RobotMap.kCoralDeliveryIndexMotor, MotorType.kBrushed);
   //private final SparkMax m_rightCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryRightCoralControlMotor, MotorType.kBrushless);
   //private final SparkMax m_leftCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryLeftCoralControlMotor, MotorType.kBrushless);
-  private SparkRelativeEncoder m_indexEncoder;
+  private SparkMaxAlternateEncoder m_indexEncoder;
   private final SparkMaxConfig m_indexConfig;
   private SparkClosedLoopController m_indexController;
   private final DigitalInput m_coralDetect = new DigitalInput(RobotMap.kCoralDetectInput);
@@ -85,10 +86,13 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     m_indexConfig = new SparkMaxConfig();
     m_indexConfig.idleMode(IdleMode.kCoast);
     m_indexConfig.closedLoop
-      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+      .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
       .pidf(kIndexP, kIndexI, kIndexD, kIndexFf);
     var maxMotion = new MAXMotionConfig().maxVelocity(kIndexMaxVelocity).maxAcceleration(kIndexMaxAcceleration);
     m_indexConfig.closedLoop.apply(maxMotion);
+     var alternateEncoderConfig = new AlternateEncoderConfig();
+    alternateEncoderConfig.setSparkMaxDataPortConfig();
+    m_indexConfig.apply(alternateEncoderConfig);
     
     var coralControlConfig = new SparkMaxConfig();
     coralControlConfig.idleMode(IdleMode.kBrake);
@@ -97,8 +101,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     //m_rightCoralControlSparkMax.configure(coralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     //m_leftCoralControlSparkMax.configure(coralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    m_indexEncoder = (SparkRelativeEncoder) m_indexSparkMax.getEncoder(); 
-
+    m_indexEncoder = (SparkMaxAlternateEncoder)m_indexSparkMax.getAlternateEncoder();
     m_indexController = m_indexSparkMax.getClosedLoopController();
 
     final String name = "Coral Delivery Subsystem";

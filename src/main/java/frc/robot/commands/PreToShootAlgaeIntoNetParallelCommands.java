@@ -18,7 +18,7 @@ public class PreToShootAlgaeIntoNetParallelCommands extends ParallelCommandGroup
   public PreToShootAlgaeIntoNetParallelCommands(LiftSubsystem liftSubsystem, AlgaeClawSubsystem algaeSubsystem)
   {
     addCommands(new LiftDriveToPositionCommand(liftSubsystem, liftTargetPositions.L4),
-      new InstantCommand(() -> algaeSubsystem.extendSolenoid()),
+      new InstantCommand(() -> algaeSubsystem.extendClawArms()),
       // should wait for velocity yo be reached, but it should be much faster that lift to L4
       new InstantCommand(() -> algaeSubsystem.setClawShootSpeed(), algaeSubsystem));
   }

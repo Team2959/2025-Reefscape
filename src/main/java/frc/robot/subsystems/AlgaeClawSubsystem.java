@@ -10,7 +10,9 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkMaxAlternateEncoder;
 import com.revrobotics.spark.SparkRelativeEncoder;
+import com.revrobotics.spark.config.AlternateEncoderConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -21,8 +23,6 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
@@ -30,18 +30,27 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   /** Creates a new AlgaeClawSubsystem. */
   private final SparkMax m_clawShootSparkMax = new SparkMax(RobotMap.kAlgaeClawShootMotor, MotorType.kBrushless);
   private final SparkMax m_clawFeedSparkMax = new SparkMax(RobotMap.kAlgaeClawIntakeMotor, MotorType.kBrushless);
+  private final SparkMax m_clawArmExtendSparkMax = new SparkMax(RobotMap.kAlgaeArmExtendMotor, MotorType.kBrushed);
   private SparkClosedLoopController m_clawShootController;
+  private SparkClosedLoopController m_clawArmExtendController;
   private SparkRelativeEncoder m_clawShootEncoder;
+  private SparkMaxAlternateEncoder m_clawArmExtendEncoder;
   private final SparkMaxConfig m_clawShootConfig;
   private final SparkMaxConfig m_clawFeedConfig;
-  private Solenoid m_solenoid;
+  private final SparkMaxConfig m_clawArmExtendConfig;
 
   private double m_clawFeedMotorSpeed = 0.2; //random number
   private double m_clawShootSpeed = 5000; //random number
 
+  private double kClawExtendPosition = 0;
+  private double kClawRetractPosition = 0;
+
   private final double kClawShootP = 0;
   private final double kClawShootI = 0;
   private final double kClawShootD = 0;
+  private final double kClawArmP = 0;
+  private final double kClawArmI = 0;
+  private final double kClawArmD = 0;
 
   private final DoubleSubscriber m_clawFeedSpeedSub;
   private final DoubleSubscriber m_clawShootRPMSub;
@@ -55,11 +64,14 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   private final BooleanSubscriber m_updateClawShootPIDSub;
   private final BooleanPublisher m_updateClawShootPIDPub;
   private final DoublePublisher m_clawShootSpeedEncoderReadingPub;
+ // private final DoublePublisher m_armExtendMotorPosition;
+ // private final DoublePublisher m_armExtendMotorVelocity;
+
+  
 
   public AlgaeClawSubsystem() {
     final String name = "Algae Claw Subsystem";
 
-    m_solenoid = new Solenoid(PneumaticsModuleType.REVPH, RobotMap.kAlgaeClawSolenoid); //Random Channel
     m_clawShootConfig = new SparkMaxConfig();
     m_clawShootConfig.idleMode(IdleMode.kBrake);
     m_clawShootConfig.closedLoop
@@ -69,11 +81,24 @@ public class AlgaeClawSubsystem extends SubsystemBase {
     m_clawFeedConfig = new SparkMaxConfig();
     m_clawFeedConfig.idleMode(IdleMode.kBrake);
 
+    m_clawArmExtendConfig = new SparkMaxConfig();
+    m_clawArmExtendConfig.idleMode(IdleMode.kBrake);
+    m_clawArmExtendConfig.closedLoop
+      .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
+      .pid(kClawArmP, kClawArmI, kClawArmD);
+    var alternateEncoderConfig = new AlternateEncoderConfig();
+    alternateEncoderConfig.setSparkMaxDataPortConfig();
+    m_clawArmExtendConfig.apply(alternateEncoderConfig);
+
     m_clawShootSparkMax.configure(m_clawShootConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_clawFeedSparkMax.configure(m_clawFeedConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_clawArmExtendSparkMax.configure(m_clawArmExtendConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_clawShootEncoder = (SparkRelativeEncoder) m_clawShootSparkMax.getEncoder(); 
     m_clawShootController = m_clawShootSparkMax.getClosedLoopController();
+
+    m_clawArmExtendEncoder = (SparkMaxAlternateEncoder)m_clawArmExtendSparkMax.getAlternateEncoder();
+    m_clawArmExtendController = m_clawArmExtendSparkMax.getClosedLoopController();
 
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
     NetworkTable datatable = inst.getTable("AlgaeClawSubsystem");
@@ -179,14 +204,14 @@ public class AlgaeClawSubsystem extends SubsystemBase {
     setAlgaeFeedMotorSpeed(m_clawFeedMotorSpeed);
   }
 
-  public void extendSolenoid ()
+  public void extendClawArms ()
   {
-    m_solenoid.set(true);
+    m_clawArmExtendController.setReference(kClawExtendPosition, ControlType.kPosition);
   }
 
-  public void retractSolenoid ()
+  public void retractClawArms ()
   {
-    m_solenoid.set(false);
+    m_clawArmExtendController.setReference(kClawRetractPosition, ControlType.kPosition);
   }
 
   public void stopClawShootMotor ()

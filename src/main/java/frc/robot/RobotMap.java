@@ -22,6 +22,7 @@ public final class RobotMap {
     public static final int kLiftFollowerMotor = 6;
     public static final int kAlgaeClawIntakeMotor = 8;
     public static final int kAlgaeClawShootMotor = 7;
+    public static final int kAlgaeArmExtendMotor = 9;
     public static final int kCoralDeliveryRightCoralControlMotor = 22;
     public static final int kCoralDeliveryLeftCoralControlMotor = 23;
     public static final int kCoralDeliveryIndexMotor = 21;

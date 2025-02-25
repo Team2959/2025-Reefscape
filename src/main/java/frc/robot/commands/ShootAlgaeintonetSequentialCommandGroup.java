@@ -26,6 +26,6 @@ public class ShootAlgaeintonetSequentialCommandGroup extends SequentialCommandGr
       new PreToShootAlgaeIntoNetParallelCommands(liftSubsystem, algaeSubsystem),
       new ShootAlgaeCommand(algaeSubsystem),
       new LiftDriveToPositionCommand(liftSubsystem, liftTargetPositions.L2)
-        .alongWith(new InstantCommand(() -> algaeSubsystem.retractSolenoid()) ) );
+        .alongWith(new InstantCommand(() -> algaeSubsystem.retractClawArms()) ) );
   }
 }
