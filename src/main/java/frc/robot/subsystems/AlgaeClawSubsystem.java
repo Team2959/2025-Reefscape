@@ -64,10 +64,17 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   private final BooleanSubscriber m_updateClawShootPIDSub;
   private final BooleanPublisher m_updateClawShootPIDPub;
   private final DoublePublisher m_clawShootSpeedEncoderReadingPub;
- // private final DoublePublisher m_armExtendMotorPosition;
- // private final DoublePublisher m_armExtendMotorVelocity;
-
   
+  /*private final DoublePublisher m_armExtendMotorPositionPub;
+  private final DoublePublisher m_armExtendMotorVelocityPub;
+  private final DoubleSubscriber m_armExtendPSub;
+  private final DoubleSubscriber m_armExtendISub;
+  private final DoubleSubscriber m_armExtendDSub;
+  private final DoubleSubscriber m_updateArmExtendPIDSub;
+  private final DoublePublisher m_updateArmExtendPIDPub;
+  private final DoubleSubscriber m_armExtendTargetPositionSub;
+  private final DoubleSubscriber m_goToArmExtendTargetPositionSub;
+  private final DoublePublisher m_goToArmExtendTargetPositionPub;*/
 
   public AlgaeClawSubsystem() {
     final String name = "Algae Claw Subsystem";
