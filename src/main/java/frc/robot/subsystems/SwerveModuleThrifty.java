@@ -109,7 +109,6 @@ public class SwerveModuleThrifty {
         m_steerConfig = new SparkMaxConfig();
         m_steerConfig.idleMode(IdleMode.kBrake)
             .smartCurrentLimit(kSteerCurrentLimitAmps)
-            .inverted(true)
             .voltageCompensation(12.6);
 
         m_steerConfig.closedLoop
@@ -216,7 +215,7 @@ public class SwerveModuleThrifty {
         // convert from absolute Thrifty coder turning counter-clockwise as positive to
         //  relative encoder in assembly turning clockwise as positive
 
-        double startingAngle = m_steerOffset - getThriftyEncoder().getRadians();
+        double startingAngle = getThriftyEncoder().getRadians() - m_steerOffset;
     
         if (startingAngle < 0)
         {
@@ -266,7 +265,7 @@ public class SwerveModuleThrifty {
     public void setDriveVelocity(double targetSpeed)
     {
         // https://github.com/CrossTheRoadElec/Phoenix6-Examples/blob/main/java/VelocityClosedLoop/src/main/java/frc/robot/Robot.java
-        m_driveMotor.setControl(m_velocityVoltage.withVelocity(kInvertedMotorMultiplier * targetSpeed / kDrivePositionFactor));
+        m_driveMotor.setControl(m_velocityVoltage.withVelocity(targetSpeed / kDrivePositionFactor));
     }
 
     public void setSteerAngleInRadians(double targetAngleInRadians)
