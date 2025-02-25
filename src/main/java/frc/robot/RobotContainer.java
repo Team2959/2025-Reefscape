@@ -47,11 +47,11 @@ public class RobotContainer {
   
   public final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
   public final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
-  public final CoralDeliverySubsystem m_coralDeliverySubsystem = new CoralDeliverySubsystem();
-  public final AlgaeClawSubsystem m_algaeClawSubsystem = new AlgaeClawSubsystem();
+  // public final CoralDeliverySubsystem m_coralDeliverySubsystem = new CoralDeliverySubsystem();
+  // public final AlgaeClawSubsystem m_algaeClawSubsystem = new AlgaeClawSubsystem();
   public final AprilTagPID m_aprilTagPID = new AprilTagPID(m_driveSubsystem);
 
-  private final SendableChooser<Command> m_autoChooser;
+  // private final SendableChooser<Command> m_autoChooser;
 
   private final Conditioning m_driveXConditioning = new Conditioning();
   private final Conditioning m_driveYConditioning = new Conditioning();
@@ -77,9 +77,9 @@ public class RobotContainer {
   public RobotContainer(Robot robot) {
     m_robot = robot;
     
-    Autos.registerPathPlannerNamedCommands(this);
-    m_autoChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auto Chooser", m_autoChooser); //Does this need to be updated to not use smart dashboard?
+    // Autos.registerPathPlannerNamedCommands(this);
+    // m_autoChooser = AutoBuilder.buildAutoChooser();
+    // SmartDashboard.putData("Auto Chooser", m_autoChooser); //Does this need to be updated to not use smart dashboard?
 
     m_driveXConditioning.setDeadband(0.15);
     m_driveXConditioning.setExponent(kDriveXExponent);
@@ -146,7 +146,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     // return Autos.exampleAuto(m_exampleSubsystem);
-    return m_autoChooser.getSelected();
+    return null;
+    // return m_autoChooser.getSelected();
   }
 
   public void driveInitialize()
