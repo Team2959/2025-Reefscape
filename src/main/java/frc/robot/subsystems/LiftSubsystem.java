@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkMaxAlternateEncoder;
@@ -22,7 +23,6 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
@@ -67,6 +67,7 @@ public class LiftSubsystem extends SubsystemBase {
   private final BooleanPublisher m_goToTargetRotationsPub;
   private final BooleanPublisher m_updateLiftPIDPub;
   private final BooleanSubscriber m_updateLiftPIDSub;
+  private final BooleanSubscriber m_slot1Sub;
   
   /** Creates a new LiftSubsystem. */
   public LiftSubsystem() {  
@@ -135,11 +136,20 @@ public class LiftSubsystem extends SubsystemBase {
     m_updateLiftPIDPub = updateliftPIDTopic.publish();
     m_updateLiftPIDPub.set(false);
     m_updateLiftPIDSub = updateliftPIDTopic.subscribe(false);
+
+    var slot1Topic = datatable.getBooleanTopic("control Slot 1");
+    slot1Topic.publish().set(false);
+    m_slot1Sub = slot1Topic.subscribe(false);
   }
 
+  int m_ticks = 0;
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    m_ticks++;
+    // if (m_ticks % 11 != 5)
+    //     return;
+
     dashboardUpdate();
   }
 
@@ -149,10 +159,18 @@ public class LiftSubsystem extends SubsystemBase {
     m_sparkVelocity.set(m_liftEncoder.getVelocity());
     m_mechanicalSwitchPub.set(isLiftAtBottom());
 
+    var slot1 = m_slot1Sub.get();
+
     if(m_goToTargetRotationsSub.get())
     {
       double target = m_targetRotations.get();
-      goToTargetPosition(target);
+      if (slot1)
+      {
+        m_liftController.setReference(target, SparkMax.ControlType.kPosition, ClosedLoopSlot.kSlot1);
+      }
+      else{
+        goToTargetPosition(target);
+      }
       m_goToTargetRotationsPub.set(false);
     }
 
@@ -165,7 +183,7 @@ public class LiftSubsystem extends SubsystemBase {
       var newMaxVelocity = m_maxVelocitySub.get();
       var newMaxAccceleration = m_maxAccelerationSub.get();
 
-      m_config.closedLoop.pidf(newP, newI, newD, newFF);
+      m_config.closedLoop.pidf(newP, newI, newD, newFF, slot1 ? ClosedLoopSlot.kSlot1 : ClosedLoopSlot.kSlot0);
       var updatedMaxMotion = new MAXMotionConfig().maxVelocity(newMaxVelocity).maxAcceleration(newMaxAccceleration);
       m_config.closedLoop.apply(updatedMaxMotion);
       m_lift.configure(m_config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);

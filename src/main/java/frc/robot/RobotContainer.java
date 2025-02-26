@@ -89,8 +89,6 @@ public class RobotContainer {
     m_turnConditioning.setExponent(1.4);
     // Configure the trigger bindings
     configureBindings();
-
-    updateDashboard();
   }
 
   /**
@@ -176,12 +174,5 @@ public class RobotContainer {
     return m_turnConditioning.condition(-m_rightJoystick.getX())
             * DriveSubsystem.kMaxAngularSpeedRadiansPerSecond
             * m_speedMultiplier;
-  }
-
-  public void updateDashboard()
-  {
-    // m_robot.addPeriodic(() -> {
-    // //  m_liftSubsystem.dashboardUpdate();
-    // }, 1, 0.303);
   }
 }

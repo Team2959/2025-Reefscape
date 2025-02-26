@@ -13,7 +13,6 @@ import com.revrobotics.spark.SparkMaxAlternateEncoder;
 import com.revrobotics.spark.config.AlternateEncoderConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-import com.revrobotics.spark.config.MAXMotionConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.networktables.BooleanPublisher;
@@ -48,22 +47,18 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   private final SparkMax m_indexSparkMax = new SparkMax(RobotMap.kCoralDeliveryIndexMotor, MotorType.kBrushed);
   private final SparkMax m_rightCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryRightCoralControlMotor, MotorType.kBrushless);
   private final SparkMax m_leftCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryLeftCoralControlMotor, MotorType.kBrushless);
-  private SparkMaxAlternateEncoder m_indexEncoder;
+  private final SparkMaxAlternateEncoder m_indexEncoder;
   private final SparkMaxConfig m_indexConfig;
-  
-  private SparkClosedLoopController m_indexController;
+  private final SparkClosedLoopController m_indexController;
   private final DigitalInput m_coralDetect = new DigitalInput(RobotMap.kCoralDetectInput);
 
   private final double kIndexP = 1.8;
   private final double kIndexI = 0.0;
   private final double kIndexD = 0;
   private final double kIndexFf = 0.0;
-  private final double kIndexMaxVelocity = 4000;
-  private final double kIndexMaxAcceleration = 3000;
   private double m_lastTargetPosition;
 
   private final DoublePublisher m_indexPositionPub;
-  private final DoublePublisher m_indexVelocityPub;
   private final DoublePublisher m_indexAppliedOutputPub;
   private final DoubleSubscriber m_rightVelocitySub;
   private final DoubleSubscriber m_leftVelocitySub;
@@ -74,8 +69,6 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   private final DoubleSubscriber m_indexISub;
   private final DoubleSubscriber m_indexDSub;
   private final DoubleSubscriber m_indexFFSub;
-  private final DoubleSubscriber m_indexMaxVelocity;
-  private final DoubleSubscriber m_indexMaxAcceleration;
   private final BooleanPublisher m_updateIndexPIDPub;
   private final BooleanSubscriber m_updateIndexPIDSub;
   private final DoubleSubscriber m_indexTargetRotationsSub;
@@ -89,9 +82,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     m_indexConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
       .pidf(kIndexP, kIndexI, kIndexD, kIndexFf);
-    var maxMotion = new MAXMotionConfig().maxVelocity(kIndexMaxVelocity).maxAcceleration(kIndexMaxAcceleration);
-    m_indexConfig.closedLoop.apply(maxMotion);
-     var alternateEncoderConfig = new AlternateEncoderConfig();
+    var alternateEncoderConfig = new AlternateEncoderConfig();
     alternateEncoderConfig.setSparkMaxDataPortConfig();
     m_indexConfig.apply(alternateEncoderConfig);
     
@@ -114,7 +105,6 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     NetworkTable datatable = inst.getTable(name);
 
     m_indexPositionPub = datatable.getDoubleTopic(name + "/Index Position").publish();
-    m_indexVelocityPub = datatable.getDoubleTopic(name + "/Index Velocity").publish();
     m_indexAppliedOutputPub = datatable.getDoubleTopic(name + "/Index Applied Output").publish();
     m_coralDetectPub = datatable.getBooleanTopic(name + "/Coral Detect").publish();
 
@@ -147,14 +137,6 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     indexFFSub.publish().set(kIndexFf);
     m_indexFFSub = indexFFSub.subscribe(kIndexFf);
 
-    var indexMaxVelocity = datatable.getDoubleTopic(name + "/index Max Velocity");
-    indexMaxVelocity.publish().set(kIndexMaxVelocity);
-    m_indexMaxVelocity = indexMaxVelocity.subscribe(kIndexMaxVelocity);
-
-    var indexMaxAcceleration = datatable.getDoubleTopic(name + "/index Max Acceleration");
-    indexMaxAcceleration.publish().set(kIndexMaxAcceleration);
-    m_indexMaxAcceleration = indexMaxAcceleration.subscribe(kIndexMaxAcceleration);
-
     var updateIndexPIDPub = datatable.getBooleanTopic(name + "/update Index PID");
     m_updateIndexPIDPub = updateIndexPIDPub.publish();
     m_updateIndexPIDPub.set(false);
@@ -170,9 +152,14 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     m_goToTargetIndexPositionSub = goToTargetIndexPosition.subscribe(false);
   }
 
+  int m_ticks = 0;
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    m_ticks++;
+    if (m_ticks % 13 != 11)
+        return;
+
     updateDashboard();
   }
 
@@ -180,7 +167,6 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   {
     m_coralDetectPub.set(m_coralDetect.get());
     m_indexPositionPub.set(m_indexEncoder.getPosition());
-    m_indexVelocityPub.set(m_indexEncoder.getVelocity());
     m_indexAppliedOutputPub.set(m_indexSparkMax.getAppliedOutput());
 
     if(m_goToTargetVelocitySub.get())
@@ -192,12 +178,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
 
     if (m_updateIndexPIDSub.get())
     {
-      var updatedMaxVelocity = m_indexMaxVelocity.get();
-      var updatedMaxAcceleration = m_indexMaxAcceleration.get();
-
       m_indexConfig.closedLoop.pidf(m_indexPSub.get(), m_indexISub.get(), m_indexDSub.get(), m_indexFFSub.get());
-      var updatedMaxMotion = new MAXMotionConfig().maxVelocity(updatedMaxVelocity).maxAcceleration(updatedMaxAcceleration);
-      m_indexConfig.closedLoop.apply(updatedMaxMotion);
 
       m_indexSparkMax.configure(m_indexConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
       

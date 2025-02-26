@@ -119,12 +119,12 @@ public class AlgaeClawSubsystem extends SubsystemBase {
     clawShootRPMSub.publish().set(0);
     m_clawShootRPMSub = clawShootRPMSub.subscribe(0.0);
 
-    var clawFeedGoToSpeed = datatable.getBooleanTopic("go To Feed Motor Speed");
+    var clawFeedGoToSpeed = datatable.getBooleanTopic(name + "go To Feed Motor Speed");
     m_clawFeedGoToSpeedPub = clawFeedGoToSpeed.publish();
     m_clawFeedGoToSpeedPub.set(false);
     m_clawFeedGoToSpeedSub = clawFeedGoToSpeed.subscribe(false);
 
-    var clawShootGoToSpeed = datatable.getBooleanTopic("go To Shoot Motor Speed");
+    var clawShootGoToSpeed = datatable.getBooleanTopic(name + "go To Shoot Motor Speed");
     m_clawShootGoToSpeedPub = clawShootGoToSpeed.publish();
     m_clawShootGoToSpeedPub.set(false);
     m_clawShootGoToSpeedSub = clawShootGoToSpeed.subscribe(false);
@@ -179,9 +179,14 @@ public class AlgaeClawSubsystem extends SubsystemBase {
     m_updateArmExtendPIDSub = updateArmPID.subscribe(false);
   }
 
+  int m_ticks = 0;
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    m_ticks++;
+    if (m_ticks % 13 != 7)
+        return;
+
     dashboardUpdate();
   }
 
@@ -195,7 +200,7 @@ public class AlgaeClawSubsystem extends SubsystemBase {
     if (m_clawFeedGoToSpeedSub.get())
     {
       m_clawFeedMotorSpeed = m_clawFeedSpeedSub.get();
-      setAlgaeFeedMotorSpeed (m_clawFeedMotorSpeed);
+      setAlgaeFeedMotorSpeed(m_clawFeedMotorSpeed);
       m_clawFeedGoToSpeedPub.set(false);
     }
 
@@ -216,6 +221,23 @@ public class AlgaeClawSubsystem extends SubsystemBase {
       m_clawShootSparkMax.configure(m_clawShootConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
       m_updateClawShootPIDPub.set(false);
     }
+
+    if (m_updateArmExtendPIDSub.get())
+    {
+      var newP = m_armExtendPSub.get();
+      var newI = m_armExtendISub.get();
+      var newD = m_armExtendDSub.get();
+
+      m_clawArmExtendConfig.closedLoop.pid(newP, newI, newD);
+      m_clawArmExtendSparkMax.configure(m_clawArmExtendConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
+      m_updateArmExtendPIDPub.set(false);
+    }
+
+    if (m_goToArmExtendTargetPositionSub.get())
+    {
+      setExtendArmPosition(m_armExtendTargetPositionSub.get());
+      m_goToArmExtendTargetPositionPub.set(false);
+    }
   }
 
   public void setClawShootSpeed()
@@ -228,44 +250,44 @@ public class AlgaeClawSubsystem extends SubsystemBase {
     m_clawShootController.setReference(targetRPM, ControlType.kVelocity);
   }
 
-  public void intakeAlgae ()
+  public void intakeAlgae()
   {
     m_clawShootSparkMax.set(-m_clawFeedMotorSpeed);
     setAlgaeFeedMotorSpeed(-m_clawFeedMotorSpeed);
   }
   
-  public void setAlgaeFeedMotorSpeed (double targetSpeed)
+  public void setAlgaeFeedMotorSpeed(double targetSpeed)
   {
     m_clawFeedSparkMax.set(targetSpeed);
   }
 
-  public void feedAlgaeIntoProcessor ()
+  public void feedAlgaeIntoProcessor()
   {
     setClawShootSpeed();
     setAlgaeFeedMotorSpeed(m_clawFeedMotorSpeed);
   }
 
-  public void extendClawArms ()
+  public void extendClawArms()
   {
     setExtendArmPosition(kClawExtendPosition);
   }
 
-  public void retractClawArms ()
+  public void retractClawArms()
   {
     setExtendArmPosition(kClawRetractPosition);
   }
 
-  private void setExtendArmPosition (double target)
+  private void setExtendArmPosition(double target)
   {
     m_clawArmExtendController.setReference(target, ControlType.kPosition);
   }
 
-  public void stopClawShootMotor ()
+  public void stopClawShootMotor()
   {
     m_clawShootSparkMax.stopMotor();
   }
 
-  public void stopClawIntakeMotor ()
+  public void stopClawIntakeMotor()
   {
     m_clawFeedSparkMax.stopMotor();
   }

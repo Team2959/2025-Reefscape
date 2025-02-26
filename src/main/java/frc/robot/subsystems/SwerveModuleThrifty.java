@@ -10,7 +10,6 @@ import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.AnalogEncoder;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
@@ -33,8 +32,6 @@ public class SwerveModuleThrifty {
     private static final double kSteerD = 0.0;
     private static final double kSteerFF = 0.0;
     private static final double kSteerIZone = 1.0;
-    private static final double kSteerMaxVelocity = 0;
-    private static final double kSteerMaxAcceleration = 0;
 
     // measured circumference as 12.375 inches = radius 1.97
     // private static final double kWheelRadius = 1.90 * 0.0254; // 2" * 0.0254 m / inch
@@ -67,8 +64,6 @@ public class SwerveModuleThrifty {
     private final DoubleSubscriber m_SteerKiSub;
     private final DoubleSubscriber m_SteerKdSub;
     private final DoubleSubscriber m_SteerFfSub;
-    private final DoubleSubscriber m_SteerMaxVelocitySub;
-    private final DoubleSubscriber m_SteerMaxAccelerationSub;
     private final BooleanSubscriber m_updatesteerPIDSub;
     private final BooleanPublisher m_updatesteerPIDPub;
 
@@ -160,14 +155,6 @@ public class SwerveModuleThrifty {
         var steerFfTopic = datatable.getDoubleTopic("steer FF");
         steerFfTopic.publish().set(kSteerFF);
         m_SteerFfSub = steerFfTopic.subscribe(kSteerFF);
-
-        var steerMaxVelocityTopic = datatable.getDoubleTopic("steer Max Velocity");
-        steerMaxVelocityTopic.publish().set(kSteerMaxVelocity);
-        m_SteerMaxVelocitySub = steerMaxVelocityTopic.subscribe(kSteerMaxVelocity);
-
-        var steerMaxAccelerationTopic = datatable.getDoubleTopic("steer Max Acceleration");
-        steerMaxAccelerationTopic.publish().set(kSteerMaxAcceleration);
-        m_SteerMaxAccelerationSub = steerMaxAccelerationTopic.subscribe(kSteerMaxAcceleration);
         
         var updatesteerPIDTopic = datatable.getBooleanTopic("update Steer PID");
         m_updatesteerPIDPub = updatesteerPIDTopic.publish();
@@ -270,7 +257,7 @@ public class SwerveModuleThrifty {
 
     public void setSteerAngleInRadians(double targetAngleInRadians)
     {
-        SmartDashboard.putNumber(m_name + "/Setpoint", targetAngleInRadians);
+        // SmartDashboard.putNumber(m_name + "/Setpoint", targetAngleInRadians);
         m_steerController.setReference(targetAngleInRadians, SparkMax.ControlType.kPosition);
     }
 
