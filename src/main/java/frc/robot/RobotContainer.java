@@ -51,7 +51,7 @@ public class RobotContainer {
   // public final AlgaeClawSubsystem m_algaeClawSubsystem = new AlgaeClawSubsystem();
   public final AprilTagPID m_aprilTagPID = new AprilTagPID(m_driveSubsystem);
 
-  // private final SendableChooser<Command> m_autoChooser;
+  private final SendableChooser<Command> m_autoChooser;
 
   private final Conditioning m_driveXConditioning = new Conditioning();
   private final Conditioning m_driveYConditioning = new Conditioning();
@@ -77,9 +77,9 @@ public class RobotContainer {
   public RobotContainer(Robot robot) {
     m_robot = robot;
     
-    // Autos.registerPathPlannerNamedCommands(this);
-    // m_autoChooser = AutoBuilder.buildAutoChooser();
-    // SmartDashboard.putData("Auto Chooser", m_autoChooser); //Does this need to be updated to not use smart dashboard?
+    Autos.registerPathPlannerNamedCommands(this);
+    m_autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Auto Chooser", m_autoChooser); //Does this need to be updated to not use smart dashboard?
 
     m_driveXConditioning.setDeadband(0.15);
     m_driveXConditioning.setExponent(kDriveXExponent);
