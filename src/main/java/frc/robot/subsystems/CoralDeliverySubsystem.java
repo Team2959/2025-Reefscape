@@ -50,10 +50,11 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   private final SparkMax m_leftCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryLeftCoralControlMotor, MotorType.kBrushless);
   private SparkMaxAlternateEncoder m_indexEncoder;
   private final SparkMaxConfig m_indexConfig;
+  
   private SparkClosedLoopController m_indexController;
   private final DigitalInput m_coralDetect = new DigitalInput(RobotMap.kCoralDetectInput);
 
-  private final double kIndexP = 0.01;
+  private final double kIndexP = 1.8;
   private final double kIndexI = 0.0;
   private final double kIndexD = 0;
   private final double kIndexFf = 0.0;
@@ -94,12 +95,16 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     alternateEncoderConfig.setSparkMaxDataPortConfig();
     m_indexConfig.apply(alternateEncoderConfig);
     
-    var coralControlConfig = new SparkMaxConfig();
-    coralControlConfig.idleMode(IdleMode.kBrake);
+    var rightCoralControlConfig = new SparkMaxConfig();
+    rightCoralControlConfig.idleMode(IdleMode.kBrake);
+
+    var leftCoralControlConfig = new SparkMaxConfig();
+    leftCoralControlConfig.idleMode(IdleMode.kBrake);
+    leftCoralControlConfig.inverted(true);
 
     m_indexSparkMax.configure(m_indexConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_rightCoralControlSparkMax.configure(coralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_leftCoralControlSparkMax.configure(coralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_rightCoralControlSparkMax.configure(rightCoralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_leftCoralControlSparkMax.configure(leftCoralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     m_indexEncoder = (SparkMaxAlternateEncoder)m_indexSparkMax.getAlternateEncoder();
     m_indexController = m_indexSparkMax.getClosedLoopController();
@@ -218,15 +223,15 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     m_indexController.setReference(target, SparkMax.ControlType.kPosition);
   }
 
-  private static int CoralIndexPositionValue(CoralIndexTargetPositions target)
+  private static double CoralIndexPositionValue(CoralIndexTargetPositions target)
   {
     switch (target) {
       case Left:
-        return -55;
+        return -7.4;
       case Right:
-        return 0;
+        return -0.2;
       case Center:
-        return -25;
+        return -3.8;
       default:
         return 0;
     }

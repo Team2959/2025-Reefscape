@@ -65,16 +65,17 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   private final BooleanPublisher m_updateClawShootPIDPub;
   private final DoublePublisher m_clawShootSpeedEncoderReadingPub;
   
-  /*private final DoublePublisher m_armExtendMotorPositionPub;
+  private final DoublePublisher m_armExtendMotorPositionPub;
   private final DoublePublisher m_armExtendMotorVelocityPub;
+  private final DoublePublisher m_armExtendAppliedOutputPub;
   private final DoubleSubscriber m_armExtendPSub;
   private final DoubleSubscriber m_armExtendISub;
   private final DoubleSubscriber m_armExtendDSub;
-  private final DoubleSubscriber m_updateArmExtendPIDSub;
-  private final DoublePublisher m_updateArmExtendPIDPub;
+  private final BooleanSubscriber m_updateArmExtendPIDSub;
+  private final BooleanPublisher m_updateArmExtendPIDPub;
   private final DoubleSubscriber m_armExtendTargetPositionSub;
-  private final DoubleSubscriber m_goToArmExtendTargetPositionSub;
-  private final DoublePublisher m_goToArmExtendTargetPositionPub;*/
+  private final BooleanSubscriber m_goToArmExtendTargetPositionSub;
+  private final BooleanPublisher m_goToArmExtendTargetPositionPub;
 
   public AlgaeClawSubsystem() {
     final String name = "Algae Claw Subsystem";
@@ -146,6 +147,36 @@ public class AlgaeClawSubsystem extends SubsystemBase {
     m_updateClawShootPIDSub = updateClawShootPID.subscribe(false);
 
     m_clawShootSpeedEncoderReadingPub = datatable.getDoubleTopic(name + "Shoot Encoder Reading").publish();
+
+    m_armExtendMotorPositionPub = datatable.getDoubleTopic(name + "Arm Position").publish();
+    m_armExtendMotorVelocityPub = datatable.getDoubleTopic(name + "Arm Velocity").publish();
+    m_armExtendAppliedOutputPub = datatable.getDoubleTopic(name + "Arm Applied Output").publish();
+
+    var clawArmPSub = datatable.getDoubleTopic(name + "Arm P");
+    clawArmPSub.publish().set(kClawArmP);
+    m_armExtendPSub = clawArmPSub.subscribe(kClawArmP);
+
+    var clawArmISub = datatable.getDoubleTopic(name + "Arm I");
+    clawArmISub.publish().set(kClawArmI);
+    m_armExtendISub = clawArmISub.subscribe(kClawArmI);
+
+    var clawArmDSub = datatable.getDoubleTopic(name + "Arm D");
+    clawArmDSub.publish().set(kClawArmD);
+    m_armExtendDSub = clawArmDSub.subscribe(kClawArmD);
+
+    var clawTargetPositionSub = datatable.getDoubleTopic(name + "Arm Target Position");
+    clawTargetPositionSub.publish().set(0);
+    m_armExtendTargetPositionSub = clawTargetPositionSub.subscribe(0);
+
+    var clawArmGoToPosition = datatable.getBooleanTopic(name + "go To Arm Position");
+    m_goToArmExtendTargetPositionPub = clawArmGoToPosition.publish();
+    m_goToArmExtendTargetPositionPub.set(false);
+    m_goToArmExtendTargetPositionSub = clawArmGoToPosition.subscribe(false);
+
+    var updateArmPID = datatable.getBooleanTopic(name + "update Arm PID");
+    m_updateArmExtendPIDPub = updateArmPID.publish();
+    m_updateArmExtendPIDPub.set(false);
+    m_updateArmExtendPIDSub = updateArmPID.subscribe(false);
   }
 
   @Override
@@ -157,6 +188,9 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   private void dashboardUpdate ()
   {
     m_clawShootSpeedEncoderReadingPub.set(m_clawShootEncoder.getVelocity());
+    m_armExtendMotorPositionPub.set(m_clawArmExtendEncoder.getPosition());
+    m_armExtendMotorVelocityPub.set(m_clawArmExtendEncoder.getVelocity());
+    m_armExtendAppliedOutputPub.set(m_clawArmExtendSparkMax.getAppliedOutput());
 
     if (m_clawFeedGoToSpeedSub.get())
     {
@@ -213,12 +247,17 @@ public class AlgaeClawSubsystem extends SubsystemBase {
 
   public void extendClawArms ()
   {
-    m_clawArmExtendController.setReference(kClawExtendPosition, ControlType.kPosition);
+    setExtendArmPosition(kClawExtendPosition);
   }
 
   public void retractClawArms ()
   {
-    m_clawArmExtendController.setReference(kClawRetractPosition, ControlType.kPosition);
+    setExtendArmPosition(kClawRetractPosition);
+  }
+
+  private void setExtendArmPosition (double target)
+  {
+    m_clawArmExtendController.setReference(target, ControlType.kPosition);
   }
 
   public void stopClawShootMotor ()

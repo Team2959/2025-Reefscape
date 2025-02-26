@@ -47,8 +47,8 @@ public class RobotContainer {
   
   public final LiftSubsystem m_liftSubsystem = new LiftSubsystem();
   public final DriveSubsystem m_driveSubsystem = new DriveSubsystem();
-  // public final CoralDeliverySubsystem m_coralDeliverySubsystem = new CoralDeliverySubsystem();
-  // public final AlgaeClawSubsystem m_algaeClawSubsystem = new AlgaeClawSubsystem();
+  public final CoralDeliverySubsystem m_coralDeliverySubsystem = new CoralDeliverySubsystem();
+  public final AlgaeClawSubsystem m_algaeClawSubsystem = new AlgaeClawSubsystem();
   public final AprilTagPID m_aprilTagPID = new AprilTagPID(m_driveSubsystem);
 
   private final SendableChooser<Command> m_autoChooser;
