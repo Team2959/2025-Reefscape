@@ -248,7 +248,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   public void setLeftCoralControlVelocity(CoralControlTargetSpeeds targetSpeed)
   {
     var targetLeftEnumSpeed = CoralControlSpeedValue(targetSpeed);
-    m_leftCoralControlSparkMax.set(-targetLeftEnumSpeed);
+    m_leftCoralControlSparkMax.set(targetLeftEnumSpeed);
   }
 
   public void setRightCoralControlVelocity(CoralControlTargetSpeeds targetSpeed)
