@@ -208,10 +208,10 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void stopAndLockWheels() {
-        m_frontLeft.lockWheelAtAngleInDegrees(45);
-        m_frontRight.lockWheelAtAngleInDegrees(-45);
-        m_backLeft.lockWheelAtAngleInDegrees(-45);
-        m_backRight.lockWheelAtAngleInDegrees(45);
+        m_frontLeft.lockWheelAtAngleInDegrees(-45);
+        m_frontRight.lockWheelAtAngleInDegrees(45);
+        m_backLeft.lockWheelAtAngleInDegrees(45);
+        m_backRight.lockWheelAtAngleInDegrees(-45);
     }
 
     public void checkRelativeEncoderToAbsoluteEncoder()
