@@ -12,6 +12,7 @@ import frc.robot.commands.IndexCoralCommand;
 import frc.robot.commands.IntakeAlgaeCommand;
 import frc.robot.commands.LiftDirectDriveCommand;
 import frc.robot.commands.LiftDriveToPositionCommand;
+import frc.robot.commands.LockWheelsCommand;
 import frc.robot.commands.TeleOpDriveCommand;
 import frc.robot.cwtech.AprilTagPID;
 import frc.robot.cwtech.Conditioning;
@@ -29,6 +30,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -58,12 +60,16 @@ public class RobotContainer {
   private final Conditioning m_turnConditioning = new Conditioning();
   private static double m_speedMultiplier = 1.0;
 
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  // private final CommandXboxController m_driverController = new CommandXboxController(RobotMap.kXboxTester);
   private final Joystick m_leftJoystick = new Joystick(RobotMap.kLeftJoystick);
   private final Joystick m_rightJoystick = new Joystick(RobotMap.kRightJoystick);
   // private final Joystick m_buttonBox = new Joystick(RobotMap.kButtonBox); 
+  // private final CommandXboxController m_driverController = new CommandXboxController(RobotMap.kXboxTester);
 
+  // Driver Buttons
+  JoystickButton m_resetNavX = new JoystickButton(m_rightJoystick, RobotMap.kRightResetNavXButton);
+  JoystickButton m_lockWheeButton = new JoystickButton(m_rightJoystick, RobotMap.kRightLockWheels);
+
+  // Co-Pilot buttons
   // private final JoystickButton m_placeAtL4Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL4Button);
   // private final JoystickButton m_placeAtL3Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL3Button);
   // private final JoystickButton m_placeAtL2Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL2Button);
@@ -101,20 +107,14 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    // new Trigger(m_exampleSubsystem::exampleCondition)
-    //     .onTrue(new ExampleCommand(m_exampleSubsystem));
-
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-    // cancelling on release.
-    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-
     m_driveSubsystem.setDefaultCommand(new TeleOpDriveCommand(m_driveSubsystem,
       () -> getDriveXInput(), () -> getDriveYInput(), () -> getTurnInput(),
       () -> m_robot.isTeleopEnabled()));
+    m_resetNavX.onTrue(new InstantCommand(() -> {m_driveSubsystem.resetNavX();}));
+    m_lockWheeButton.whileTrue(new LockWheelsCommand(m_driveSubsystem));
 
-    //  m_coralDeliverySubsystem.setDefaultCommand(
-    //  new CoralIndexDirectDriveCommand(m_coralDeliverySubsystem, () -> m_driverController.getLeftY()));
+    // m_coralDeliverySubsystem.setDefaultCommand(
+    //   new CoralIndexDirectDriveCommand(m_coralDeliverySubsystem, () -> m_driverController.getLeftY()));
     // m_liftSubsystem.setDefaultCommand(
     //   new LiftDirectDriveCommand(m_liftSubsystem, () -> m_driverController.getLeftY()));
 
