@@ -141,10 +141,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    // return Autos.exampleAuto(m_exampleSubsystem);
-    return null;
-    // return m_autoChooser.getSelected();
+    return m_autoChooser.getSelected();
   }
 
   public void driveInitialize()
