@@ -18,9 +18,9 @@ public class DeliverCoralCommand extends WaitCommand {
   public DeliverCoralCommand(double seconds, CoralDeliverySubsystem coralDeliverySubsystem, CoralControlTargetSpeeds coralControlLeftTargetSpeed, CoralControlTargetSpeeds coralControlRightTargetSpeed)
   {
     super(seconds);
-    coralDeliverySubsystem = m_coralDeliverySubsystem;
-    coralControlLeftTargetSpeed = m_targetLeftSpeed;
-    coralControlRightTargetSpeed = m_targetRightSpeed;
+    m_coralDeliverySubsystem = coralDeliverySubsystem;
+    m_targetLeftSpeed = coralControlLeftTargetSpeed;
+    m_targetRightSpeed = coralControlRightTargetSpeed;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_coralDeliverySubsystem);
   }
