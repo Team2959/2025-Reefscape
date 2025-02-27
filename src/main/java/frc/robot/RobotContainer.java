@@ -26,13 +26,12 @@ import frc.robot.subsystems.LiftSubsystem.liftTargetPositions;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -60,22 +59,10 @@ public class RobotContainer {
   private final Conditioning m_turnConditioning = new Conditioning();
   private static double m_speedMultiplier = 1.0;
 
-  private final Joystick m_leftJoystick = new Joystick(RobotMap.kLeftJoystick);
-  private final Joystick m_rightJoystick = new Joystick(RobotMap.kRightJoystick);
-  // private final Joystick m_buttonBox = new Joystick(RobotMap.kButtonBox); 
+  private final CommandJoystick m_leftJoystick = new CommandJoystick(RobotMap.kLeftJoystick);
+  private final CommandJoystick m_rightJoystick = new CommandJoystick(RobotMap.kRightJoystick);
+  // private final CommandJoystick m_buttonBox = new CommandJoystick(RobotMap.kButtonBox); 
   // private final CommandXboxController m_driverController = new CommandXboxController(RobotMap.kXboxTester);
-
-  // Driver Buttons
-  private final JoystickButton m_resetNavX = new JoystickButton(m_rightJoystick, RobotMap.kRightResetNavXButton);
-  private final JoystickButton m_lockWheeButton = new JoystickButton(m_leftJoystick, RobotMap.kLeftLockWheels);
-  private final JoystickButton m_leftTroughPlaceButton = new JoystickButton(m_leftJoystick, RobotMap.kLeftTroughButton);
-  private final JoystickButton m_rightTroughPlaceButton = new JoystickButton(m_rightJoystick, RobotMap.kRightTroughButton);
-
-  // Co-Pilot buttons
-  // private final JoystickButton m_placeAtL4Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL4Button);
-  // private final JoystickButton m_placeAtL3Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL3Button);
-  // private final JoystickButton m_placeAtL2Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL2Button);
-  // private final JoystickButton m_intakeAlgaeButton = new JoystickButton(m_buttonBox, RobotMap.kintakeAlgaeButton);
 
   private final Robot m_robot;
 
@@ -110,29 +97,29 @@ public class RobotContainer {
     m_driveSubsystem.setDefaultCommand(new TeleOpDriveCommand(m_driveSubsystem,
       () -> getDriveXInput(), () -> getDriveYInput(), () -> getTurnInput(),
       () -> m_robot.isTeleopEnabled()));
-    m_resetNavX.onTrue(new InstantCommand(() -> {m_driveSubsystem.resetNavX();}));
-    m_lockWheeButton.whileTrue(new LockWheelsCommand(m_driveSubsystem));
-    m_leftTroughPlaceButton.onTrue(new DeliverCoralCommand(CoralDeliverySubsystem.DeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1SlowSpeed, CoralControlTargetSpeeds.L1FastSpeed));
-    m_rightTroughPlaceButton.onTrue(new DeliverCoralCommand(CoralDeliverySubsystem.DeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1FastSpeed, CoralControlTargetSpeeds.L1SlowSpeed));
+    m_rightJoystick.button(RobotMap.kRightResetNavXButton).onTrue(new InstantCommand(() -> {m_driveSubsystem.resetNavX();}));
+    m_leftJoystick.button(RobotMap.kLeftLockWheels).whileTrue(new LockWheelsCommand(m_driveSubsystem));
+    m_leftJoystick.button(RobotMap.kLeftTroughButton).onTrue(new DeliverCoralCommand(CoralDeliverySubsystem.DeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1SlowSpeed, CoralControlTargetSpeeds.L1FastSpeed));
+    m_rightJoystick.button(RobotMap.kRightTroughButton).onTrue(new DeliverCoralCommand(CoralDeliverySubsystem.DeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1FastSpeed, CoralControlTargetSpeeds.L1SlowSpeed));
 
     // m_coralDeliverySubsystem.setDefaultCommand(
     //   new CoralIndexDirectDriveCommand(m_coralDeliverySubsystem, () -> m_driverController.getLeftY()));
     // m_liftSubsystem.setDefaultCommand(
     //   new LiftDirectDriveCommand(m_liftSubsystem, () -> m_driverController.getLeftY()));
 
-    // m_placeAtL4Button.onTrue(new AlignWithReefCommand(m_driveSubsystem, m_aprilTagPID)
+    // m_buttonBox.button(RobotMap.kplaceAtL4Button).onTrue(new AlignWithReefCommand(m_driveSubsystem, m_aprilTagPID)
     //  .andThen(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L4)
     //  .andThen(new DeliverCoralCommand(CoralDeliverySubsystem.DeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)
     //   .andThen(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.Base)
     //   .andThen(new IndexCoralCommand(m_coralDeliverySubsystem, CoralIndexTargetPositions.Center))))));
 
-    // m_placeAtL3Button.onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L3)
+    // m_buttonBox.button(RobotMap.kplaceAtL3Button).onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L3)
     //   .andThen(new DeliverCoralCommand(CoralDeliverySubsystem.DeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)));
     
-    // m_placeAtL2Button.onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L2)
+    // m_buttonBox.button(RobotMap.kplaceAtL2Button).onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L2)
     //   .andThen(new DeliverCoralCommand(CoralDeliverySubsystem.DeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)));
 
-    // m_intakeAlgaeButton.whileTrue(new IntakeAlgaeCommand(m_algaeClawSubsystem));
+    // m_buttonBox.button(RobotMap.kintakeAlgaeButton).whileTrue(new IntakeAlgaeCommand(m_algaeClawSubsystem));
   }
 
   /**
