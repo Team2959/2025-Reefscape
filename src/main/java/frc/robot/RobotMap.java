@@ -47,19 +47,22 @@ public final class RobotMap {
     public static final int kXboxTester = 3;
 
     // Driver Buttons
-    public static final int kRightLockWheels = 3;
+    public static final int kLeftLockWheels = 3;
     public static final int kRightResetNavXButton = 10;
+    public static final int kLeftTroughButton = 4;
+    public static final int kRightTroughButton = 2;
     // public static final int kRightResetRestAbsoluteEncoderButton = null;
 
 
     // Co-Piolt Button board
-    public static final int kplaceAtL4Button = 5;
-    public static final int kplaceAtL3Button = 9;
-    public static final int kplaceAtL2Button = 10
-    ;
-    public static final int kintakeAlgaeButton = 6;
-    public static final int kleftTroughPlaceButton = 7;
-    public static final int krightTroughPlaceButton = 8;
+    public static final int kplaceAtL4Button = 11;
+    public static final int kplaceAtL3Button = 6;
+    public static final int kplaceAtL2Button = 5;
+    public static final int kintakeAlgaeButton = 9;
+    public static final int kindexCoralRightButton = 8;
+    public static final int kindexCoralLeftButton = 12;
+    public static final int kalgaeHighIntake = 1;
+    public static final int kalgaeMediumIntake = 3;
 
     // Zeroed values, should be in radians
     // source is google document in Electrical for team - module data

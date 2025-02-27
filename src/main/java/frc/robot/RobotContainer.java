@@ -66,16 +66,16 @@ public class RobotContainer {
   // private final CommandXboxController m_driverController = new CommandXboxController(RobotMap.kXboxTester);
 
   // Driver Buttons
-  JoystickButton m_resetNavX = new JoystickButton(m_rightJoystick, RobotMap.kRightResetNavXButton);
-  JoystickButton m_lockWheeButton = new JoystickButton(m_rightJoystick, RobotMap.kRightLockWheels);
+  private final JoystickButton m_resetNavX = new JoystickButton(m_rightJoystick, RobotMap.kRightResetNavXButton);
+  private final JoystickButton m_lockWheeButton = new JoystickButton(m_leftJoystick, RobotMap.kLeftLockWheels);
+  private final JoystickButton m_leftTroughPlaceButton = new JoystickButton(m_leftJoystick, RobotMap.kLeftTroughButton);
+  private final JoystickButton m_rightTroughPlaceButton = new JoystickButton(m_rightJoystick, RobotMap.kRightTroughButton);
 
   // Co-Pilot buttons
   // private final JoystickButton m_placeAtL4Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL4Button);
   // private final JoystickButton m_placeAtL3Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL3Button);
   // private final JoystickButton m_placeAtL2Button = new JoystickButton(m_buttonBox, RobotMap.kplaceAtL2Button);
   // private final JoystickButton m_intakeAlgaeButton = new JoystickButton(m_buttonBox, RobotMap.kintakeAlgaeButton);
-  // private final JoystickButton m_leftTroughPlaceButton = new JoystickButton(m_buttonBox, RobotMap.kleftTroughPlaceButton);
-  // private final JoystickButton m_rightTroughPlaceButton = new JoystickButton(m_buttonBox, RobotMap.krightTroughPlaceButton);
 
   private final Robot m_robot;
 
@@ -112,6 +112,8 @@ public class RobotContainer {
       () -> m_robot.isTeleopEnabled()));
     m_resetNavX.onTrue(new InstantCommand(() -> {m_driveSubsystem.resetNavX();}));
     m_lockWheeButton.whileTrue(new LockWheelsCommand(m_driveSubsystem));
+    m_leftTroughPlaceButton.onTrue(new DeliverCoralCommand(CoralDeliverySubsystem.DeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1SlowSpeed, CoralControlTargetSpeeds.L1FastSpeed));
+    m_rightTroughPlaceButton.onTrue(new DeliverCoralCommand(CoralDeliverySubsystem.DeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1FastSpeed, CoralControlTargetSpeeds.L1SlowSpeed));
 
     // m_coralDeliverySubsystem.setDefaultCommand(
     //   new CoralIndexDirectDriveCommand(m_coralDeliverySubsystem, () -> m_driverController.getLeftY()));
@@ -120,18 +122,15 @@ public class RobotContainer {
 
     // m_placeAtL4Button.onTrue(new AlignWithReefCommand(m_driveSubsystem, m_aprilTagPID)
     //  .andThen(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L4)
-    //  .andThen(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)
+    //  .andThen(new DeliverCoralCommand(CoralDeliverySubsystem.DeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)
     //   .andThen(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.Base)
     //   .andThen(new IndexCoralCommand(m_coralDeliverySubsystem, CoralIndexTargetPositions.Center))))));
 
     // m_placeAtL3Button.onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L3)
-    //   .andThen(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)));
+    //   .andThen(new DeliverCoralCommand(CoralDeliverySubsystem.DeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)));
     
     // m_placeAtL2Button.onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L2)
-    //   .andThen(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)));
-
-    //  m_leftTroughPlaceButton.onTrue(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1SmallSpeed, CoralControlTargetSpeeds.L1LargeSpeed));
-    //  m_rightTroughPlaceButton.onTrue(new DeliverCoralCommand(m_coralDeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1LargeSpeed, CoralControlTargetSpeeds.L1SmallSpeed));
+    //   .andThen(new DeliverCoralCommand(CoralDeliverySubsystem.DeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)));
 
     // m_intakeAlgaeButton.whileTrue(new IntakeAlgaeCommand(m_algaeClawSubsystem));
   }

@@ -55,6 +55,7 @@ public class LiftSubsystem extends SubsystemBase {
   private final DoublePublisher m_sparkLiftRotations;
   private final DoublePublisher m_sparkLiftCurrent;
   private final DoublePublisher m_sparkVelocity;
+  private final DoublePublisher m_appliedOutputPub;
   private final BooleanPublisher m_mechanicalSwitchPub;
   private final DoubleSubscriber m_targetRotations;
   private final DoubleSubscriber m_liftP;
@@ -80,6 +81,7 @@ public class LiftSubsystem extends SubsystemBase {
       .pid(kLiftP, kLiftI, kLiftD);
     var alternateEncoderConfig = new AlternateEncoderConfig();
     alternateEncoderConfig.setSparkMaxDataPortConfig();
+    alternateEncoderConfig.inverted(true);
     m_config.apply(alternateEncoderConfig);
    
     m_lift.configure(m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -98,6 +100,7 @@ public class LiftSubsystem extends SubsystemBase {
     m_sparkLiftCurrent = datatable.getDoubleTopic(name + "/Current").publish();
     m_sparkVelocity = datatable.getDoubleTopic(name + "/Velocity").publish();
     m_mechanicalSwitchPub = datatable.getBooleanTopic(name + "/Mechanical Switch Value").publish();
+    m_appliedOutputPub = datatable.getDoubleTopic(name + "/Applied Output").publish();
 
     var targetRotations = datatable.getDoubleTopic(name + "/target rotations");
     targetRotations.publish().set(0);
@@ -158,6 +161,7 @@ public class LiftSubsystem extends SubsystemBase {
     m_sparkLiftCurrent.set(m_lift.getAppliedOutput());
     m_sparkVelocity.set(m_liftEncoder.getVelocity());
     m_mechanicalSwitchPub.set(isLiftAtBottom());
+    m_appliedOutputPub.set(m_lift.getAppliedOutput());
 
     var slot1 = m_slot1Sub.get();
 
@@ -209,7 +213,7 @@ public class LiftSubsystem extends SubsystemBase {
     m_liftController.setReference(target, SparkMax.ControlType.kPosition);
   }
 
-  private static int LiftPositionValue(liftTargetPositions target)
+  private static double LiftPositionValue(liftTargetPositions target)
   {
     switch (target) {
       case L4:
@@ -217,7 +221,7 @@ public class LiftSubsystem extends SubsystemBase {
       case L3:
         return 3;
       case L2:
-        return 2;
+        return 1.5;
       default:
         return 1;
     }

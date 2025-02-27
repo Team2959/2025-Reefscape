@@ -45,7 +45,7 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   private double kClawExtendPosition = 0;
   private double kClawRetractPosition = 0;
 
-  private final double kClawShootP = 0;
+  private final double kClawShootP = 1.0;
   private final double kClawShootI = 0;
   private final double kClawShootD = 0;
   private final double kClawArmP = 0;
@@ -112,11 +112,11 @@ public class AlgaeClawSubsystem extends SubsystemBase {
     NetworkTable datatable = inst.getTable("AlgaeClawSubsystem");
 
     var clawFeedSpeedSub = datatable.getDoubleTopic(name + "/ClawFeedSpeed");
-    clawFeedSpeedSub.publish().set(0);
+    clawFeedSpeedSub.publish().set(m_clawFeedMotorSpeed);
     m_clawFeedSpeedSub = clawFeedSpeedSub.subscribe(0.0);
 
     var clawShootRPMSub = datatable.getDoubleTopic(name + "/ClawShootSpeed");
-    clawShootRPMSub.publish().set(0);
+    clawShootRPMSub.publish().set(m_clawShootSpeed);
     m_clawShootRPMSub = clawShootRPMSub.subscribe(0.0);
 
     var clawFeedGoToSpeed = datatable.getBooleanTopic(name + "go To Feed Motor Speed");
@@ -199,15 +199,18 @@ public class AlgaeClawSubsystem extends SubsystemBase {
 
     if (m_clawFeedGoToSpeedSub.get())
     {
-      m_clawFeedMotorSpeed = m_clawFeedSpeedSub.get();
-      setAlgaeFeedMotorSpeed(m_clawFeedMotorSpeed);
+      var target = m_clawFeedSpeedSub.get();
+      m_clawFeedSparkMax.set(target);
+      // m_clawFeedMotorSpeed = m_clawFeedSpeedSub.get();
+      // setAlgaeFeedMotorSpeed(m_clawFeedMotorSpeed);
       m_clawFeedGoToSpeedPub.set(false);
     }
 
     if (m_clawShootGoToSpeedSub.get())
     {
-      m_clawShootSpeed = m_clawShootRPMSub.get();
-      setClawShootSpeed(m_clawShootSpeed);
+      var target = m_clawShootRPMSub.get();
+      // m_clawShootSpeed = m_clawShootRPMSub.get();
+      setClawShootSpeed(target);
       m_clawShootGoToSpeedPub.set(false);
     }
 
