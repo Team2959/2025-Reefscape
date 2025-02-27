@@ -14,7 +14,7 @@ public class IntakeCoralCommand extends Command {
   private CoralDeliverySubsystem m_coralDeliverySubsystem;
   public IntakeCoralCommand(CoralDeliverySubsystem coralDeliverySubsystem) {
     // Use addRequirements() here to declare subsystem dependencies.
-    coralDeliverySubsystem = m_coralDeliverySubsystem;
+    m_coralDeliverySubsystem = coralDeliverySubsystem;
     addRequirements(m_coralDeliverySubsystem);
   }
 

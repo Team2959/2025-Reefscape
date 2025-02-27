@@ -12,7 +12,7 @@ public class IntakeAlgaeCommand extends Command {
   /** Creates a new IntakeAlgaeCommand. */
   AlgaeClawSubsystem m_algaeClawSubsystem;
   public IntakeAlgaeCommand(AlgaeClawSubsystem algaeClawSubsystem) {
-    algaeClawSubsystem = m_algaeClawSubsystem;
+    m_algaeClawSubsystem = algaeClawSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_algaeClawSubsystem);
   }

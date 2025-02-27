@@ -15,8 +15,8 @@ public class IndexCoralCommand extends Command {
   private CoralIndexTargetPositions m_target;
   public IndexCoralCommand(CoralDeliverySubsystem coralDeliverySubsystem, CoralIndexTargetPositions target) {
     // Use addRequirements() here to declare subsystem dependencies.
-    coralDeliverySubsystem = m_coralDeliverySubsystem;
-    target = m_target;
+    m_coralDeliverySubsystem = coralDeliverySubsystem;
+    m_target = target;
     addRequirements(m_coralDeliverySubsystem);
   }
 

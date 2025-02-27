@@ -14,7 +14,7 @@ public class ShootAlgaeCommand extends WaitCommand {
 
   public ShootAlgaeCommand(AlgaeClawSubsystem algaeClawSubsystem) {
     super(1);
-    algaeClawSubsystem = m_algaeClawSubsystem;
+    m_algaeClawSubsystem = algaeClawSubsystem;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_algaeClawSubsystem);
   }
