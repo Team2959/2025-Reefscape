@@ -56,7 +56,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-    m_robotContainer.driveInitialize();
+    m_robotContainer.initialize();
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
@@ -78,7 +78,7 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.cancel();
     }
 
-    m_robotContainer.driveInitialize();
+    m_robotContainer.initialize();
   }
 
   /** This function is called periodically during operator control. */

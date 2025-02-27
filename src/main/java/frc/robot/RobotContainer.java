@@ -144,9 +144,10 @@ public class RobotContainer {
     return m_autoChooser.getSelected();
   }
 
-  public void driveInitialize()
+  public void initialize()
   {
-    m_driveSubsystem.initalize();
+    m_driveSubsystem.initialize();
+    m_liftSubsystem.initialize();
   }
 
   public double getDriveXInput()

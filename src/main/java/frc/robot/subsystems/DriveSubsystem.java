@@ -100,7 +100,7 @@ public class DriveSubsystem extends SubsystemBase {
       }
     }
 
-    public void initalize() {
+    public void initialize() {
         if (m_initalized)
             return;
         resetSteeringMotorsToAbsolute();

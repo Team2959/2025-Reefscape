@@ -4,12 +4,10 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkMaxAlternateEncoder;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.MAXMotionConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.AlternateEncoderConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -49,11 +47,10 @@ public class LiftSubsystem extends SubsystemBase {
   private final double kLiftI = 0;
   private final double kLiftD = 0;
   private final double kLiftFF = 0;
-  private final double kMaxVelocity = 0;
-  private final double kMaxAcceleration = 1;
+
+  private boolean m_initalized = false;
 
   private final DoublePublisher m_sparkLiftRotations;
-  private final DoublePublisher m_sparkLiftCurrent;
   private final DoublePublisher m_sparkVelocity;
   private final DoublePublisher m_appliedOutputPub;
   private final BooleanPublisher m_mechanicalSwitchPub;
@@ -62,13 +59,10 @@ public class LiftSubsystem extends SubsystemBase {
   private final DoubleSubscriber m_liftI;
   private final DoubleSubscriber m_liftD;
   private final DoubleSubscriber m_liftFF;
-  private final DoubleSubscriber m_maxVelocitySub;
-  private final DoubleSubscriber m_maxAccelerationSub;
   private final BooleanSubscriber m_goToTargetRotationsSub;
   private final BooleanPublisher m_goToTargetRotationsPub;
   private final BooleanPublisher m_updateLiftPIDPub;
   private final BooleanSubscriber m_updateLiftPIDSub;
-  private final BooleanSubscriber m_slot1Sub;
   
   /** Creates a new LiftSubsystem. */
   public LiftSubsystem() {  
@@ -97,7 +91,6 @@ public class LiftSubsystem extends SubsystemBase {
     NetworkTable datatable = inst.getTable("lift Subsystem");
 
     m_sparkLiftRotations = datatable.getDoubleTopic(name + "/Rotations").publish();
-    m_sparkLiftCurrent = datatable.getDoubleTopic(name + "/Current").publish();
     m_sparkVelocity = datatable.getDoubleTopic(name + "/Velocity").publish();
     m_mechanicalSwitchPub = datatable.getBooleanTopic(name + "/Mechanical Switch Value").publish();
     m_appliedOutputPub = datatable.getDoubleTopic(name + "/Applied Output").publish();
@@ -122,14 +115,6 @@ public class LiftSubsystem extends SubsystemBase {
     liftFF.publish().set(kLiftD);
     m_liftFF = liftFF.subscribe(kLiftFF);
 
-    var maxVelocitySub = datatable.getDoubleTopic(name + "Max Velocity");
-    maxVelocitySub.publish().set(kMaxVelocity);
-    m_maxVelocitySub = maxVelocitySub.subscribe(kMaxVelocity);
-
-    var maxAccelerationSub = datatable.getDoubleTopic(name + "Max Acceleration");
-    maxAccelerationSub.publish().set(kMaxAcceleration);
-    m_maxAccelerationSub = maxAccelerationSub.subscribe(kMaxAcceleration);
-
     var goToTargetRotations = datatable.getBooleanTopic(name + "/goToTargetRotations");
     m_goToTargetRotationsPub = goToTargetRotations.publish();
     m_goToTargetRotationsPub.set(false);
@@ -139,42 +124,36 @@ public class LiftSubsystem extends SubsystemBase {
     m_updateLiftPIDPub = updateliftPIDTopic.publish();
     m_updateLiftPIDPub.set(false);
     m_updateLiftPIDSub = updateliftPIDTopic.subscribe(false);
+  }
 
-    var slot1Topic = datatable.getBooleanTopic("control Slot 1");
-    slot1Topic.publish().set(false);
-    m_slot1Sub = slot1Topic.subscribe(false);
+  public void initialize()
+  {
+    if (m_initalized)
+        return;
+    setTargetPosition(liftTargetPositions.Base);
+    m_initalized = true;
   }
 
   int m_ticks = 0;
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    m_mechanicalSwitchPub.set(isLiftAtBottom());
     m_ticks++;
-    // if (m_ticks % 11 != 5)
-    //     return;
+    if (m_ticks % 11 != 5)
+        return;
 
     dashboardUpdate();
   }
 
   public void dashboardUpdate() {
     m_sparkLiftRotations.set(m_liftEncoder.getPosition());
-    m_sparkLiftCurrent.set(m_lift.getAppliedOutput());
     m_sparkVelocity.set(m_liftEncoder.getVelocity());
-    m_mechanicalSwitchPub.set(isLiftAtBottom());
     m_appliedOutputPub.set(m_lift.getAppliedOutput());
-
-    var slot1 = m_slot1Sub.get();
 
     if(m_goToTargetRotationsSub.get())
     {
-      double target = m_targetRotations.get();
-      if (slot1)
-      {
-        m_liftController.setReference(target, SparkMax.ControlType.kPosition, ClosedLoopSlot.kSlot1);
-      }
-      else{
-        goToTargetPosition(target);
-      }
+      goToTargetPosition(m_targetRotations.get());
       m_goToTargetRotationsPub.set(false);
     }
 
@@ -184,12 +163,8 @@ public class LiftSubsystem extends SubsystemBase {
       var newI = m_liftI.get();
       var newD = m_liftD.get();
       var newFF = m_liftFF.get();
-      var newMaxVelocity = m_maxVelocitySub.get();
-      var newMaxAccceleration = m_maxAccelerationSub.get();
 
-      m_config.closedLoop.pidf(newP, newI, newD, newFF, slot1 ? ClosedLoopSlot.kSlot1 : ClosedLoopSlot.kSlot0);
-      var updatedMaxMotion = new MAXMotionConfig().maxVelocity(newMaxVelocity).maxAcceleration(newMaxAccceleration);
-      m_config.closedLoop.apply(updatedMaxMotion);
+      m_config.closedLoop.pidf(newP, newI, newD, newFF);
       m_lift.configure(m_config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
       m_updateLiftPIDPub.set(false);
     }
@@ -219,17 +194,17 @@ public class LiftSubsystem extends SubsystemBase {
       case L4:
         return 4;
       case L3:
-        return 3;
+        return 5;
       case L2:
         return 1.5;
       default:
-        return 1;
+        return 0.24;  // loading level for wall
     }
   }
 
   public boolean isAtTargetPosition()
   {
-    return Math.abs(m_lastTargetPosition - m_liftEncoder.getPosition()) < 10;
+    return Math.abs(m_lastTargetPosition - m_liftEncoder.getPosition()) < 0.05;
   }
 
   public void stopAtCurrentPosition()
