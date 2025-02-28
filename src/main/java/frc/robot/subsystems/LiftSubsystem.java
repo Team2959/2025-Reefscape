@@ -212,7 +212,7 @@ public class LiftSubsystem extends SubsystemBase {
     goToTargetPosition(m_liftEncoder.getPosition());
   }
 
-  public boolean isLiftAtBottom()
+  private boolean isLiftAtBottom()
   {
     return m_liftDetect.get();
   }

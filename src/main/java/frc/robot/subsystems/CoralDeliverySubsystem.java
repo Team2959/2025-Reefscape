@@ -156,6 +156,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    m_coralDetectPub.set(getOpticSensor());
     m_ticks++;
     if (m_ticks % 13 != 11)
         return;
@@ -165,7 +166,6 @@ public class CoralDeliverySubsystem extends SubsystemBase {
 
   private void updateDashboard ()
   {
-    m_coralDetectPub.set(m_coralDetect.get());
     m_indexPositionPub.set(m_indexEncoder.getPosition());
     m_indexAppliedOutputPub.set(m_indexSparkMax.getAppliedOutput());
 
