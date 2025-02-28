@@ -39,9 +39,8 @@ public class DriveSubsystem extends SubsystemBase {
     public static final double kMaxSpeedMetersPerSecond = 5.836; //Based off of 6000 rpm for Kraken x60
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;// kMaxSpeedMetersPerSecond /
                                                                           // Math.hypot(0.381, 0.381);
-    // the 0.5715 / 2.0 is last year's number which was based on 29.5" outside to outside wheel distance
-    // 2025 center to center on wheels is 24.5" -> need to conver to meters and update
-    private static final double kHalfTrackWidthMeters = 0.5715 / 2.0;
+    // 2025 center to center on wheels is 24.5" -> 0.6223 meters
+    private static final double kHalfTrackWidthMeters = 0.6223 / 2.0;
     private final Translation2d kFrontLeftLocation = new Translation2d(kHalfTrackWidthMeters, kHalfTrackWidthMeters);
     private final Translation2d kFrontRightLocation = new Translation2d(kHalfTrackWidthMeters, -kHalfTrackWidthMeters);
     private final Translation2d kBackLeftLocation = new Translation2d(-kHalfTrackWidthMeters, kHalfTrackWidthMeters);
