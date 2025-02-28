@@ -208,11 +208,11 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   {
     switch (target) {
       case Left:
-        return -7.4;
+        return -7.37;
       case Right:
-        return -0.2;
+        return -0.1;
       case Center:
-        return -3.8;
+        return -3.7;
       default:
         return 0;
     }
@@ -226,9 +226,9 @@ public class CoralDeliverySubsystem extends SubsystemBase {
       case Feed:
         return 1.0;
       case L1FastSpeed:
-        return 0.75;
+        return 0.7;
       case L1SlowSpeed:
-        return 0.25;  
+        return 0.1;  
       case Stop:     
       default:
         return 0;
@@ -237,7 +237,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   
   public boolean isAtIndexTargetPosition()
   {
-    return Math.abs(m_lastTargetPosition - m_indexEncoder.getPosition()) < 10;
+    return Math.abs(m_lastTargetPosition - m_indexEncoder.getPosition()) < 0.05;
   }
 
   public void stopAtIndexCurrentPosition()

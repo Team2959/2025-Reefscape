@@ -192,9 +192,9 @@ public class LiftSubsystem extends SubsystemBase {
   {
     switch (target) {
       case L4:
-        return 4;
-      case L3:
         return 5;
+      case L3:
+        return 4.7;
       case L2:
         return 1.5;
       default:
