@@ -4,22 +4,22 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import frc.robot.subsystems.AlgaeClawSubsystem;
-import frc.robot.subsystems.LiftSubsystem;
-import frc.robot.subsystems.LiftSubsystem.liftTargetLevels;
+//import edu.wpi.first.wpilibj2.command.InstantCommand;
+//import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+//import frc.robot.subsystems.AlgaeClawSubsystem;
+//import frc.robot.subsystems.LiftSubsystem;
+//import frc.robot.subsystems.LiftSubsystem.liftTargetLevels;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class PreToShootAlgaeIntoNetParallelCommands extends ParallelCommandGroup {
+//public class PreToShootAlgaeIntoNetParallelCommands extends ParallelCommandGroup //{
   /** Creates a new PreToShootAlgaeIntoNet. */
-  public PreToShootAlgaeIntoNetParallelCommands(LiftSubsystem liftSubsystem, AlgaeClawSubsystem algaeSubsystem)
-  {
-    addCommands(new LiftMoveToLevelCommand(liftSubsystem, liftTargetLevels.L4),
-      new InstantCommand(() -> algaeSubsystem.extendClawArms()),
+ // public PreToShootAlgaeIntoNetParallelCommands(LiftSubsystem liftSubsystem, AlgaeClawSubsystem algaeSubsystem)
+ // {
+  //  addCommands(new LiftMoveToLevelCommand(liftSubsystem, liftTargetLevels.L4),
+   //   new InstantCommand(() -> algaeSubsystem.extendClawArms()),
       // should wait for velocity yo be reached, but it should be much faster that lift to L4
-      new InstantCommand(() -> algaeSubsystem.setClawShootSpeed(), algaeSubsystem));
-  }
-}
+   //   new InstantCommand(() -> algaeSubsystem.setClawShootSpeed(), algaeSubsystem));
+ // }
+//}
