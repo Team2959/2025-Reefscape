@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.AlgaeClawSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftSubsystem;
-import frc.robot.subsystems.LiftSubsystem.liftTargetPositions;
+import frc.robot.subsystems.LiftSubsystem.liftTargetLevels;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -25,7 +25,7 @@ public class ShootAlgaeintonetSequentialCommandGroup extends SequentialCommandGr
     addCommands(new LockWheelsCommand(drivesubsystem),
       new PreToShootAlgaeIntoNetParallelCommands(liftSubsystem, algaeSubsystem),
       new ShootAlgaeCommand(algaeSubsystem),
-      new LiftDriveToPositionCommand(liftSubsystem, liftTargetPositions.L2)
+      new LiftMoveToLevelCommand(liftSubsystem, liftTargetLevels.L2)
         .alongWith(new InstantCommand(() -> algaeSubsystem.retractClawArms()) ) );
   }
 }

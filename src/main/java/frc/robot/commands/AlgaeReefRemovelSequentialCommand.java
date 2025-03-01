@@ -9,7 +9,7 @@ import frc.robot.cwtech.AprilTagPID;
 import frc.robot.subsystems.AlgaeClawSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftSubsystem;
-import frc.robot.subsystems.LiftSubsystem.liftTargetPositions;
+import frc.robot.subsystems.LiftSubsystem.liftTargetLevels;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -18,7 +18,7 @@ public class AlgaeReefRemovelSequentialCommand extends SequentialCommandGroup {
   /** Creates a new AlgaeReefRemovelSequentialCommand. */
   public AlgaeReefRemovelSequentialCommand(
     LiftSubsystem liftSubsystem,
-    liftTargetPositions targetLevel,
+    liftTargetLevels targetLevel,
     DriveSubsystem driveSubsystem,
     AprilTagPID aprilTagPID,
     AlgaeClawSubsystem algaeClawSubsystem
@@ -27,9 +27,8 @@ public class AlgaeReefRemovelSequentialCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new AlignWithReefCommand(driveSubsystem, aprilTagPID),
-      new LiftDriveToPositionCommand(liftSubsystem, targetLevel). alongWith(new IntakeAlgaeCommand(algaeClawSubsystem)),
-      new LiftDriveToPositionCommand(liftSubsystem, liftTargetPositions.Base)
-
+      new LiftMoveToLevelCommand(liftSubsystem, targetLevel).alongWith(new IntakeAlgaeCommand(algaeClawSubsystem)),
+      new LiftMoveToLevelCommand(liftSubsystem, liftTargetLevels.Base)
     );
   }
 }

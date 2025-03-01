@@ -39,6 +39,6 @@ public class IntakeCoralCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_coralDeliverySubsystem.getOpticSensor0();
+    return m_coralDeliverySubsystem.getOpticSensor();
   }
 }

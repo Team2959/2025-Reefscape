@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.AlgaeClawSubsystem;
 import frc.robot.subsystems.LiftSubsystem;
-import frc.robot.subsystems.LiftSubsystem.liftTargetPositions;
+import frc.robot.subsystems.LiftSubsystem.liftTargetLevels;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -17,7 +17,7 @@ public class PreToShootAlgaeIntoNetParallelCommands extends ParallelCommandGroup
   /** Creates a new PreToShootAlgaeIntoNet. */
   public PreToShootAlgaeIntoNetParallelCommands(LiftSubsystem liftSubsystem, AlgaeClawSubsystem algaeSubsystem)
   {
-    addCommands(new LiftDriveToPositionCommand(liftSubsystem, liftTargetPositions.L4),
+    addCommands(new LiftMoveToLevelCommand(liftSubsystem, liftTargetLevels.L4),
       new InstantCommand(() -> algaeSubsystem.extendClawArms()),
       // should wait for velocity yo be reached, but it should be much faster that lift to L4
       new InstantCommand(() -> algaeSubsystem.setClawShootSpeed(), algaeSubsystem));

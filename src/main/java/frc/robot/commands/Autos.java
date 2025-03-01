@@ -9,7 +9,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.CoralDeliverySubsystem.CoralControlTargetSpeeds;
 import frc.robot.subsystems.CoralIndexSubsystem.CoralIndexTargetPositions;
-import frc.robot.subsystems.LiftSubsystem.liftTargetPositions;
+import frc.robot.subsystems.LiftSubsystem.liftTargetLevels;
 
 /** Add your docs here. */
 public final class Autos {

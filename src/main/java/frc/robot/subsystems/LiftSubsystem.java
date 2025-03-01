@@ -26,7 +26,7 @@ import frc.robot.RobotMap;
 
 public class LiftSubsystem extends SubsystemBase {
   
-  public enum liftTargetPositions
+  public enum liftTargetLevels
   {
       L4,
       L3,
@@ -56,6 +56,7 @@ public class LiftSubsystem extends SubsystemBase {
   private final DoublePublisher m_sparkLiftRotations;
   private final DoublePublisher m_sparkVelocity;
   private final DoublePublisher m_appliedOutputPub;
+  private final DoublePublisher m_lastTargetPub;
   private final DoubleSubscriber m_targetRotations;
   private final DoubleSubscriber m_liftP;
   private final DoubleSubscriber m_liftI;
@@ -95,6 +96,7 @@ public class LiftSubsystem extends SubsystemBase {
     m_sparkLiftRotations = datatable.getDoubleTopic(name + "/Rotations").publish();
     m_sparkVelocity = datatable.getDoubleTopic(name + "/Velocity").publish();
     m_appliedOutputPub = datatable.getDoubleTopic(name + "/Applied Output").publish();
+    m_lastTargetPub = datatable.getDoubleTopic("Last Target").publish();
 
     var targetRotations = datatable.getDoubleTopic(name + "/target rotations");
     targetRotations.publish().set(0);
@@ -131,7 +133,7 @@ public class LiftSubsystem extends SubsystemBase {
   {
     if (m_initalized)
         return;
-    setTargetPosition(liftTargetPositions.Base);
+    setTargetPosition(liftTargetLevels.Base);
     m_initalized = true;
   }
 
@@ -175,11 +177,12 @@ public class LiftSubsystem extends SubsystemBase {
     m_lift.set(power);
   }
 
-  public double setTargetPosition(liftTargetPositions target)
+  public double setTargetPosition(liftTargetLevels target)
   {
     var targetPosition = LiftPositionValue(target);
     goToTargetPosition(targetPosition);
     m_lastTargetPosition = targetPosition;
+    m_lastTargetPub.set(m_lastTargetPosition);
     return m_lastTargetPosition;
   }
 
@@ -188,7 +191,7 @@ public class LiftSubsystem extends SubsystemBase {
     m_liftController.setReference(target, SparkMax.ControlType.kPosition);
   }
 
-  private static double LiftPositionValue(liftTargetPositions target)
+  private static double LiftPositionValue(liftTargetLevels target)
   {
     switch (target) {
       case L4:

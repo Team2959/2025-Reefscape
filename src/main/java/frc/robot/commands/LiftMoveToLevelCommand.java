@@ -6,15 +6,15 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.LiftSubsystem;
-import frc.robot.subsystems.LiftSubsystem.liftTargetPositions;
+import frc.robot.subsystems.LiftSubsystem.liftTargetLevels;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class LiftDriveToPositionCommand extends Command {
+public class LiftMoveToLevelCommand extends Command {
   /** Creates a new LiftDriveToPositionCommand. */
   private LiftSubsystem m_LiftSubsystem;
-  private liftTargetPositions m_targetPosition;
+  private liftTargetLevels m_targetPosition;
 
-  public LiftDriveToPositionCommand(LiftSubsystem liftSubsystem, liftTargetPositions targetPosition) {
+  public LiftMoveToLevelCommand(LiftSubsystem liftSubsystem, liftTargetLevels targetPosition) {
     // Use addRequirements() here to declare subsystem dependencies.
     m_targetPosition = targetPosition;
     m_LiftSubsystem = liftSubsystem;

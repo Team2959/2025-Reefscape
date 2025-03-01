@@ -10,7 +10,7 @@ import frc.robot.commands.DeliverCoralCommand;
 import frc.robot.commands.IndexCoralCommand;
 import frc.robot.commands.IntakeAlgaeCommand;
 import frc.robot.commands.IntakeCoralCommand;
-import frc.robot.commands.LiftDriveToPositionCommand;
+import frc.robot.commands.LiftMoveToLevelCommand;
 import frc.robot.commands.LockWheelsCommand;
 import frc.robot.commands.ShootAlgaeCommand;
 import frc.robot.commands.TeleOpDriveCommand;
@@ -23,7 +23,7 @@ import frc.robot.subsystems.CoralIndexSubsystem.CoralIndexTargetPositions;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftSubsystem;
 import frc.robot.subsystems.CoralDeliverySubsystem.CoralControlTargetSpeeds;
-import frc.robot.subsystems.LiftSubsystem.liftTargetPositions;
+import frc.robot.subsystems.LiftSubsystem.liftTargetLevels;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -111,10 +111,10 @@ public class RobotContainer {
     m_buttonBox.button(RobotMap.kDeliverCoralButton).onTrue(new DeliverCoralCommand(m_coralDeliverySubsystem.m_deliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)
       .andThen(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Center)));
 
-    m_buttonBox.button(RobotMap.kPlaceAtL2Button).onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L2));
-    m_buttonBox.button(RobotMap.kPlaceAtL3Button).onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L3));
-    m_buttonBox.button(RobotMap.kPlaceAtL4Button).onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L4));
-    m_buttonBox.button(RobotMap.kMoveLiftToBase).onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.Base));
+    m_buttonBox.button(RobotMap.kPlaceAtL2Button).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.L2));
+    m_buttonBox.button(RobotMap.kPlaceAtL3Button).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.L3));
+    m_buttonBox.button(RobotMap.kPlaceAtL4Button).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.L4));
+    m_buttonBox.button(RobotMap.kMoveLiftToBase).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.Base));
 
     m_buttonBox.button(RobotMap.kDeliverAlgaeButton).onTrue(new ShootAlgaeCommand(m_algaeClawSubsystem));
 

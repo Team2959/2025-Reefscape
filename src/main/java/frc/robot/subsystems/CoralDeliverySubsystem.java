@@ -36,7 +36,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
 
   private final SparkMax m_rightCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryRightCoralControlMotor, MotorType.kBrushless);
   private final SparkMax m_leftCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryLeftCoralControlMotor, MotorType.kBrushless);
-   private final DigitalInput m_coralDetect = new DigitalInput(RobotMap.kCoralDetectInput);
+  private final DigitalInput m_coralDetect = new DigitalInput(RobotMap.kCoralDetectInput);
 
   private static final double kIntakeSpeed = 0.5;
   private static final double kFeedSpeed = 1.0;
@@ -85,7 +85,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    m_coralDetectPub.set(getOpticSensor0());
+    m_coralDetectPub.set(getOpticSensor());
 
     m_ticks++;
     if (m_ticks % 13 != 11)
@@ -143,7 +143,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     setLeftCoralControlVelocity(CoralControlTargetSpeeds.Stop);
   }
 
-  public boolean getOpticSensor0()
+  public boolean getOpticSensor()
   {
     return !m_coralDetect.get();
   }
