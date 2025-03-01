@@ -27,18 +27,23 @@ public class IntakeCoralCommand extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if(m_coralDeliverySubsystem.getOpticSensor()){
+      m_coralDeliverySubsystem.setCoralPresent(true);
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     m_coralDeliverySubsystem.stopLeftCoralControlMotor();
     m_coralDeliverySubsystem.stopRightCoralControlMotor();
+    m_coralDeliverySubsystem.setCoralPresent(false);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_coralDeliverySubsystem.getOpticSensor();
+    return m_coralDeliverySubsystem.isCoralInPosition();
   }
 }

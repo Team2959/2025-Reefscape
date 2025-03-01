@@ -38,10 +38,12 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   private final SparkMax m_leftCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryLeftCoralControlMotor, MotorType.kBrushless);
   private final DigitalInput m_coralDetect = new DigitalInput(RobotMap.kCoralDetectInput);
 
-  private static final double kIntakeSpeed = 0.5;
+  private static final double kIntakeSpeed = 0.35;
   private static final double kFeedSpeed = 1.0;
   private static final double kL1FastSpeed = 0.7;
   private static final double kL1SlowSpeed = 0.1;
+  
+  private boolean m_coralPresent = false;
 
   private final DoubleSubscriber m_rightVelocitySub;
   private final DoubleSubscriber m_leftVelocitySub;
@@ -146,5 +148,15 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   public boolean getOpticSensor()
   {
     return !m_coralDetect.get();
+  }
+
+  public void setCoralPresent(boolean coralPresent)
+  {
+    m_coralPresent = coralPresent;
+  }
+
+  public boolean isCoralInPosition ()
+  {
+    return m_coralPresent && !getOpticSensor();
   }
 }
