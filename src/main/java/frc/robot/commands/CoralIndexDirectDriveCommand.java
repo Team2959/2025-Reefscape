@@ -6,14 +6,14 @@ package frc.robot.commands;
 
 import java.util.function.Supplier;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CoralDeliverySubsystem;
+import frc.robot.subsystems.CoralIndexSubsystem;
 
 public class CoralIndexDirectDriveCommand extends Command {
-    private CoralDeliverySubsystem m_coralSubsystem;
+    private CoralIndexSubsystem m_coralSubsystem;
     private Supplier<Double> m_yJoystickSupplier;
 
     public CoralIndexDirectDriveCommand(
-        CoralDeliverySubsystem coralSubsystem,
+        CoralIndexSubsystem coralSubsystem,
         Supplier<Double> yJoystick)
     {
         m_coralSubsystem = coralSubsystem;

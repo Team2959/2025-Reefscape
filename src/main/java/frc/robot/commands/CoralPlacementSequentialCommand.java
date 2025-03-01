@@ -10,7 +10,8 @@ import frc.robot.subsystems.CoralDeliverySubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LiftSubsystem;
 import frc.robot.subsystems.CoralDeliverySubsystem.CoralControlTargetSpeeds;
-import frc.robot.subsystems.CoralDeliverySubsystem.CoralIndexTargetPositions;
+import frc.robot.subsystems.CoralIndexSubsystem;
+import frc.robot.subsystems.CoralIndexSubsystem.CoralIndexTargetPositions;
 import frc.robot.subsystems.LiftSubsystem.liftTargetPositions;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -23,7 +24,8 @@ public class CoralPlacementSequentialCommand extends SequentialCommandGroup {
     DriveSubsystem drivesubsystem,
     CoralDeliverySubsystem coralDeliverySubsystem,
     liftTargetPositions targetLevel,
-    AprilTagPID aprilTagPID 
+    AprilTagPID aprilTagPID, 
+    CoralIndexSubsystem coralIndexSubsystem
     )
   {
     // Add your commands in the addCommands() call, e.g.
@@ -31,8 +33,8 @@ public class CoralPlacementSequentialCommand extends SequentialCommandGroup {
     addCommands(
       new AlignWithReefCommand(drivesubsystem, aprilTagPID),
       new LockWheelsCommand(drivesubsystem).alongWith(new LiftDriveToPositionCommand(liftSubsystem, targetLevel)),
-      new DeliverCoralCommand(CoralDeliverySubsystem.DeliveryWaitSeconds, coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed),
-      new LiftDriveToPositionCommand(liftSubsystem, liftTargetPositions.Base).alongWith(new IndexCoralCommand(coralDeliverySubsystem,CoralIndexTargetPositions.Center))
+      new DeliverCoralCommand(coralDeliverySubsystem.m_deliveryWaitSeconds, coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed),
+      new LiftDriveToPositionCommand(liftSubsystem, liftTargetPositions.Base).alongWith(new IndexCoralCommand(coralIndexSubsystem,CoralIndexTargetPositions.Center))
     );
   }
 }

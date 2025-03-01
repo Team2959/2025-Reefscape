@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "StartCenter to 1L1R"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Index Coral Right"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Place at Trough Right"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Start Center",
+  "choreoAuto": false
+}

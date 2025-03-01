@@ -51,6 +51,7 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   private final double kClawArmP = 0;
   private final double kClawArmI = 0;
   private final double kClawArmD = 0;
+  private final double kClawArmFF = 0;
 
   private final DoubleSubscriber m_clawFeedSpeedSub;
   private final DoubleSubscriber m_clawShootRPMSub;
@@ -71,6 +72,7 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   private final DoubleSubscriber m_armExtendPSub;
   private final DoubleSubscriber m_armExtendISub;
   private final DoubleSubscriber m_armExtendDSub;
+  private final DoubleSubscriber m_armExtendFFSub;
   private final BooleanSubscriber m_updateArmExtendPIDSub;
   private final BooleanPublisher m_updateArmExtendPIDPub;
   private final DoubleSubscriber m_armExtendTargetPositionSub;
@@ -93,7 +95,7 @@ public class AlgaeClawSubsystem extends SubsystemBase {
     m_clawArmExtendConfig.idleMode(IdleMode.kBrake);
     m_clawArmExtendConfig.closedLoop
       .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
-      .pid(kClawArmP, kClawArmI, kClawArmD);
+      .pidf(kClawArmP, kClawArmI, kClawArmD, kClawArmFF);
     var alternateEncoderConfig = new AlternateEncoderConfig();
     alternateEncoderConfig.setSparkMaxDataPortConfig();
     m_clawArmExtendConfig.apply(alternateEncoderConfig);
@@ -164,6 +166,10 @@ public class AlgaeClawSubsystem extends SubsystemBase {
     clawArmDSub.publish().set(kClawArmD);
     m_armExtendDSub = clawArmDSub.subscribe(kClawArmD);
 
+    var clawArmFFSub = datatable.getDoubleTopic(name + "Arm FF");
+    clawArmFFSub.publish().set(kClawArmFF);
+    m_armExtendFFSub = clawArmFFSub.subscribe(kClawArmFF);
+
     var clawTargetPositionSub = datatable.getDoubleTopic(name + "Arm Target Position");
     clawTargetPositionSub.publish().set(0);
     m_armExtendTargetPositionSub = clawTargetPositionSub.subscribe(0);
@@ -220,7 +226,7 @@ public class AlgaeClawSubsystem extends SubsystemBase {
       var newI = m_ClawShootISub.get();
       var newD = m_ClawShootDSub.get();
 
-      m_clawShootConfig.closedLoop.pid(newP, newI, newD);
+      m_clawShootConfig.closedLoop.pidf(newP, newI, newD, m_armExtendFFSub.get());
       m_clawShootSparkMax.configure(m_clawShootConfig, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
       m_updateClawShootPIDPub.set(false);
     }

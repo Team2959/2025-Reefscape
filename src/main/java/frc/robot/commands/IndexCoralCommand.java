@@ -5,25 +5,25 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.CoralDeliverySubsystem;
-import frc.robot.subsystems.CoralDeliverySubsystem.CoralIndexTargetPositions;
+import frc.robot.subsystems.CoralIndexSubsystem;
+import frc.robot.subsystems.CoralIndexSubsystem.CoralIndexTargetPositions;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IndexCoralCommand extends Command {
   /** Creates a new IndexCoralCommand. */
-  private CoralDeliverySubsystem m_coralDeliverySubsystem;
+  private CoralIndexSubsystem m_coralIndexSubsystem;
   private CoralIndexTargetPositions m_target;
-  public IndexCoralCommand(CoralDeliverySubsystem coralDeliverySubsystem, CoralIndexTargetPositions target) {
+  public IndexCoralCommand(CoralIndexSubsystem coralIndexSubsystem, CoralIndexTargetPositions target) {
     // Use addRequirements() here to declare subsystem dependencies.
-    m_coralDeliverySubsystem = coralDeliverySubsystem;
+    m_coralIndexSubsystem = coralIndexSubsystem;
     m_target = target;
-    addRequirements(m_coralDeliverySubsystem);
+    addRequirements(m_coralIndexSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_coralDeliverySubsystem.setTargetIndexPosition(m_target);
+    m_coralIndexSubsystem.setTargetIndexPosition(m_target);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -33,12 +33,12 @@ public class IndexCoralCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_coralDeliverySubsystem.stopAtIndexCurrentPosition();
+    m_coralIndexSubsystem.stopAtIndexCurrentPosition();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_coralDeliverySubsystem.isAtIndexTargetPosition();
+    return m_coralIndexSubsystem.isAtIndexTargetPosition();
   }
 }

@@ -9,12 +9,10 @@ public final class RobotMap {
     // Swerve Motor Assemblies - SparkMax
     // Drive motor CAN == module #
     // Steer motor CAN == module # + 10
-    // CAN coder CAN == module #
     public static final int kFrontLeftModule = 4;
     public static final int kBackLeftModule = 1;
     public static final int kBackRigvhtModule = 2;
     public static final int kFrontRightModule = 3;
-    // unused module - 5
 
     // CAN motor addresses
         // SparkMax
@@ -34,11 +32,9 @@ public final class RobotMap {
     public static final int kFrontRightAnalogInput = 3;
 
     // REV Pneumatic Hub solenoid addresses
-    public static final int kAlgaeClawSolenoid = 1;
 
     // Digital IO addresses
-    public static final int kCoralDetectInput = 1;
-    public static final int kLiftDetectInput = 2;
+    public static final int kCoralDetectInput = 0;
 
     // Operator input USB ports
     public static final int kLeftJoystick = 0;
@@ -51,7 +47,6 @@ public final class RobotMap {
     public static final int kRightResetNavXButton = 10;
     public static final int kLeftTroughButton = 4;
     public static final int kRightTroughButton = 2;
-    // public static final int kRightResetRestAbsoluteEncoderButton = null;
 
     // Co-Piolt Button board
     public static final int kPlaceAtL4Button = 11;

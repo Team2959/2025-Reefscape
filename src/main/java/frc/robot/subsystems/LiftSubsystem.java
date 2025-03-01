@@ -21,7 +21,6 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
@@ -41,19 +40,22 @@ public class LiftSubsystem extends SubsystemBase {
   private SparkClosedLoopController m_liftController;
   private SparkMaxAlternateEncoder m_liftEncoder;
   private double m_lastTargetPosition;
-  private final DigitalInput m_liftDetect = new DigitalInput(RobotMap.kLiftDetectInput);
 
   private final double kLiftP = 1.0;
   private final double kLiftI = 0;
   private final double kLiftD = 0;
   private final double kLiftFF = 0;
 
+  private static final double kL4Position = 5;
+  private static final double kL3Position = 4.7;
+  private static final double kL2Position = 1.5;
+  private static final double kBasePosition = 0.24;
+
   private boolean m_initalized = false;
 
   private final DoublePublisher m_sparkLiftRotations;
   private final DoublePublisher m_sparkVelocity;
   private final DoublePublisher m_appliedOutputPub;
-  private final BooleanPublisher m_mechanicalSwitchPub;
   private final DoubleSubscriber m_targetRotations;
   private final DoubleSubscriber m_liftP;
   private final DoubleSubscriber m_liftI;
@@ -92,7 +94,6 @@ public class LiftSubsystem extends SubsystemBase {
 
     m_sparkLiftRotations = datatable.getDoubleTopic(name + "/Rotations").publish();
     m_sparkVelocity = datatable.getDoubleTopic(name + "/Velocity").publish();
-    m_mechanicalSwitchPub = datatable.getBooleanTopic(name + "/Mechanical Switch Value").publish();
     m_appliedOutputPub = datatable.getDoubleTopic(name + "/Applied Output").publish();
 
     var targetRotations = datatable.getDoubleTopic(name + "/target rotations");
@@ -138,7 +139,6 @@ public class LiftSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    m_mechanicalSwitchPub.set(isLiftAtBottom());
     m_ticks++;
     if (m_ticks % 11 != 5)
         return;
@@ -192,13 +192,13 @@ public class LiftSubsystem extends SubsystemBase {
   {
     switch (target) {
       case L4:
-        return 5;
+        return kL4Position;
       case L3:
-        return 4.7;
+        return kL3Position;
       case L2:
-        return 1.5;
+        return kL2Position;
       default:
-        return 0.24;  // loading level for wall
+        return kBasePosition;  // loading level for wall
     }
   }
 
@@ -210,10 +210,5 @@ public class LiftSubsystem extends SubsystemBase {
   public void stopAtCurrentPosition()
   {
     goToTargetPosition(m_liftEncoder.getPosition());
-  }
-
-  private boolean isLiftAtBottom()
-  {
-    return m_liftDetect.get();
   }
 }
