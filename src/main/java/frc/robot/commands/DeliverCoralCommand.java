@@ -40,5 +40,6 @@ public class DeliverCoralCommand extends WaitCommand {
   {
     m_coralDeliverySubsystem.stopLeftCoralControlMotor();
     m_coralDeliverySubsystem.stopRightCoralControlMotor();
+    m_coralDeliverySubsystem.setCoralPresent(false);
   }
 }

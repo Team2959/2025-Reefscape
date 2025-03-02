@@ -30,8 +30,7 @@ public class IntakeAlgaeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_algaeClawSubsystem.stopClawIntakeMotor();
-    m_algaeClawSubsystem.stopClawShootMotor();
+    m_algaeClawSubsystem.stopClawWheels();
   }
 
   // Returns true when the command should end.

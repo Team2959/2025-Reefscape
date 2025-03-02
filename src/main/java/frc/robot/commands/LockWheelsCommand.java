@@ -20,6 +20,4 @@ public class LockWheelsCommand extends Command {
     public boolean isFinished() {
         return false;
     }
-
 }
-

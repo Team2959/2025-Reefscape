@@ -29,7 +29,6 @@ public class ShootAlgaeCommand extends WaitCommand {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_algaeClawSubsystem.stopClawShootMotor();
-    m_algaeClawSubsystem.stopClawIntakeMotor();
+    m_algaeClawSubsystem.stopClawWheels();
   }
 }
