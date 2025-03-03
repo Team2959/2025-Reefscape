@@ -18,8 +18,8 @@ public final class RobotMap {
         // SparkMax
     public static final int kLiftLeadMotor = 5;
     public static final int kLiftFollowerMotor = 6;
-    public static final int kAlgaeClawIntakeMotor = 8;
-    public static final int kAlgaeClawShootMotor = 7;
+    public static final int kAlgaeClawIntakeMotor = 7;
+    public static final int kAlgaeClawShootMotor = 8;
     public static final int kAlgaeArmExtendMotor = 9;
     public static final int kCoralDeliveryRightCoralControlMotor = 22;
     public static final int kCoralDeliveryLeftCoralControlMotor = 23;
@@ -55,8 +55,8 @@ public final class RobotMap {
     public static final int kDeliverAlgaeButton = 3;
     public static final int kIndexCoralRightButton = 8;
     public static final int kIndexCoralLeftButton = 12;
-    public static final int kAlgaeHighIntake = 4;
-    public static final int kAlgaeMediumIntake = 2;
+    public static final int kAlgaeIntake = 2;
+    // public static final int kAlgaeFeed = 4;
     public static final int kDeliverCoralButton = 10;
     public static final int kMoveLiftToBase = 9;
     public static final int kWallIntake = 7;

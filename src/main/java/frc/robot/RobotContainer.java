@@ -117,14 +117,13 @@ public class RobotContainer {
     m_buttonBox.button(RobotMap.kMoveLiftToBase).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.Base));
 
     m_buttonBox.button(RobotMap.kDeliverAlgaeButton).onTrue(new ShootAlgaeCommand(m_algaeClawSubsystem));
+    m_buttonBox.button(RobotMap.kAlgaeIntake).whileTrue(new IntakeAlgaeCommand(m_algaeClawSubsystem));
 
     // m_buttonBox.button(RobotMap.kplaceAtL3Button).onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L3)
     //   .andThen(new DeliverCoralCommand(m_coralDeliverySubsystem.DeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)));
     
     // m_buttonBox.button(RobotMap.kplaceAtL2Button).onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L2)
     //   .andThen(new DeliverCoralCommand(m_coralDeliverySubsystem.DeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)));
-
-    // m_buttonBox.button(RobotMap.kintakeAlgaeButton).whileTrue(new IntakeAlgaeCommand(m_algaeClawSubsystem));
 
     // m_coralDeliverySubsystem.setDefaultCommand(
     //   new CoralIndexDirectDriveCommand(m_coralDeliverySubsystem, () -> m_driverController.getLeftY()));
