@@ -280,7 +280,8 @@ public class AlgaeClawSubsystem extends SubsystemBase {
 
   private void setExtendArmPosition(double target)
   {
-    m_clawArmExtendController.setReference(target, ControlType.kPosition);
+    m_clawArmExtendSparkMax.stopMotor();
+    // m_clawArmExtendController.setReference(target, ControlType.kPosition);
   }
 
   public void stopClawWheels()

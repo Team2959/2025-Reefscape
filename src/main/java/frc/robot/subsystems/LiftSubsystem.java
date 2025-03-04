@@ -31,7 +31,8 @@ public class LiftSubsystem extends SubsystemBase {
       L4,
       L3,
       L2,
-      Base
+      Base,
+      Processor
   };
 
   private final SparkMax m_lift = new SparkMax(RobotMap.kLiftLeadMotor, MotorType.kBrushless);
@@ -46,10 +47,11 @@ public class LiftSubsystem extends SubsystemBase {
   private final double kLiftD = 0;
   private final double kLiftFF = 0;
 
-  private static final double kL4Position = 5;
+  private static final double kL4Position = 9.1;
   private static final double kL3Position = 4.7;
   private static final double kL2Position = 1.5;
-  private static final double kBasePosition = 0.24;
+  private static final double kBasePosition = 0.22;
+  private static final double kProcessorPosition = 0.7;
 
   private boolean m_initalized = false;
 
@@ -200,6 +202,8 @@ public class LiftSubsystem extends SubsystemBase {
         return kL3Position;
       case L2:
         return kL2Position;
+      case Processor:
+        return kProcessorPosition;
       default:
         return kBasePosition;  // loading level for wall
     }
