@@ -101,14 +101,15 @@ public class RobotContainer {
       () -> m_robot.isTeleopEnabled()));
     m_rightJoystick.button(RobotMap.kRightResetNavXButton).onTrue(new InstantCommand(() -> {m_driveSubsystem.resetNavX();}));
     m_leftJoystick.button(RobotMap.kLeftLockWheels).whileTrue(new LockWheelsCommand(m_driveSubsystem));
-    m_leftJoystick.button(RobotMap.kLeftTroughButton).onTrue(new DeliverCoralCommand(m_coralDeliverySubsystem.m_deliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1SlowSpeed, CoralControlTargetSpeeds.L1FastSpeed));
-    m_rightJoystick.button(RobotMap.kRightTroughButton).onTrue(new DeliverCoralCommand(m_coralDeliverySubsystem.m_deliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1FastSpeed, CoralControlTargetSpeeds.L1SlowSpeed));
+    m_leftJoystick.button(RobotMap.kLeftTroughButton).onTrue(new DeliverCoralCommand(m_coralDeliverySubsystem.m_deliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1SlowSpeed, CoralControlTargetSpeeds.L1FastSpeed, m_liftSubsystem));
+    m_rightJoystick.button(RobotMap.kRightTroughButton).onTrue(new DeliverCoralCommand(m_coralDeliverySubsystem.m_deliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1FastSpeed, CoralControlTargetSpeeds.L1SlowSpeed, m_liftSubsystem));
 
     m_buttonBox.button(RobotMap.kIndexCoralLeftButton).onTrue(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Left));
     m_buttonBox.button(RobotMap.kIndexCoralRightButton).onTrue(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Right));
     m_buttonBox.button(RobotMap.kWallIntake).onTrue(new IntakeCoralCommand(m_coralDeliverySubsystem)
        .alongWith(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Center)));
-    m_buttonBox.button(RobotMap.kDeliverCoralButton).onTrue(new DeliverCoralCommand(m_coralDeliverySubsystem.m_deliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)
+    m_buttonBox.button(RobotMap.kDeliverCoralButton)
+      .onTrue(new DeliverCoralCommand(m_coralDeliverySubsystem.m_deliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed, m_liftSubsystem)
       .andThen(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Center)));
 
     m_buttonBox.button(RobotMap.kPlaceAtL2Button).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.L2));
