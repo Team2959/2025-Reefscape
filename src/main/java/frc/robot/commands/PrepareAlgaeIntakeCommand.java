@@ -14,7 +14,7 @@ public class PrepareAlgaeIntakeCommand extends Command {
   /** Creates a new ClawExtendCommand. */
   private final LiftSubsystem m_liftsSubsystem;
   private final AlgaeClawSubsystem m_AlgaeClawSubsystem;
-  private boolean m_clawStarted;
+  private boolean m_clawExtendStarted;
 
   public PrepareAlgaeIntakeCommand(
     LiftSubsystem liftSubsystem,
@@ -32,16 +32,16 @@ public class PrepareAlgaeIntakeCommand extends Command {
   @Override
   public void initialize() {
     m_liftsSubsystem.setTargetPosition(liftTargetLevels.AlgaeRemovalPrep);
-    m_clawStarted = false;
+    m_clawExtendStarted = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!m_clawStarted && m_liftsSubsystem.isAbovePosition(liftTargetLevels.Processor))
+    if (!m_clawExtendStarted && m_liftsSubsystem.isAbovePosition(liftTargetLevels.L2))
     {
       m_AlgaeClawSubsystem.extendClawArms();
-      m_clawStarted = true;
+      m_clawExtendStarted = true;
     }
   }
 

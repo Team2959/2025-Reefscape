@@ -32,7 +32,7 @@ public class CoralPlacementSequentialCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new AlignWithReefCommand(drivesubsystem, aprilTagPID),
-      new LockWheelsCommand(drivesubsystem).alongWith(new LiftMoveToLevelCommand(liftSubsystem, targetLevel)),
+      drivesubsystem.lockWheelsCommand().alongWith(new LiftMoveToLevelCommand(liftSubsystem, targetLevel)),
       new DeliverCoralCommand(coralDeliverySubsystem.m_deliveryWaitSeconds, coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed, liftSubsystem),
       new LiftMoveToLevelCommand(liftSubsystem, liftTargetLevels.Base).alongWith(new IndexCoralCommand(coralIndexSubsystem,CoralIndexTargetPositions.Center))
     );

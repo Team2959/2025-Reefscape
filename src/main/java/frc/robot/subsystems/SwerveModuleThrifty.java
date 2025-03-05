@@ -272,7 +272,7 @@ public class SwerveModuleThrifty {
 
     public void lockWheelAtAngleInDegrees(double degrees)
     {
-       // setDriveVelocity(0);
+        setDriveVelocity(0);
         var angleInRadians = degrees * Math.PI / 180.0;
         setSteerAngleInRadians(angleInRadians);
     }

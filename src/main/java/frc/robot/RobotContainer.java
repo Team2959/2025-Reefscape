@@ -8,10 +8,8 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.PrepareAlgaeIntakeCommand;
 import frc.robot.commands.DeliverCoralCommand;
 import frc.robot.commands.IndexCoralCommand;
-import frc.robot.commands.IntakeAlgaeCommand;
 import frc.robot.commands.IntakeCoralCommand;
 import frc.robot.commands.LiftMoveToLevelCommand;
-import frc.robot.commands.LockWheelsCommand;
 import frc.robot.commands.ShootAlgaeCommand;
 import frc.robot.commands.TeleOpDriveCommand;
 import frc.robot.cwtech.AprilTagPID;
@@ -100,7 +98,7 @@ public class RobotContainer {
       () -> getDriveXInput(), () -> getDriveYInput(), () -> getTurnInput(),
       () -> m_robot.isTeleopEnabled()));
     m_rightJoystick.button(RobotMap.kRightResetNavXButton).onTrue(new InstantCommand(() -> {m_driveSubsystem.resetNavX();}));
-    m_leftJoystick.button(RobotMap.kLeftLockWheels).whileTrue(new LockWheelsCommand(m_driveSubsystem));
+    m_leftJoystick.button(RobotMap.kLeftLockWheels).whileTrue(m_driveSubsystem.lockWheelsCommand());
     m_leftJoystick.button(RobotMap.kLeftTroughButton).onTrue(new DeliverCoralCommand(m_coralDeliverySubsystem.m_deliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1SlowSpeed, CoralControlTargetSpeeds.L1FastSpeed, m_liftSubsystem));
     m_rightJoystick.button(RobotMap.kRightTroughButton).onTrue(new DeliverCoralCommand(m_coralDeliverySubsystem.m_deliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1FastSpeed, CoralControlTargetSpeeds.L1SlowSpeed, m_liftSubsystem));
 
@@ -120,7 +118,7 @@ public class RobotContainer {
     m_buttonBox.button(RobotMap.kAlgaeIntakePrep).onTrue(new PrepareAlgaeIntakeCommand(m_liftSubsystem, m_algaeClawSubsystem));
     m_buttonBox.button(RobotMap.kAlgaeIntakeLow).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.LowAlage));
     m_buttonBox.button(RobotMap.kAlgaeIntakeHigh).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.HighAlage));
-    m_buttonBox.button(RobotMap.kAlgaeIntakeStop).onTrue(m_algaeClawSubsystem.stopClawMotorCommand().alongWith(m_liftSubsystem.stopAtCurrentPositionCommand()));
+    m_buttonBox.button(RobotMap.kAlgaeIntakeStop).onTrue(m_algaeClawSubsystem.stopClawWheelsCommand().alongWith(m_liftSubsystem.stopAtCurrentPositionCommand()));
     m_buttonBox.button(RobotMap.kDeliverAlgaeButton)
       .onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.Processor)
       .andThen(new ShootAlgaeCommand(m_algaeClawSubsystem)));

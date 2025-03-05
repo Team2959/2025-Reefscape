@@ -39,11 +39,11 @@ public class DeliverCoralCommand extends WaitCommand {
   public void initialize()
   {
     super.initialize();
-    var isAboveL3 = m_LiftSubsystem.isAbovePosition(liftTargetLevels.L3);
+    var useL4Speed = m_LiftSubsystem.isAbovePosition(liftTargetLevels.L4SlowSpeedMin);
     m_coralDeliverySubsystem.setLeftCoralControlVelocity(
-      isAboveL3 ? CoralControlTargetSpeeds.FeedL4 : m_targetLeftSpeed);
+      useL4Speed ? CoralControlTargetSpeeds.FeedL4 : m_targetLeftSpeed);
     m_coralDeliverySubsystem.setRightCoralControlVelocity(
-      isAboveL3 ? CoralControlTargetSpeeds.FeedL4 : m_targetRightSpeed);
+      useL4Speed ? CoralControlTargetSpeeds.FeedL4 : m_targetRightSpeed);
   }
 
   // Called once the command ends or is interrupted.

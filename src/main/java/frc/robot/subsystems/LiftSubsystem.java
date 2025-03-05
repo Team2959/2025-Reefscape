@@ -33,6 +33,7 @@ public class LiftSubsystem extends SubsystemBase {
       L3,
       L2,
       Base,
+      L4SlowSpeedMin,
       Processor,
       HighAlage,
       LowAlage,
@@ -55,6 +56,7 @@ public class LiftSubsystem extends SubsystemBase {
   private static final double kL3Position = 4.7;
   private static final double kL2Position = 1.5;
   private static final double kBasePosition = 0.22;
+  private static final double kL4SlowSpeedMin = 8.0;
   private static final double kProcessorPosition = 0.7;
   private static final double kHighAlagePosition = 7;
   private static final double kLowAlagePosition = 5;
@@ -209,6 +211,8 @@ public class LiftSubsystem extends SubsystemBase {
         return kL3Position;
       case L2:
         return kL2Position;
+      case L4SlowSpeedMin:
+        return kL4SlowSpeedMin;
       case Processor:
         return kProcessorPosition;
       case HighAlage:

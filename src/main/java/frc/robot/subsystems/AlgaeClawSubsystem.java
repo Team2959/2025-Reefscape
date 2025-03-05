@@ -301,7 +301,7 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   //   m_clawShootController.setReference(targetRPM, ControlType.kVelocity);
   // }
 
-  public Command stopClawMotorCommand()
+  public Command stopClawWheelsCommand()
   {
     return this.startEnd(() -> this.stopClawWheels(), () -> {});
   }
