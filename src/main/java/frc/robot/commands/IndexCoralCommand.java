@@ -33,7 +33,9 @@ public class IndexCoralCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_coralIndexSubsystem.stopAtIndexCurrentPosition();
+    if (interrupted){
+      m_coralIndexSubsystem.stopAtIndexCurrentPosition();
+    }
   }
 
   // Returns true when the command should end.

@@ -169,7 +169,7 @@ public class CoralIndexSubsystem extends SubsystemBase {
 
   public boolean isAtIndexTargetPosition()
   {
-    return Math.abs(m_lastTargetPosition - m_indexEncoder.getPosition()) < 0.05;
+    return Math.abs(m_lastTargetPosition - m_indexEncoder.getPosition()) < 0.1;
   }
 
   public void stopAtIndexCurrentPosition()

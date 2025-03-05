@@ -30,7 +30,7 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   /** Creates a new AlgaeClawSubsystem. */
   // private final SparkMax m_clawShootSparkMax = new SparkMax(RobotMap.kAlgaeClawShootMotor, MotorType.kBrushless);
   private final SparkMax m_clawFeedSparkMax = new SparkMax(RobotMap.kAlgaeClawIntakeMotor, MotorType.kBrushless);
-  private final SparkMax m_clawArmExtendSparkMax = new SparkMax(RobotMap.kAlgaeArmExtendMotor, MotorType.kBrushed);
+  private final SparkMax m_clawArmExtendSparkMax = new SparkMax(RobotMap.kAlgaeArmExtendMotor, MotorType.kBrushless);
   // private SparkClosedLoopController m_clawShootController;
   private SparkClosedLoopController m_clawArmExtendController;
   // private SparkRelativeEncoder m_clawShootEncoder;
@@ -42,13 +42,13 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   private double m_clawFeedMotorSpeed = 0.2;
   //private double m_clawShootSpeed = 5000;
 
-  private double kClawExtendPosition = -0.4;
+  private double kClawExtendPosition = -0.38;
   private double kClawRetractPosition = 0;
 
   // private final double kClawShootP = 1.0;
   // private final double kClawShootI = 0;
   // private final double kClawShootD = 0;
-  private final double kClawArmP = 6.0;
+  private final double kClawArmP = 0.6; //6 with old motor
   private final double kClawArmI = 0;
   private final double kClawArmD = 0;
   private final double kClawArmFF = 0;
@@ -280,8 +280,8 @@ public class AlgaeClawSubsystem extends SubsystemBase {
 
   private void setExtendArmPosition(double target)
   {
-    m_clawArmExtendSparkMax.stopMotor();
-    // m_clawArmExtendController.setReference(target, ControlType.kPosition);
+    //m_clawArmExtendSparkMax.stopMotor();
+     m_clawArmExtendController.setReference(target, ControlType.kPosition);
   }
 
   public void stopClawWheels()
