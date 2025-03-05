@@ -52,14 +52,16 @@ public final class RobotMap {
     public static final int kPlaceAtL4Button = 11;
     public static final int kPlaceAtL3Button = 6;
     public static final int kPlaceAtL2Button = 5;
-    public static final int kDeliverAlgaeButton = 3;
     public static final int kIndexCoralRightButton = 8;
     public static final int kIndexCoralLeftButton = 12;
-    public static final int kAlgaeIntake = 2;
-    // public static final int kAlgaeFeed = 4;
     public static final int kDeliverCoralButton = 10;
     public static final int kMoveLiftToBase = 9;
     public static final int kWallIntake = 7;
+    public static final int kAlgaeIntakePrep = 1;
+    public static final int kAlgaeIntakeLow = 2;
+    public static final int kAlgaeIntakeHigh = 4;
+    public static final int kAlgaeIntakeStop = 14;
+    public static final int kDeliverAlgaeButton = 3;
 
     // Zeroed values, should be in radians
     // source is google document in Electrical for team - module data

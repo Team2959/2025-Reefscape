@@ -4,8 +4,8 @@
 
 package frc.robot;
 
-import frc.robot.commands.AlignWithReefCommand;
 import frc.robot.commands.Autos;
+import frc.robot.commands.PrepareAlgaeIntakeCommand;
 import frc.robot.commands.DeliverCoralCommand;
 import frc.robot.commands.IndexCoralCommand;
 import frc.robot.commands.IntakeAlgaeCommand;
@@ -116,8 +116,13 @@ public class RobotContainer {
     m_buttonBox.button(RobotMap.kPlaceAtL4Button).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.L4));
     m_buttonBox.button(RobotMap.kMoveLiftToBase).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.Base));
 
-    m_buttonBox.button(RobotMap.kDeliverAlgaeButton).onTrue(new ShootAlgaeCommand(m_algaeClawSubsystem));
-    m_buttonBox.button(RobotMap.kAlgaeIntake).whileTrue(new IntakeAlgaeCommand(m_algaeClawSubsystem));
+    m_buttonBox.button(RobotMap.kAlgaeIntakePrep).onTrue(new PrepareAlgaeIntakeCommand(m_liftSubsystem, m_algaeClawSubsystem));
+    m_buttonBox.button(RobotMap.kAlgaeIntakeLow).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.LowAlage));
+    m_buttonBox.button(RobotMap.kAlgaeIntakeHigh).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.HighAlage));
+    m_buttonBox.button(RobotMap.kAlgaeIntakeStop).onTrue(m_algaeClawSubsystem.stopClawMotorCommand().alongWith(m_liftSubsystem.stopAtCurrentPositionCommand()));
+    m_buttonBox.button(RobotMap.kDeliverAlgaeButton)
+      .onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.Processor)
+      .andThen(new ShootAlgaeCommand(m_algaeClawSubsystem)));
 
     // m_buttonBox.button(RobotMap.kplaceAtL3Button).onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L3)
     //   .andThen(new DeliverCoralCommand(m_coralDeliverySubsystem.DeliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed, CoralControlTargetSpeeds.Feed)));

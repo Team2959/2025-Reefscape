@@ -10,48 +10,51 @@ import frc.robot.subsystems.LiftSubsystem;
 import frc.robot.subsystems.LiftSubsystem.liftTargetLevels;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ClawExtendCommand extends Command {
+public class PrepareAlgaeIntakeCommand extends Command {
   /** Creates a new ClawExtendCommand. */
-private LiftSubsystem m_liftsSubsystem;
-private AlgaeClawSubsystem m_AlgaeClawSubsystem;
-private liftTargetLevels m_targetPosition;
+  private final LiftSubsystem m_liftsSubsystem;
+  private final AlgaeClawSubsystem m_AlgaeClawSubsystem;
+  private boolean m_clawStarted;
 
-  public ClawExtendCommand(
+  public PrepareAlgaeIntakeCommand(
     LiftSubsystem liftSubsystem,
-    AlgaeClawSubsystem algaeClawSubsystem,
-    liftTargetLevels targetPosition
-  ) { m_liftsSubsystem = liftSubsystem;
-      m_AlgaeClawSubsystem = algaeClawSubsystem;
-      m_targetPosition = targetPosition;
-    // Use addRequirements() here to declare subsystem dependencies.
+    AlgaeClawSubsystem algaeClawSubsystem)
+  {
+     m_liftsSubsystem = liftSubsystem;
+     m_AlgaeClawSubsystem = algaeClawSubsystem;
+
+     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_AlgaeClawSubsystem);
     addRequirements(m_liftsSubsystem);
-   
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-   m_liftsSubsystem.setTargetPosition(liftTargetLevels.LowAlage);
+    m_liftsSubsystem.setTargetPosition(liftTargetLevels.AlgaeRemovalPrep);
+    m_clawStarted = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // if (m_liftsSubsystem.
-    // m_AlgaeClawSubsystem.intakeAlgae();
+    if (!m_clawStarted && m_liftsSubsystem.isAbovePosition(liftTargetLevels.Processor))
+    {
+      m_AlgaeClawSubsystem.extendClawArms();
+      m_clawStarted = true;
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_AlgaeClawSubsystem.stopClawWheels();
+    m_AlgaeClawSubsystem.intakeAlgae();
     m_liftsSubsystem.stopAtCurrentPosition();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_liftsSubsystem.isAtTargetPosition();
   }
 }

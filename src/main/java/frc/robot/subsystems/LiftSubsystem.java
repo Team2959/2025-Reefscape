@@ -21,6 +21,7 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
@@ -34,7 +35,8 @@ public class LiftSubsystem extends SubsystemBase {
       Base,
       Processor,
       HighAlage,
-      LowAlage
+      LowAlage,
+      AlgaeRemovalPrep
   };
 
   private final SparkMax m_lift = new SparkMax(RobotMap.kLiftLeadMotor, MotorType.kBrushless);
@@ -56,6 +58,7 @@ public class LiftSubsystem extends SubsystemBase {
   private static final double kProcessorPosition = 0.7;
   private static final double kHighAlagePosition = 7;
   private static final double kLowAlagePosition = 5;
+  private static final double kAlageRemovalPrepPosition = 3;
 
   private boolean m_initalized = false;
 
@@ -208,13 +211,14 @@ public class LiftSubsystem extends SubsystemBase {
         return kL2Position;
       case Processor:
         return kProcessorPosition;
-      default:
-        return kBasePosition;  // loading level for wall
       case HighAlage:
         return kHighAlagePosition;
       case LowAlage:
         return kLowAlagePosition;
-
+      case AlgaeRemovalPrep:
+        return kAlageRemovalPrepPosition;
+      default:
+        return kBasePosition;  // loading level for wall
     }
   }
 
@@ -223,8 +227,18 @@ public class LiftSubsystem extends SubsystemBase {
     return Math.abs(m_lastTargetPosition - m_liftEncoder.getPosition()) < 0.05;
   }
 
+  public boolean isAbovePosition(liftTargetLevels level)
+  {
+    return m_liftEncoder.getPosition() >  LiftPositionValue(level);
+  }
+
   public void stopAtCurrentPosition()
   {
     goToTargetPosition(m_liftEncoder.getPosition());
+  }
+
+  public Command stopAtCurrentPositionCommand()
+  {
+    return this.startEnd(() -> this.stopAtCurrentPosition(), () -> {});
   }
 }
