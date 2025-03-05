@@ -57,10 +57,10 @@ public final class RobotMap {
     public static final int kDeliverCoralButton = 10;
     public static final int kMoveLiftToBase = 9;
     public static final int kWallIntake = 7;
-    public static final int kAlgaeIntakePrep = 2; //wrong
+    public static final int kAlgaeIntakePrep = 2; 
     public static final int kAlgaeIntakeLow = 1;
     public static final int kAlgaeIntakeHigh = 4;
-    public static final int kAlgaeIntakeStop = 13; //wrong
+    public static final int kAlgaeIntakeStopAxis = 1;
     public static final int kDeliverAlgaeButton = 3;
 
     // Zeroed values, should be in radians
