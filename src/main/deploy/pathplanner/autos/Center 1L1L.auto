@@ -26,6 +26,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Start Center",
+  "folder": null,
   "choreoAuto": false
 }

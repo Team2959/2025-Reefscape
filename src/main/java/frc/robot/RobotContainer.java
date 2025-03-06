@@ -115,13 +115,13 @@ public class RobotContainer {
     m_buttonBox.button(RobotMap.kPlaceAtL4Button).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.L4));
     m_buttonBox.button(RobotMap.kMoveLiftToBase).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.Base));
 
-    m_buttonBox.button(RobotMap.kAlgaeIntakePrep).onTrue(new PrepareAlgaeIntakeCommand(m_liftSubsystem, m_algaeClawSubsystem));
-    m_buttonBox.button(RobotMap.kAlgaeIntakeLow).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.LowAlage));
-    m_buttonBox.button(RobotMap.kAlgaeIntakeHigh).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.HighAlage));
-    m_buttonBox.axisGreaterThan(RobotMap.kAlgaeIntakeStopAxis, 0.95).onTrue(m_algaeClawSubsystem.stopClawWheelsCommand().alongWith(m_liftSubsystem.stopAtCurrentPositionCommand()));
-    m_buttonBox.button(RobotMap.kDeliverAlgaeButton)
-      .onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.Processor)
-      .andThen(new ShootAlgaeCommand(m_algaeClawSubsystem)));
+    // m_buttonBox.button(RobotMap.kAlgaeIntakePrep).onTrue(new PrepareAlgaeIntakeCommand(m_liftSubsystem, m_algaeClawSubsystem));
+    // m_buttonBox.button(RobotMap.kAlgaeIntakeLow).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.LowAlage));
+    // m_buttonBox.button(RobotMap.kAlgaeIntakeHigh).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.HighAlage));
+    // m_buttonBox.axisGreaterThan(RobotMap.kAlgaeIntakeStopAxis, 0.95).onTrue(m_algaeClawSubsystem.stopClawWheelsCommand().alongWith(m_liftSubsystem.stopAtCurrentPositionCommand()));
+    // m_buttonBox.button(RobotMap.kDeliverAlgaeButton)
+    //   .onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.Processor)
+    //   .andThen(new ShootAlgaeCommand(m_algaeClawSubsystem)));
     
 
     // m_buttonBox.button(RobotMap.kplaceAtL3Button).onTrue(new LiftDriveToPositionCommand(m_liftSubsystem, liftTargetPositions.L3)
