@@ -194,9 +194,10 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    m_ticks++;
-    if (m_ticks % 13 != 7)
-        return;
+    //m_ticks++;
+   // if (m_ticks % 13 != 7)
+   //     return;
+   m_armExtendMotorPositionPub.set(m_clawArmExtendEncoder.getPosition());
 
     dashboardUpdate();
   }
@@ -204,7 +205,6 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   private void dashboardUpdate ()
   {
     // m_clawShootSpeedEncoderReadingPub.set(m_clawShootEncoder.getVelocity());
-    m_armExtendMotorPositionPub.set(m_clawArmExtendEncoder.getPosition());
     m_armExtendMotorVelocityPub.set(m_clawArmExtendEncoder.getVelocity());
     m_armExtendAppliedOutputPub.set(m_clawArmExtendSparkMax.getAppliedOutput());
 

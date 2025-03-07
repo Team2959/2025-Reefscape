@@ -156,11 +156,12 @@ public class LiftSubsystem extends SubsystemBase {
     if (m_ticks % 11 != 5)
         return;
 
-    dashboardUpdate();
+    m_sparkLiftRotations.set(m_liftEncoder.getPosition());
+
+   // dashboardUpdate();
   }
 
   public void dashboardUpdate() {
-    m_sparkLiftRotations.set(m_liftEncoder.getPosition());
     m_sparkVelocity.set(m_liftEncoder.getVelocity());
     m_appliedOutputPub.set(m_lift.getAppliedOutput());
 

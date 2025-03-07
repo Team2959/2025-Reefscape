@@ -17,7 +17,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Index Coral Center"
+                  "name": "Index Coral Right"
                 }
               }
             ]
@@ -26,7 +26,19 @@
         {
           "type": "named",
           "data": {
-            "name": "Place at Trough Left"
+            "name": "Move Lift to L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Deliver Coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Move Lift to Base"
           }
         }
       ]

@@ -17,16 +17,10 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Index Coral Center"
+                  "name": "Index Coral Left"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Place at Trough Left"
           }
         }
       ]

@@ -89,11 +89,11 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    m_coralDetectPub.set(getOpticSensor());
+   // m_coralDetectPub.set(getOpticSensor());
 
-    m_ticks++;
-    if (m_ticks % 13 != 11)
-        return;
+   // m_ticks++;
+  //  if (m_ticks % 13 != 11)
+   //     return;
 
     updateDashboard();
   }

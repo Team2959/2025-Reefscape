@@ -19,6 +19,7 @@ public final class Autos {
         var container = robotContainer;
         NamedCommands.registerCommand("Index Coral Right", new IndexCoralCommand(container.m_coralIndexSubsystem, CoralIndexTargetPositions.Right));
         NamedCommands.registerCommand("Index Coral Left", new IndexCoralCommand(container.m_coralIndexSubsystem, CoralIndexTargetPositions.Left));
+        NamedCommands.registerCommand("Index Coral Center", new IndexCoralCommand(container.m_coralIndexSubsystem, CoralIndexTargetPositions.Center));
         NamedCommands.registerCommand("Place at Trough Right", new DeliverCoralCommand(container.m_coralDeliverySubsystem.m_deliveryWaitSeconds, container.m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1FastSpeed, CoralControlTargetSpeeds.L1SlowSpeed, container.m_liftSubsystem));
         NamedCommands.registerCommand("Place at Trough Left", new DeliverCoralCommand(container.m_coralDeliverySubsystem.m_deliveryWaitSeconds, container.m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1SlowSpeed, CoralControlTargetSpeeds.L1FastSpeed, container.m_liftSubsystem));
         NamedCommands.registerCommand("Deliver Coral",

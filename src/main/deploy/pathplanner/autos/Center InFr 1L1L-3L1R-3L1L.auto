@@ -32,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "1 to LInFr"
+            "pathName": "1 to RInFr"
           }
         },
         {
@@ -44,7 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LInFr to 5"
+            "pathName": "RInFr to 3"
           }
         },
         {
@@ -56,7 +56,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "5 to LInFr"
+            "pathName": "3 to RInFr"
           }
         },
         {
@@ -68,13 +68,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LInFr to 5"
+            "pathName": "RInFr to 3"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Place at Trough Right"
+            "name": "Place at Trough Left"
           }
         }
       ]

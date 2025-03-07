@@ -11,13 +11,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "CenterStart to 1"
+                  "pathName": "RightStart to 2"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Index Coral Center"
+                  "name": "Index Coral Left"
                 }
               }
             ]
@@ -26,7 +26,19 @@
         {
           "type": "named",
           "data": {
-            "name": "Place at Trough Left"
+            "name": "Move Lift to L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Deliver Coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Move Lift to Base"
           }
         }
       ]

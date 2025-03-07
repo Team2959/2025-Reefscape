@@ -5,9 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "RightStart to 2"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "RightStart to 2"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Index Coral Center"
+                }
+              }
+            ]
           }
         },
         {
