@@ -95,7 +95,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   //  if (m_ticks % 13 != 11)
    //     return;
 
-    updateDashboard();
+   // updateDashboard();
   }
 
   private void updateDashboard ()
