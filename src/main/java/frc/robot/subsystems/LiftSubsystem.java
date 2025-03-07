@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkMaxAlternateEncoder;
+import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.AlternateEncoderConfig;
@@ -46,6 +47,9 @@ public class LiftSubsystem extends SubsystemBase {
   private SparkClosedLoopController m_liftController;
   private SparkMaxAlternateEncoder m_liftEncoder;
   private double m_lastTargetPosition;
+  private SparkRelativeEncoder m_primaryEncoder;
+
+  private final double kprimaryEncoderToAbsoluteEncoderConversionFactor = 0.0444;
 
   private final double kLiftP = 1.0;
   private final double kLiftI = 0;
@@ -63,11 +67,13 @@ public class LiftSubsystem extends SubsystemBase {
   private static final double kAlageRemovalPrepPosition = 3;
 
   private boolean m_initalized = false;
+  private boolean m_useLiftPrimaryEncoder = false;
 
   private final DoublePublisher m_sparkLiftRotations;
   private final DoublePublisher m_sparkVelocity;
   private final DoublePublisher m_appliedOutputPub;
   private final DoublePublisher m_lastTargetPub;
+  private final DoublePublisher m_primaryEncoderPub;
   private final DoubleSubscriber m_targetRotations;
   private final DoubleSubscriber m_liftP;
   private final DoubleSubscriber m_liftI;
@@ -77,6 +83,8 @@ public class LiftSubsystem extends SubsystemBase {
   private final BooleanPublisher m_goToTargetRotationsPub;
   private final BooleanPublisher m_updateLiftPIDPub;
   private final BooleanSubscriber m_updateLiftPIDSub;
+  private final BooleanPublisher m_usePrimaryEncoderPub;
+  private final BooleanSubscriber m_usePrimaryEncoderSub;
   
   /** Creates a new LiftSubsystem. */
   public LiftSubsystem() {  
@@ -96,6 +104,7 @@ public class LiftSubsystem extends SubsystemBase {
 
     m_liftEncoder = (SparkMaxAlternateEncoder) m_lift.getAlternateEncoder(); 
     m_liftController = m_lift.getClosedLoopController();
+    m_primaryEncoder = (SparkRelativeEncoder) m_lift.getEncoder();
 
     var followerConfig = new SparkMaxConfig();
     followerConfig.idleMode(IdleMode.kBrake).follow(RobotMap.kLiftLeadMotor, true);
@@ -108,6 +117,7 @@ public class LiftSubsystem extends SubsystemBase {
     m_sparkVelocity = datatable.getDoubleTopic(name + "/Velocity").publish();
     m_appliedOutputPub = datatable.getDoubleTopic(name + "/Applied Output").publish();
     m_lastTargetPub = datatable.getDoubleTopic("Last Target").publish();
+    m_primaryEncoderPub = datatable.getDoubleTopic("Primary Encoder").publish();
 
     var targetRotations = datatable.getDoubleTopic(name + "/target rotations");
     targetRotations.publish().set(0);
@@ -138,6 +148,11 @@ public class LiftSubsystem extends SubsystemBase {
     m_updateLiftPIDPub = updateliftPIDTopic.publish();
     m_updateLiftPIDPub.set(false);
     m_updateLiftPIDSub = updateliftPIDTopic.subscribe(false);
+
+    var usePrimaryEncoderTopic = datatable.getBooleanTopic("use primary encoder");
+    m_usePrimaryEncoderPub = usePrimaryEncoderTopic.publish();
+    m_usePrimaryEncoderPub.set(false);
+    m_usePrimaryEncoderSub = usePrimaryEncoderTopic.subscribe(false);
   }
 
   public void initialize()
@@ -158,12 +173,13 @@ public class LiftSubsystem extends SubsystemBase {
 
     m_sparkLiftRotations.set(m_liftEncoder.getPosition());
 
-   // dashboardUpdate();
+    dashboardUpdate();
   }
 
   public void dashboardUpdate() {
     m_sparkVelocity.set(m_liftEncoder.getVelocity());
     m_appliedOutputPub.set(m_lift.getAppliedOutput());
+    m_primaryEncoderPub.set(m_primaryEncoder.getPosition());
 
     if(m_goToTargetRotationsSub.get())
     {
@@ -182,6 +198,14 @@ public class LiftSubsystem extends SubsystemBase {
       m_lift.configure(m_config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
       m_updateLiftPIDPub.set(false);
     }
+
+    if (m_usePrimaryEncoderSub.get())
+    {
+      m_useLiftPrimaryEncoder = true;
+      m_config.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+      m_lift.configure(m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+      m_usePrimaryEncoderPub.set(false);
+    }
   }
 
   public void directDrive(double power) 
@@ -191,11 +215,23 @@ public class LiftSubsystem extends SubsystemBase {
 
   public double setTargetPosition(liftTargetLevels target)
   {
+    if(m_useLiftPrimaryEncoder)
+    {
+      var targetPosition = LiftPositionValue(target);
+      targetPosition = targetPosition / kprimaryEncoderToAbsoluteEncoderConversionFactor;
+      goToTargetPosition(targetPosition);
+      m_lastTargetPosition = targetPosition;
+      m_lastTargetPub.set(m_lastTargetPosition);
+      return m_lastTargetPosition;    
+    }
+    else
+    {
     var targetPosition = LiftPositionValue(target);
     goToTargetPosition(targetPosition);
     m_lastTargetPosition = targetPosition;
     m_lastTargetPub.set(m_lastTargetPosition);
     return m_lastTargetPosition;
+  }
   }
 
   private void goToTargetPosition(double target)
@@ -229,21 +265,56 @@ public class LiftSubsystem extends SubsystemBase {
 
   public boolean isAtTargetPosition()
   {
-    return Math.abs(m_lastTargetPosition - m_liftEncoder.getPosition()) < 0.05;
+    if (m_useLiftPrimaryEncoder)
+    {
+      return Math.abs(m_lastTargetPosition - getLiftPosition()) < 1.12;
+
+    }
+    else
+    {
+    return Math.abs(m_lastTargetPosition - getLiftPosition()) < 0.05;
+    }
   }
 
   public boolean isAbovePosition(liftTargetLevels level)
   {
-    return m_liftEncoder.getPosition() >  LiftPositionValue(level);
+    if(m_useLiftPrimaryEncoder){
+      return getLiftPosition() >  LiftPositionValue(level) / kprimaryEncoderToAbsoluteEncoderConversionFactor;
+    }
+    else{
+    return getLiftPosition() >  LiftPositionValue(level);
+    }
   }
 
   public void stopAtCurrentPosition()
   {
-    goToTargetPosition(m_liftEncoder.getPosition());
+    goToTargetPosition(getLiftPosition());
   }
 
   public Command stopAtCurrentPositionCommand()
   {
     return this.startEnd(() -> this.stopAtCurrentPosition(), () -> {});
+  }
+
+  public void comparePrimaryEncodertoAlternateEncoder ()
+  {
+    double convertedPrimaryPosition = m_primaryEncoder.getPosition() * kprimaryEncoderToAbsoluteEncoderConversionFactor;
+    boolean positionCorrect = Math.abs(convertedPrimaryPosition - m_liftEncoder.getPosition()) < 0.5;
+    if(!positionCorrect)
+    {
+      m_useLiftPrimaryEncoder = true;
+    }
+  }
+
+  public double getLiftPosition ()
+  {
+    if (m_useLiftPrimaryEncoder)
+    {
+      return m_primaryEncoder.getPosition();
+    }
+    else
+    {
+      return m_liftEncoder.getPosition();
+    }
   }
 }
