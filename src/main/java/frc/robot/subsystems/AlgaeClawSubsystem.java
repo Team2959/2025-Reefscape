@@ -43,7 +43,7 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   private double m_clawFeedMotorSpeed = 0.2;
   //private double m_clawShootSpeed = 5000;
 
-  private double kClawExtendPosition = -0.38;
+  private double kClawExtendPosition = -0.43;
   private double kClawRetractPosition = 0.05;
 
   // private final double kClawShootP = 1.0;
