@@ -302,6 +302,8 @@ public class LiftSubsystem extends SubsystemBase {
     boolean positionCorrect = Math.abs(convertedPrimaryPosition - m_liftEncoder.getPosition()) < 0.5;
     if(!positionCorrect)
     {
+      m_config.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
+      m_lift.configure(m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
       m_useLiftPrimaryEncoder = true;
     }
   }
