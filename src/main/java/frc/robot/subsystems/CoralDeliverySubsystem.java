@@ -30,7 +30,8 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     Feed,
     FeedL4,
     L1FastSpeed,  // Fast/slow are for ensuring the coral spins either left or right out of the feeder, depending on desired delivery
-    L1SlowSpeed   // If spit left, right side motor fast, left side motor slow
+    L1SlowSpeed,   // If spit left, right side motor fast, left side motor slow
+    L1AutoFastSpeed
   };
 
   public double m_deliveryWaitSeconds = 1;
@@ -42,8 +43,9 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   private static final double kIntakeSpeed = 0.35;
   private static final double kFeedSpeed = 1.0;
   private static final double kL1FastSpeed = 0.7;
+  private static final double kL1AutoFastSpeed = 0.4;
   private static final double kL1SlowSpeed = 0.1;
-  private static final double kL4FeedSpeed = 0.25;
+  private static final double kL4FeedSpeed = 1.0;
   
   private boolean m_coralPresent = false;
 
@@ -95,7 +97,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   //  if (m_ticks % 13 != 11)
    //     return;
 
-   // updateDashboard();
+    //updateDashboard();
   }
 
   private void updateDashboard ()
@@ -121,6 +123,8 @@ public class CoralDeliverySubsystem extends SubsystemBase {
         return kL1FastSpeed;
       case L1SlowSpeed:
         return kL1SlowSpeed;  
+      case L1AutoFastSpeed:
+        return kL1AutoFastSpeed;
       case Stop:     
       default:
         return 0;

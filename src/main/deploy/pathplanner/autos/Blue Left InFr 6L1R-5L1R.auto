@@ -1,0 +1,62 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Blue LeftStart to 6"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Index Coral Center"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Place at Trough Right"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Blue 6 to LInFr"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Intake Coral from Wall"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Blue LInFr to 5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Place at Trough Right"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

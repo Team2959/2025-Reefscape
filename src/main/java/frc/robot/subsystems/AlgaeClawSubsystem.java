@@ -199,7 +199,7 @@ public class AlgaeClawSubsystem extends SubsystemBase {
    //     return;
    m_armExtendMotorPositionPub.set(m_clawArmExtendEncoder.getPosition());
 
-    //dashboardUpdate();
+   // dashboardUpdate();
   }
 
   private void dashboardUpdate ()

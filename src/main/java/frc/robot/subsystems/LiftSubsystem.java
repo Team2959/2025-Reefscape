@@ -62,7 +62,7 @@ public class LiftSubsystem extends SubsystemBase {
   private static final double kBasePosition = 0.2;
   private static final double kL4SlowSpeedMin = 8.0;
   private static final double kProcessorPosition = 0.7;
-  private static final double kHighAlagePosition = 7;
+  private static final double kHighAlagePosition = 7.5;
   private static final double kLowAlagePosition = 5;
   private static final double kAlageRemovalPrepPosition = 3;
 
