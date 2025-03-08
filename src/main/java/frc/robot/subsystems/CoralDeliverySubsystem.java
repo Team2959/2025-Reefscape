@@ -35,6 +35,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   };
 
   public double m_deliveryWaitSeconds = 1;
+  public double m_troughAutoDeliveryWaitSeconds = 2;
 
   private final SparkMax m_rightCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryRightCoralControlMotor, MotorType.kBrushless);
   private final SparkMax m_leftCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryLeftCoralControlMotor, MotorType.kBrushless);
@@ -43,7 +44,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   private static final double kIntakeSpeed = 0.35;
   private static final double kFeedSpeed = 1.0;
   private static final double kL1FastSpeed = 0.7;
-  private static final double kL1AutoFastSpeed = 0.4;
+  private static final double kL1AutoFastSpeed = 0.7;
   private static final double kL1SlowSpeed = 0.1;
   private static final double kL4FeedSpeed = 1.0;
   

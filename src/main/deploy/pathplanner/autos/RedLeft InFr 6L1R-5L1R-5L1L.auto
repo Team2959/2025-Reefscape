@@ -32,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "6 to LInFr"
+            "pathName": "Red Left 6 to LInFr"
           }
         },
         {
@@ -44,7 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LInFr to 5"
+            "pathName": "RedLeft LInFr to 5"
           }
         },
         {
@@ -56,7 +56,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "5 to LInFr"
+            "pathName": "RedLeft 5 to LInFr"
           }
         },
         {
@@ -68,7 +68,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LInFr to 5"
+            "pathName": "RedLeft LInFr to 5"
           }
         },
         {
