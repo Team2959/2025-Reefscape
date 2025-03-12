@@ -11,6 +11,9 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.PoseEstimator;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -23,6 +26,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.LimelightHelpers;
 import frc.robot.RobotMap;
 
 public class DriveSubsystem extends SubsystemBase {
@@ -31,11 +35,14 @@ public class DriveSubsystem extends SubsystemBase {
     private final SwerveModuleThrifty m_backLeft;
     private final SwerveModuleThrifty m_backRight;
     private final AHRS m_navX;
+    public final SwerveDrivePoseEstimator m_poseEstimator;
 
     private boolean m_initalized = false;
 
     private SwerveDriveKinematics m_kinematics;
     private SwerveDriveOdometry m_odometry;
+    
+    public static final double kDegreesToRadians = Math.PI * 2.0 / 360.0;
 
     public static final double kMaxSpeedMetersPerSecond = 5.836; //Based off of 6000 rpm for Kraken x60
     public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI;// kMaxSpeedMetersPerSecond /
@@ -67,6 +74,24 @@ public class DriveSubsystem extends SubsystemBase {
 
         m_odometry = new SwerveDriveOdometry(m_kinematics, getAngle(), getPositions());
     
+     /* From limelight example project on github: https://github.com/LimelightVision/limelight-examples/blob/main/java-wpilib/swerve-megatag-odometry/src/main/java/frc/robot/Drivetrain.java#L35
+         Here we use SwerveDrivePoseEstimator so that we can fuse odometry readings. The numbers used
+        below are robot specific, and should be tuned. */
+        m_poseEstimator =
+        new SwerveDrivePoseEstimator(
+            m_kinematics,
+            m_navX.getRotation2d(),
+            new SwerveModulePosition[] {
+              m_frontLeft.getPosition(),
+              m_frontRight.getPosition(),
+              m_backLeft.getPosition(),
+              m_backRight.getPosition()
+            },
+            new Pose2d(),
+            VecBuilder.fill(0.05, 0.05, 5 * kDegreesToRadians), 
+            VecBuilder.fill(0.5, 0.5, 30 * kDegreesToRadians)); //these numbers need to be tuned
+
+
     try{
         var config = RobotConfig.fromGUISettings();
 
@@ -184,6 +209,34 @@ public class DriveSubsystem extends SubsystemBase {
 
     public Pose2d getPose() {
         return m_odometry.getPoseMeters();
+       /* boolean doRejectUpdate = false;
+
+    m_poseEstimator.update(
+        m_navX.getRotation2d(),
+        new SwerveModulePosition[] {
+          m_frontLeft.getPosition(),
+          m_frontRight.getPosition(),
+          m_backLeft.getPosition(),
+          m_backRight.getPosition()  
+        }); 
+
+        LimelightHelpers.SetRobotOrientation("limelight", m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+        if(Math.abs(m_navX.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
+        {
+          doRejectUpdate = true;
+        }
+        if(mt2.tagCount == 0)
+        {
+          doRejectUpdate = true;
+        }
+        if(!doRejectUpdate)
+        {
+          m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+          m_poseEstimator.addVisionMeasurement(
+              mt2.pose,
+              mt2.timestampSeconds);} */
+
     }
     
     public void setDesiredState(SwerveModuleState[] states) {
