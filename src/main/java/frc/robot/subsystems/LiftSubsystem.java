@@ -173,7 +173,7 @@ public class LiftSubsystem extends SubsystemBase {
 
     m_sparkLiftRotations.set(m_liftEncoder.getPosition());
 
-   // dashboardUpdate();
+    dashboardUpdate();
   }
 
   public void dashboardUpdate() {
@@ -183,6 +183,7 @@ public class LiftSubsystem extends SubsystemBase {
 
     if(m_goToTargetRotationsSub.get())
     {
+
       goToTargetPosition(m_targetRotations.get());
       m_goToTargetRotationsPub.set(false);
     }
