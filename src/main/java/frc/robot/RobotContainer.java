@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.commands.AlignWithReefCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.PrepareAlgaeIntakeCommand;
 import frc.robot.commands.DeliverCoralCommand;
@@ -104,6 +105,8 @@ public class RobotContainer {
     m_rightJoystick.button(RobotMap.kRightTroughButton).onTrue(new DeliverCoralCommand(m_coralDeliverySubsystem.m_deliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1FastSpeed, CoralControlTargetSpeeds.L1SlowSpeed, m_liftSubsystem));
     m_leftJoystick.button(RobotMap.kLeftL4DeliverButton).whileTrue(new L4CoralControlSpeed(m_coralDeliverySubsystem));
     m_leftJoystick.button(RobotMap.kLeftAlgaeClawRetractButton).onTrue(new InstantCommand(() -> {m_algaeClawSubsystem.retractClawArms();}));
+    m_rightJoystick.button(RobotMap.kRightAlignWithReefButton).whileTrue(new AlignWithReefCommand(m_driveSubsystem, m_aprilTagPID));
+
 
     m_buttonBox.button(RobotMap.kIndexCoralLeftButton).onTrue(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Left));
     m_buttonBox.button(RobotMap.kIndexCoralRightButton).onTrue(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Right));

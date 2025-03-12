@@ -165,4 +165,28 @@ public class AprilTagPID
     {
        return m_deltaRotation < 0.5 && m_deltaX < 0.05 && m_deltaZ < 0.05;
     }
+
+    //gets the current x-axis alignment error
+    //@return the absolute error in X position
+
+    public double getDeltaX ()
+    {
+        return m_deltaX;
+    }
+
+   //gets the current z-axis alignment error
+    //@return the absolute error in z position
+
+    public double getDeltaZ ()
+    {
+        return m_deltaZ;
+    }
+
+   //gets the current rotation alignment error
+    //@return the rotation error in X position
+
+    public double getDeltaRotation()
+    {
+        return m_deltaRotation;
+    }
 }

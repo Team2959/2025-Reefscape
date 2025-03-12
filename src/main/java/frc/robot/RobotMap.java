@@ -49,6 +49,7 @@ public final class RobotMap {
     public static final int kRightTroughButton = 2;
     public static final int kLeftL4DeliverButton = 10;
     public static final int kLeftAlgaeClawRetractButton = 9;
+    public static final int kRightAlignWithReefButton = 5; //change this eventually
 
     // Co-Piolt Button board
     public static final int kPlaceAtL4Button = 11;
