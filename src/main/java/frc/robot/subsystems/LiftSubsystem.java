@@ -59,7 +59,7 @@ public class LiftSubsystem extends SubsystemBase {
   private static final double kL4Position = 9.1;
   private static final double kL3Position = 4.7;
   private static final double kL2Position = 1.5;
-  private static final double kBasePosition = 0.2;
+  private static final double kBasePosition = 0.18;
   private static final double kL4SlowSpeedMin = 8.0;
   private static final double kProcessorPosition = 0.7;
   private static final double kHighAlagePosition = 7.5;
@@ -85,6 +85,7 @@ public class LiftSubsystem extends SubsystemBase {
   private final BooleanSubscriber m_updateLiftPIDSub;
   private final BooleanPublisher m_usePrimaryEncoderPub;
   private final BooleanSubscriber m_usePrimaryEncoderSub;
+  private final BooleanPublisher m_currentlyUsingPrimaryEncoderPub;
   
   /** Creates a new LiftSubsystem. */
   public LiftSubsystem() {  
@@ -118,6 +119,7 @@ public class LiftSubsystem extends SubsystemBase {
     m_appliedOutputPub = datatable.getDoubleTopic(name + "/Applied Output").publish();
     m_lastTargetPub = datatable.getDoubleTopic("Last Target").publish();
     m_primaryEncoderPub = datatable.getDoubleTopic("Primary Encoder").publish();
+    m_currentlyUsingPrimaryEncoderPub = datatable.getBooleanTopic("Using Primary Encoder").publish();
 
     var targetRotations = datatable.getDoubleTopic(name + "/target rotations");
     targetRotations.publish().set(0);
@@ -180,6 +182,7 @@ public class LiftSubsystem extends SubsystemBase {
     m_sparkVelocity.set(m_liftEncoder.getVelocity());
     m_appliedOutputPub.set(m_lift.getAppliedOutput());
     m_primaryEncoderPub.set(m_primaryEncoder.getPosition());
+    m_currentlyUsingPrimaryEncoderPub.set(m_useLiftPrimaryEncoder);
 
     if(m_goToTargetRotationsSub.get())
     {

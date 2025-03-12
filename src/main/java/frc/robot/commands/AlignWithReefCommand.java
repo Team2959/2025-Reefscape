@@ -14,8 +14,7 @@ public class AlignWithReefCommand extends Command {
   /** Creates a new AlignWithReefCommand. */
   private DriveSubsystem m_driveSubsystem;
   private final AprilTagPID m_AprilTagPID;
-  private double m_targetZ = -9.38; //ty reading from limelight client when we were at target position
-  private double m_targetX = 25.5; //tx reading from limelight client when we were at target position
+  private double m_targetZ = 0.48; 
   private double m_targetRotation;
 
   public AlignWithReefCommand(DriveSubsystem driveSubsystem, AprilTagPID aprilTagPID) {
@@ -42,7 +41,7 @@ public class AlignWithReefCommand extends Command {
     else
       m_targetRotation = 0;
     
-    m_AprilTagPID.setTargetPosition(m_targetX, m_targetZ, m_targetRotation);
+    m_AprilTagPID.setTargetPosition(0, m_targetZ, m_targetRotation);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
