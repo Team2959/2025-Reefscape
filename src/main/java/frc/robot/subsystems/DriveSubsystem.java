@@ -149,7 +149,7 @@ public class DriveSubsystem extends SubsystemBase {
       //  if (m_ticks % 15 != 7)
        //     return;
 
-       // SmartDashboard.putNumber(getName() + "/Angle", getAngle().getDegrees());
+       SmartDashboard.putNumber(getName() + "/Angle", getAngle().getDegrees());
         // SmartDashboard.putNumber(getName() + "/Roll", m_navX.getRoll());
         // SmartDashboard.putNumber(getName() + "/Pitch", m_navX.getPitch());
         

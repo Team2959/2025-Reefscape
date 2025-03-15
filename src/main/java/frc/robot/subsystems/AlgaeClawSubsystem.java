@@ -44,6 +44,7 @@ public class AlgaeClawSubsystem extends SubsystemBase {
 
   private double kClawExtendPosition = 10.0;
   private double kClawRetractPosition = -1.0;
+  private double kClawTransportPosition = 0.0;
 
   // private final double kClawShootP = 1.0;
   // private final double kClawShootI = 0;
@@ -275,6 +276,11 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   public void retractClawArms()
   {
     setExtendArmPosition(kClawRetractPosition);
+  }
+
+  public void goToClawTransportPosition()
+  {
+    setExtendArmPosition(kClawTransportPosition);
   }
 
   private void setExtendArmPosition(double target)

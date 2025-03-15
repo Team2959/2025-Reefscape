@@ -37,7 +37,8 @@ public class LiftMoveToLevelCommand extends Command {
   @Override
   public void end(boolean interrupted) 
   {
-    m_LiftSubsystem.stopAtCurrentPosition();
+    if (interrupted)
+      m_LiftSubsystem.stopAtCurrentPosition();
   }
 
   // Returns true when the command should end.

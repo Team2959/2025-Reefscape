@@ -44,6 +44,8 @@ public class AprilTagPID
     private final BooleanPublisher m_updatePIDPub;
     private final BooleanSubscriber m_updatePIDSub;
     private final DoublePublisher m_remappedAnglePub;
+    private final DoublePublisher m_tzPub;
+    private final DoublePublisher m_txPub;
 
     public AprilTagPID(DriveSubsystem driveSubsystem)
     {
@@ -82,18 +84,27 @@ public class AprilTagPID
         m_updatePIDSub = updatePIDSub.subscribe(false);       
         
         m_remappedAnglePub = datatable.getDoubleTopic("Remapped Angle").publish();
+        m_txPub = datatable.getDoubleTopic("tx").publish();
+        m_tzPub = datatable.getDoubleTopic("tz").publish();
     }
 
     public void updateAprilTagSmartDashboard()
     {
-
         if (m_updatePIDSub.get())
-         {
-             updatePID();
-             m_updatePIDPub.set(false);
-         }
+        {
+            updatePID();
+            m_updatePIDPub.set(false);
+        }
 
         m_remappedAnglePub.set(remapAngle(m_driveSubsystem.getAngle().getDegrees()));
+
+        double[] robotSpace = LimelightHelpers.getTargetPose_RobotSpace("limelight");
+        if (robotSpace == null || robotSpace.length < 3){
+            return;
+        }
+            
+        m_tzPub.set(robotSpace[2]);
+        m_txPub.set(robotSpace[0]);
     }   
 
     private void updatePID()

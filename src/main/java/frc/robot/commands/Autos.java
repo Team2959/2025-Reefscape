@@ -27,10 +27,11 @@ public final class Autos {
             .andThen(new IndexCoralCommand(container.m_coralIndexSubsystem, CoralIndexTargetPositions.Center)));
         NamedCommands.registerCommand("Move Lift to Base", new LiftMoveToLevelCommand(container.m_liftSubsystem, liftTargetLevels.Base));
         NamedCommands.registerCommand("Move Lift to L2", new LiftMoveToLevelCommand(container.m_liftSubsystem, liftTargetLevels.L2));
-      //  NamedCommands.registerCommand("Move Lift to L3", new LiftMoveToLevelCommand(container.m_liftSubsystem, liftTargetLevels.L3));
+        NamedCommands.registerCommand("Move Lift to L3", new LiftMoveToLevelCommand(container.m_liftSubsystem, liftTargetLevels.L3));
         NamedCommands.registerCommand("Move Lift to L4", new LiftMoveToLevelCommand(container.m_liftSubsystem, liftTargetLevels.L4));
         NamedCommands.registerCommand("Intake Coral from Wall", new IntakeCoralCommand(container.m_coralDeliverySubsystem));
         // NamedCommands.registerCommand("Low Reef Algae Removal", new AlgaeReefRemovelSequentialCommand(container.m_liftSubsystem, liftTargetPositions.L2, container.m_driveSubsystem, container.m_aprilTagPID, container.m_algaeClawSubsystem));
         // NamedCommands.registerCommand("High Reef Algae Removal", new AlgaeReefRemovelSequentialCommand(container.m_liftSubsystem, liftTargetPositions.L3, container.m_driveSubsystem, container.m_aprilTagPID, container.m_algaeClawSubsystem));
+        NamedCommands.registerCommand("Align with Reef", new AlignWithReefCommand(container.m_driveSubsystem, container.m_aprilTagPID));
     }
 }

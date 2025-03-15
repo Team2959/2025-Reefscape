@@ -21,8 +21,12 @@ public class AlignWithReefCommand extends Command {
   private double m_targetZ = 0.48; 
   private double m_targetRotation;
 
+  private boolean m_tidFound = false;
+
   private final DoublePublisher m_alignmentProgressPub;
   private final BooleanPublisher m_alignmentCompletePub;
+  private final DoublePublisher m_targetAnglePub;
+  private final DoublePublisher m_tidPub;
 
   //constants for progress calculation
   private static final double MAX_ROTATION_ERROR = 10.0; //degrees
@@ -44,26 +48,43 @@ public class AlignWithReefCommand extends Command {
     m_alignmentCompletePub = completePub.publish();
     m_alignmentCompletePub.set(false);
 
+    var targetAnglePub = table.getDoubleTopic("target Angle");
+    m_targetAnglePub = targetAnglePub.publish();
+    m_targetAnglePub.set(0.0);
+
+    var tidPub = table.getDoubleTopic("tid");
+    m_tidPub = tidPub.publish();
+    m_tidPub.set(0.0);
+
     addRequirements(m_driveSubsystem);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_tidFound = true;
     var tid = (int)LimelightHelpers.getFiducialID("limelight");
     if (tid == 9 || tid == 22)
-      m_targetRotation = 60;
+      m_targetRotation = 300;
     else if (tid == 8 || tid == 17)
-      m_targetRotation = 120;
+      m_targetRotation = 240;
     else if (tid == 7 || tid == 18)
       m_targetRotation = 180;
     else if (tid == 6 || tid == 19)
-      m_targetRotation = 240;
+      m_targetRotation = 120;
     else if (tid == 11 || tid == 20)
-      m_targetRotation = 300;
-    else
+      m_targetRotation = 60;
+    else if (tid == 21 || tid == 10)
       m_targetRotation = 0;
+    else
+    {
+      m_targetRotation = m_driveSubsystem.getAngle().getDegrees();
+      m_tidFound = false;
+    }
     
+    m_targetAnglePub.set(m_targetRotation);
+    m_tidPub.set(tid);
+
     m_AprilTagPID.setTargetPosition(0, m_targetZ, m_targetRotation);
 
     //Reset Dashboard Values
@@ -141,6 +162,6 @@ public class AlignWithReefCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_tidFound == false || m_AprilTagPID.atTargetPosition();
   }
 }

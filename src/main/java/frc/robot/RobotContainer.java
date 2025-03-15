@@ -105,7 +105,7 @@ public class RobotContainer {
     m_rightJoystick.button(RobotMap.kRightTroughButton).onTrue(new DeliverCoralCommand(m_coralDeliverySubsystem.m_deliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1FastSpeed, CoralControlTargetSpeeds.L1SlowSpeed, m_liftSubsystem));
     m_leftJoystick.button(RobotMap.kLeftL4DeliverButton).whileTrue(new L4CoralControlSpeed(m_coralDeliverySubsystem));
     m_leftJoystick.button(RobotMap.kLeftAlgaeClawRetractButton).onTrue(new InstantCommand(() -> {m_algaeClawSubsystem.retractClawArms();}));
-    m_rightJoystick.button(RobotMap.kRightAlignWithReefButton).whileTrue(new AlignWithReefCommand(m_driveSubsystem, m_aprilTagPID));
+    m_rightJoystick.button(RobotMap.kRightAlignWithReefButton).onTrue(new AlignWithReefCommand(m_driveSubsystem, m_aprilTagPID));
 
 
     m_buttonBox.button(RobotMap.kIndexCoralLeftButton).onTrue(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Left));
@@ -179,5 +179,10 @@ public class RobotContainer {
     return m_turnConditioning.condition(-m_rightJoystick.getX())
             * DriveSubsystem.kMaxAngularSpeedRadiansPerSecond
             * m_speedMultiplier;
+  }
+
+  public void updateDashboard()
+  {
+    m_aprilTagPID.updateAprilTagSmartDashboard();
   }
 }
