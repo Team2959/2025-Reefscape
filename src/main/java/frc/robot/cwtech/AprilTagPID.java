@@ -7,6 +7,7 @@ package frc.robot.cwtech;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.BooleanSubscriber;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -42,6 +43,7 @@ public class AprilTagPID
     private final DoubleSubscriber m_kDRotationSub;
     private final BooleanPublisher m_updatePIDPub;
     private final BooleanSubscriber m_updatePIDSub;
+    private final DoublePublisher m_remappedAnglePub;
 
     public AprilTagPID(DriveSubsystem driveSubsystem)
     {
@@ -77,7 +79,9 @@ public class AprilTagPID
         var updatePIDSub = datatable.getBooleanTopic("update PID");
         m_updatePIDPub = updatePIDSub.publish();
         m_updatePIDPub.set(false);
-        m_updatePIDSub = updatePIDSub.subscribe(false);        
+        m_updatePIDSub = updatePIDSub.subscribe(false);       
+        
+        m_remappedAnglePub = datatable.getDoubleTopic("Remapped Angle").publish();
     }
 
     public void updateAprilTagSmartDashboard()
@@ -88,6 +92,8 @@ public class AprilTagPID
              updatePID();
              m_updatePIDPub.set(false);
          }
+
+        m_remappedAnglePub.set(remapAngle(m_driveSubsystem.getAngle().getDegrees()));
     }   
 
     private void updatePID()
@@ -154,6 +160,7 @@ public class AprilTagPID
     public void driveToTarget()
     {
         m_driveSubsystem.drive(-zSpeed(), ySpeed(), rotationTarget(), false);
+        // m_driveSubsystem.drive(0, 0, rotationTarget(), false);
     }
 
     public void driveToTargetNoZ()

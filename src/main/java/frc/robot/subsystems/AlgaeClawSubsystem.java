@@ -10,9 +10,8 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkMaxAlternateEncoder;
+import com.revrobotics.spark.SparkRelativeEncoder;
 //import com.revrobotics.spark.SparkRelativeEncoder;
-import com.revrobotics.spark.config.AlternateEncoderConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -35,21 +34,21 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   // private SparkClosedLoopController m_clawShootController;
   private SparkClosedLoopController m_clawArmExtendController;
   // private SparkRelativeEncoder m_clawShootEncoder;
-  private SparkMaxAlternateEncoder m_clawArmExtendEncoder;
   // private final SparkMaxConfig m_clawShootConfig;
   private final SparkMaxConfig m_clawFeedConfig;
   private final SparkMaxConfig m_clawArmExtendConfig;
+  private SparkRelativeEncoder m_clawArmExtendEncoder;
 
   private double m_clawFeedMotorSpeed = 0.2;
   //private double m_clawShootSpeed = 5000;
 
-  private double kClawExtendPosition = -0.43;
-  private double kClawRetractPosition = 0.05;
+  private double kClawExtendPosition = 10.0;
+  private double kClawRetractPosition = -1.0;
 
   // private final double kClawShootP = 1.0;
   // private final double kClawShootI = 0;
   // private final double kClawShootD = 0;
-  private final double kClawArmP = 0.6; //6 with old motor
+  private final double kClawArmP = 0.08; //6 with old motor
   private final double kClawArmI = 0;
   private final double kClawArmD = 0;
   private final double kClawArmFF = 0;
@@ -96,20 +95,18 @@ public class AlgaeClawSubsystem extends SubsystemBase {
     m_clawArmExtendConfig = new SparkMaxConfig();
     m_clawArmExtendConfig.idleMode(IdleMode.kBrake);
     m_clawArmExtendConfig.closedLoop
-      .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
+      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .pidf(kClawArmP, kClawArmI, kClawArmD, kClawArmFF);
-    var alternateEncoderConfig = new AlternateEncoderConfig();
-    alternateEncoderConfig.setSparkMaxDataPortConfig();
-    m_clawArmExtendConfig.apply(alternateEncoderConfig);
 
     // m_clawShootSparkMax.configure(m_clawShootConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_clawFeedSparkMax.configure(m_clawFeedConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_clawArmExtendSparkMax.configure(m_clawArmExtendConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+    m_clawArmExtendEncoder = (SparkRelativeEncoder) m_clawArmExtendSparkMax.getEncoder();
+
     // m_clawShootEncoder = (SparkRelativeEncoder) m_clawShootSparkMax.getEncoder(); 
     // m_clawShootController = m_clawShootSparkMax.getClosedLoopController();
 
-    m_clawArmExtendEncoder = (SparkMaxAlternateEncoder)m_clawArmExtendSparkMax.getAlternateEncoder();
     m_clawArmExtendController = m_clawArmExtendSparkMax.getClosedLoopController();
 
     // start with the claws to the retract state
@@ -194,10 +191,11 @@ public class AlgaeClawSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    //m_ticks++;
-   // if (m_ticks % 13 != 7)
-   //     return;
-   m_armExtendMotorPositionPub.set(m_clawArmExtendEncoder.getPosition());
+    m_armExtendMotorPositionPub.set(m_clawArmExtendEncoder.getPosition());
+
+    m_ticks++;
+    if (m_ticks % 13 != 7)
+       return;
 
     dashboardUpdate();
   }

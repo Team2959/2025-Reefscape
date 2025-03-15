@@ -49,14 +49,14 @@ public class LiftSubsystem extends SubsystemBase {
   private double m_lastTargetPosition;
   private SparkRelativeEncoder m_primaryEncoder;
 
-  private final double kprimaryEncoderToAbsoluteEncoderConversionFactor = 0.0444;
+  private final double kprimaryEncoderToAbsoluteEncoderConversionFactor = 0.0563;
 
-  private final double kLiftP = 1.0;
+  private final double kLiftP = 2.0;
   private final double kLiftI = 0;
   private final double kLiftD = 0;
   private final double kLiftFF = 0;
 
-  private static final double kL4Position = 9.1;
+  private static final double kL4Position = 8.9;
   private static final double kL3Position = 4.7;
   private static final double kL2Position = 1.5;
   private static final double kBasePosition = 0.18;
@@ -219,23 +219,11 @@ public class LiftSubsystem extends SubsystemBase {
 
   public double setTargetPosition(liftTargetLevels target)
   {
-    if(m_useLiftPrimaryEncoder)
-    {
-      var targetPosition = LiftPositionValue(target);
-      targetPosition = targetPosition / kprimaryEncoderToAbsoluteEncoderConversionFactor;
-      goToTargetPosition(targetPosition);
-      m_lastTargetPosition = targetPosition;
-      m_lastTargetPub.set(m_lastTargetPosition);
-      return m_lastTargetPosition;    
-    }
-    else
-    {
     var targetPosition = LiftPositionValue(target);
     goToTargetPosition(targetPosition);
     m_lastTargetPosition = targetPosition;
     m_lastTargetPub.set(m_lastTargetPosition);
     return m_lastTargetPosition;
-  }
   }
 
   private void goToTargetPosition(double target)
@@ -243,51 +231,52 @@ public class LiftSubsystem extends SubsystemBase {
     m_liftController.setReference(target, SparkMax.ControlType.kPosition);
   }
 
-  private static double LiftPositionValue(liftTargetLevels target)
+  private double LiftPositionValue(liftTargetLevels target)
   {
+    var targetPosition = kBasePosition;
     switch (target) {
       case L4:
-        return kL4Position;
+        targetPosition = kL4Position;
+        break;
       case L3:
-        return kL3Position;
+        targetPosition = kL3Position;
+        break;
       case L2:
-        return kL2Position;
+        targetPosition = kL2Position;
+        break;
       case L4SlowSpeedMin:
-        return kL4SlowSpeedMin;
+        targetPosition = kL4SlowSpeedMin;
+        break;
       case Processor:
-        return kProcessorPosition;
+        targetPosition = kProcessorPosition;
+        break;
       case HighAlage:
-        return kHighAlagePosition;
+        targetPosition = kHighAlagePosition;
+        break;      
       case LowAlage:
-        return kLowAlagePosition;
+        targetPosition = kLowAlagePosition;
+        break;
       case AlgaeRemovalPrep:
-        return kAlageRemovalPrepPosition;
+        targetPosition = kAlageRemovalPrepPosition;
+        break;
       default:
         return kBasePosition;  // loading level for wall
     }
+
+    if (m_useLiftPrimaryEncoder)
+      return targetPosition / kprimaryEncoderToAbsoluteEncoderConversionFactor;
+    return targetPosition;
   }
 
   public boolean isAtTargetPosition()
   {
-    if (m_useLiftPrimaryEncoder)
-    {
-      return Math.abs(m_lastTargetPosition - getLiftPosition()) < 1.12;
-
-    }
-    else
-    {
-    return Math.abs(m_lastTargetPosition - getLiftPosition()) < 0.05;
-    }
+    var delta = m_useLiftPrimaryEncoder ? 1.12 : 0.05;
+    return Math.abs(m_lastTargetPosition - getLiftPosition()) < delta;
   }
 
   public boolean isAbovePosition(liftTargetLevels level)
   {
-    if(m_useLiftPrimaryEncoder){
-      return getLiftPosition() >  LiftPositionValue(level) / kprimaryEncoderToAbsoluteEncoderConversionFactor;
-    }
-    else{
     return getLiftPosition() >  LiftPositionValue(level);
-    }
   }
 
   public void stopAtCurrentPosition()
@@ -302,6 +291,11 @@ public class LiftSubsystem extends SubsystemBase {
 
   public void comparePrimaryEncodertoAlternateEncoder ()
   {
+    if (m_useLiftPrimaryEncoder)
+    {
+      return;
+    }
+
     double convertedPrimaryPosition = m_primaryEncoder.getPosition() * kprimaryEncoderToAbsoluteEncoderConversionFactor;
     boolean positionCorrect = Math.abs(convertedPrimaryPosition - m_liftEncoder.getPosition()) < 0.5;
     if(!positionCorrect)
@@ -309,6 +303,7 @@ public class LiftSubsystem extends SubsystemBase {
       m_config.closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder);
       m_lift.configure(m_config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
       m_useLiftPrimaryEncoder = true;
+      goToTargetPosition(m_lastTargetPosition / kprimaryEncoderToAbsoluteEncoderConversionFactor);
     }
   }
 

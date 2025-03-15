@@ -209,7 +209,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     public Pose2d getPose() {
         return m_odometry.getPoseMeters();
-       /* boolean doRejectUpdate = false;
+      /*  boolean doRejectUpdate = false;
 
     m_poseEstimator.update(
         m_navX.getRotation2d(),
@@ -235,8 +235,9 @@ public class DriveSubsystem extends SubsystemBase {
           m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
           m_poseEstimator.addVisionMeasurement(
               mt2.pose,
-              mt2.timestampSeconds);} */
-
+              mt2.timestampSeconds);} 
+              
+        return mt2.pose; */
     }
     
     public void setDesiredState(SwerveModuleState[] states) {

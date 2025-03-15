@@ -1,7 +1,6 @@
-//LimelightHelpers v1.2.1 (March 1, 2023)
+//LimelightHelpers v1.9 (REQUIRES 2024.9.1)
 
 package frc.robot.subsystems;
-//LimelightHelpers v1.9 (REQUIRES 2024.9.1)
 
 import edu.wpi.first.networktables.DoubleArrayEntry;
 import edu.wpi.first.networktables.NetworkTable;
