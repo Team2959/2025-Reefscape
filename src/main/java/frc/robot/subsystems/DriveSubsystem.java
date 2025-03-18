@@ -8,11 +8,11 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathConstraints;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -22,12 +22,14 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.LimelightHelpers;
 import frc.robot.RobotMap;
+import frc.robot.cwtech.AprilTagHelper;
 
 public class DriveSubsystem extends SubsystemBase {
     private final SwerveModuleThrifty m_frontLeft;
@@ -143,11 +145,11 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        m_odometry.update(getAngle(), getPositions());
+        updateOdemetry();
 
-      //  m_ticks++;
-      //  if (m_ticks % 15 != 7)
-       //     return;
+       m_ticks++;
+       if (m_ticks % 15 != 7)
+           return;
 
        SmartDashboard.putNumber(getName() + "/Angle", getAngle().getDegrees());
         // SmartDashboard.putNumber(getName() + "/Roll", m_navX.getRoll());
@@ -207,37 +209,33 @@ public class DriveSubsystem extends SubsystemBase {
             m_backRight.getSwerveModuleState());
     }
 
-    public Pose2d getPose() {
-        return m_odometry.getPoseMeters();
-      /*  boolean doRejectUpdate = false;
+    private void updateOdemetry()
+    {
+        // for bot only odometry
+        // m_odometry.update(getAngle(), getPositions());
+      
+        // for bot odometry corrected by MegaTag2
+        m_poseEstimator.update(getAngle(),getPositions()); 
 
-    m_poseEstimator.update(
-        m_navX.getRotation2d(),
-        new SwerveModulePosition[] {
-          m_frontLeft.getPosition(),
-          m_frontRight.getPosition(),
-          m_backLeft.getPosition(),
-          m_backRight.getPosition()  
-        }); 
+        if(Math.abs(m_navX.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
+        {
+          return;
+        }
 
         LimelightHelpers.SetRobotOrientation("limelight", m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
         LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-        if(Math.abs(m_navX.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
+        if (mt2.tagCount <= 0)
         {
-          doRejectUpdate = true;
+          return;
         }
-        if(mt2.tagCount == 0)
-        {
-          doRejectUpdate = true;
-        }
-        if(!doRejectUpdate)
-        {
-          m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
-          m_poseEstimator.addVisionMeasurement(
-              mt2.pose,
-              mt2.timestampSeconds);} 
-              
-        return mt2.pose; */
+
+        m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+        m_poseEstimator.addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
+    }
+
+    public Pose2d getPose() {
+        // return m_odometry.getPoseMeters();
+        return m_poseEstimator.getEstimatedPosition();
     }
     
     public void setDesiredState(SwerveModuleState[] states) {
@@ -252,7 +250,8 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void resetOdometry(Pose2d pose) {
-        m_odometry.resetPosition(getAngle(), getPositions(), pose);
+        // m_odometry.resetPosition(getAngle(), getPositions(), pose);
+        m_poseEstimator.resetPosition(getAngle(), getPositions(), pose);
     }
 
     private SwerveModulePosition[] getPositions() {
@@ -306,5 +305,21 @@ public class DriveSubsystem extends SubsystemBase {
     public Command lockWheelsCommand()
     {
         return this.startEnd(() -> this.stopAndLockWheels(), () -> {});
+    }
+
+    public Command driveToReefPose()
+    {
+        var tid = AprilTagHelper.tidFromLimelight();
+        var targetAngle = AprilTagHelper.reefAngleFromTid(tid);
+        if (targetAngle < 0 )
+        {
+            return new InstantCommand();
+        }
+
+        var targetPose = new Pose2d(0, 0, Rotation2d.fromDegrees(targetAngle));
+        var constraints = new PathConstraints(3.0, 4.0,
+            Units.degreesToRadians(540), Units.degreesToRadians(720));
+        
+        return AutoBuilder.pathfindToPose(targetPose, constraints);
     }
 }
