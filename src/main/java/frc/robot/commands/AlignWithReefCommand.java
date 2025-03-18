@@ -9,6 +9,7 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.cwtech.AprilTagHelper;
 import frc.robot.cwtech.AprilTagPID;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightHelpers;
@@ -62,24 +63,13 @@ public class AlignWithReefCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_tidFound = true;
-    var tid = (int)LimelightHelpers.getFiducialID("limelight");
-    if (tid == 9 || tid == 22)
-      m_targetRotation = 300;
-    else if (tid == 8 || tid == 17)
-      m_targetRotation = 240;
-    else if (tid == 7 || tid == 18)
-      m_targetRotation = 180;
-    else if (tid == 6 || tid == 19)
-      m_targetRotation = 120;
-    else if (tid == 11 || tid == 20)
-      m_targetRotation = 60;
-    else if (tid == 21 || tid == 10)
-      m_targetRotation = 0;
-    else
+    var tid = AprilTagHelper.tidFromLimelight();
+    m_targetRotation = AprilTagHelper.reefAngleFromTid(tid);
+    m_tidFound = m_targetRotation >= 0;
+
+    if (m_tidFound == false)
     {
       m_targetRotation = m_driveSubsystem.getAngle().getDegrees();
-      m_tidFound = false;
     }
     
     m_targetAnglePub.set(m_targetRotation);
