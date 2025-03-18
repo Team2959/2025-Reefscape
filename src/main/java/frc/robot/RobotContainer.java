@@ -17,6 +17,7 @@ import frc.robot.commands.TeleOpDriveCommand;
 import frc.robot.cwtech.AprilTagPID;
 import frc.robot.cwtech.Conditioning;
 import frc.robot.subsystems.AlgaeClawSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.CoralDeliverySubsystem;
 import frc.robot.subsystems.CoralIndexSubsystem;
 import frc.robot.subsystems.CoralIndexSubsystem.CoralIndexTargetPositions;
@@ -53,6 +54,7 @@ public class RobotContainer {
   public final AlgaeClawSubsystem m_algaeClawSubsystem = new AlgaeClawSubsystem();
   public final AprilTagPID m_aprilTagPID = new AprilTagPID(m_driveSubsystem);
   public final CoralIndexSubsystem m_coralIndexSubsystem = new CoralIndexSubsystem();
+  public final ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
 
   private final SendableChooser<Command> m_autoChooser;
 
@@ -106,7 +108,8 @@ public class RobotContainer {
     m_leftJoystick.button(RobotMap.kLeftL4DeliverButton).whileTrue(new L4CoralControlSpeed(m_coralDeliverySubsystem));
     m_leftJoystick.button(RobotMap.kLeftAlgaeClawRetractButton).onTrue(new InstantCommand(() -> {m_algaeClawSubsystem.retractClawArms();}));
     m_rightJoystick.button(RobotMap.kRightAlignWithReefButton).onTrue(new AlignWithReefCommand(m_driveSubsystem, m_aprilTagPID));
-
+    m_leftJoystick.button(RobotMap.kLeftExtendClimbButton).whileTrue(new InstantCommand(() -> {m_climbSubsystem.extendClimb();}));
+    m_leftJoystick.button(RobotMap.kLeftRetractClimbButton).whileTrue(new InstantCommand(() -> {m_climbSubsystem.retractClimb();}));
 
     m_buttonBox.button(RobotMap.kIndexCoralLeftButton).onTrue(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Left));
     m_buttonBox.button(RobotMap.kIndexCoralRightButton).onTrue(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Right));

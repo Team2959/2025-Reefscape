@@ -24,6 +24,7 @@ public final class RobotMap {
     public static final int kCoralDeliveryRightCoralControlMotor = 22;
     public static final int kCoralDeliveryLeftCoralControlMotor = 23;
     public static final int kCoralDeliveryIndexMotor = 21;
+    public static final int kClimbMotor = 31;
 
     // Analog Input addresses
     public static final int kFrontLeftAnalogInput = 0;
@@ -34,7 +35,7 @@ public final class RobotMap {
     // REV Pneumatic Hub solenoid addresses
 
     // Digital IO addresses
-    public static final int kCoralDetectInput = 0;
+    public static final int kCoralDetectInput = 8;
 
     // Operator input USB ports
     public static final int kLeftJoystick = 0;
@@ -50,6 +51,8 @@ public final class RobotMap {
     public static final int kLeftL4DeliverButton = 10;
     public static final int kLeftAlgaeClawRetractButton = 9;
     public static final int kRightAlignWithReefButton = 2;
+    public static final int kLeftExtendClimbButton = 5;
+    public static final int kLeftRetractClimbButton = 6;
 
     // Co-Piolt Button board
     public static final int kPlaceAtL4Button = 11;
@@ -60,11 +63,11 @@ public final class RobotMap {
     public static final int kDeliverCoralButton = 10;
     public static final int kMoveLiftToBase = 9;
     public static final int kWallIntake = 7;
-    public static final int kAlgaeIntakePrep = 2; 
-    public static final int kAlgaeIntakeLow = 1;
-    public static final int kAlgaeIntakeHigh = 4;
+    public static final int kAlgaeIntakePrep = 4; 
+    public static final int kAlgaeIntakeLow = 3;
+    public static final int kAlgaeIntakeHigh = 1;
     public static final int kAlgaeIntakeStopAxis = 1;
-    public static final int kDeliverAlgaeButton = 3;
+    public static final int kDeliverAlgaeButton = 2;
 
     // Zeroed values, should be in radians
     // source is google document in Electrical for team - module data

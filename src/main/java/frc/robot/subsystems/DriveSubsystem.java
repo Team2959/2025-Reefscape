@@ -30,6 +30,7 @@ import frc.robot.subsystems.LimelightHelpers;
 import frc.robot.RobotMap;
 
 public class DriveSubsystem extends SubsystemBase {
+
     private final SwerveModuleThrifty m_frontLeft;
     private final SwerveModuleThrifty m_frontRight;
     private final SwerveModuleThrifty m_backLeft;
@@ -55,6 +56,19 @@ public class DriveSubsystem extends SubsystemBase {
     private final Translation2d kBackRightLocation = new Translation2d(-kHalfTrackWidthMeters, -kHalfTrackWidthMeters);
 
     private int m_ticks = 0;
+
+    private double k1XCoordinate = 5.812;
+    private double k1YCoordinate = 4.025;
+    private double k2XCoordinate = 5.139;
+    private double k2YCoordinate = 2.881;
+    private double k3XCoordinate = 3.830;
+    private double k3YCoordinate = 2.881;
+    private double k4XCoordinate = 3.177;
+    private double k4YCoordinate = 4.025;
+    private double k5XCoordinate = 3.830;
+    private double k5YCoordinate = 5.166;
+    private double k6XCoordinate = 5.139;
+    private double k6YCoordinate = 5.166;
 
     /** Creates a new DriveSubsystem. */
     public DriveSubsystem()
@@ -306,5 +320,59 @@ public class DriveSubsystem extends SubsystemBase {
     public Command lockWheelsCommand()
     {
         return this.startEnd(() -> this.stopAndLockWheels(), () -> {});
+    }
+
+    public double getReefFieldYCoordinate (int tid)
+    {
+        switch (tid)
+        {
+            case 21:
+            case 10:
+                return k1YCoordinate;
+            case 22:
+            case 11:
+                return k2YCoordinate;
+            case 17:
+            case 6:
+                return k3YCoordinate;
+            case 18:
+            case 7:
+                return k4YCoordinate;
+            case 19: 
+            case 8:
+                return k5YCoordinate;
+            case 20:
+            case 9:
+                return k6YCoordinate;
+            default:
+                return 0.0;
+        }
+    }
+
+    public double getReefFieldXCoordinate (int tid)
+    {
+        switch (tid)
+        {
+            case 21:
+            case 10:
+                return k1XCoordinate;
+            case 22:
+            case 11:
+                return k2XCoordinate;
+            case 17:
+            case 6:
+                return k3XCoordinate;
+            case 18:
+            case 7:
+                return k4XCoordinate;
+            case 19: 
+            case 8:
+                return k5XCoordinate;
+            case 20:
+            case 9:
+                return k6XCoordinate;
+            default:
+                return 0.0;
+        }
     }
 }
