@@ -384,7 +384,7 @@ public class DriveSubsystem extends SubsystemBase {
             return new InstantCommand();
         }
 
-        var targetPose = new Pose2d(0, 0, Rotation2d.fromDegrees(targetAngle));
+        var targetPose = new Pose2d(getReefFieldXCoordinate(tid), getReefFieldYCoordinate(tid), Rotation2d.fromDegrees(targetAngle));
         var constraints = new PathConstraints(3.0, 4.0,
             Units.degreesToRadians(540), Units.degreesToRadians(720));
         
