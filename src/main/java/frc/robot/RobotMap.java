@@ -21,8 +21,7 @@ public final class RobotMap {
     public static final int kAlgaeClawIntakeMotor = 7;
     public static final int kAlgaeClawShootMotor = 8;
     public static final int kAlgaeArmExtendMotor = 9;
-    public static final int kCoralDeliveryRightCoralControlMotor = 22;
-    public static final int kCoralDeliveryLeftCoralControlMotor = 23;
+    public static final int kCoralDeliveryControlMotor = 23;
     public static final int kCoralDeliveryIndexMotor = 21;
 
     // Analog Input addresses

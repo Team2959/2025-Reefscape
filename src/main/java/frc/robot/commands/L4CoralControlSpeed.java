@@ -21,8 +21,7 @@ public class L4CoralControlSpeed extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_coralDeliverySubsystem.setRightCoralControlVelocity(CoralControlTargetSpeeds.FeedL4);
-    m_coralDeliverySubsystem.setLeftCoralControlVelocity(CoralControlTargetSpeeds.FeedL4);
+    m_coralDeliverySubsystem.setCoralControlVelocity(CoralControlTargetSpeeds.Feed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -32,8 +31,7 @@ public class L4CoralControlSpeed extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_coralDeliverySubsystem.stopLeftCoralControlMotor();
-    m_coralDeliverySubsystem.stopRightCoralControlMotor();
+    m_coralDeliverySubsystem.stopCoralControlMotor();
   }
 
   // Returns true when the command should end.

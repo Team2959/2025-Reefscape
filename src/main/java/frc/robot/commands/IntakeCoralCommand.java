@@ -22,8 +22,7 @@ public class IntakeCoralCommand extends Command {
   @Override
   public void initialize() {
     m_coralDeliverySubsystem.setCoralPresent(false);
-    m_coralDeliverySubsystem.setRightCoralControlVelocity(CoralControlTargetSpeeds.Intake);
-    m_coralDeliverySubsystem.setLeftCoralControlVelocity(CoralControlTargetSpeeds.Intake);
+    m_coralDeliverySubsystem.setCoralControlVelocity(CoralControlTargetSpeeds.Intake);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -37,8 +36,7 @@ public class IntakeCoralCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    m_coralDeliverySubsystem.stopLeftCoralControlMotor();
-    m_coralDeliverySubsystem.stopRightCoralControlMotor();
+    m_coralDeliverySubsystem.stopCoralControlMotor();
   }
 
   // Returns true when the command should end.

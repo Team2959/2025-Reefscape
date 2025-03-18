@@ -27,46 +27,31 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   {
     Stop,
     Intake,
-    Feed,
-    FeedL4,
-    L1FastSpeed,  // Fast/slow are for ensuring the coral spins either left or right out of the feeder, depending on desired delivery
-    L1SlowSpeed,   // If spit left, right side motor fast, left side motor slow
-    L1AutoFastSpeed
+    Feed
   };
 
   public double m_deliveryWaitSeconds = 1;
   public double m_troughAutoDeliveryWaitSeconds = 2;
 
-  private final SparkMax m_rightCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryRightCoralControlMotor, MotorType.kBrushless);
-  private final SparkMax m_leftCoralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryLeftCoralControlMotor, MotorType.kBrushless);
+  private final SparkMax m_coralControlSparkMax = new SparkMax(RobotMap.kCoralDeliveryControlMotor, MotorType.kBrushless);
   private final DigitalInput m_coralDetect = new DigitalInput(RobotMap.kCoralDetectInput);
 
   private static final double kIntakeSpeed = 0.35;
   private static final double kFeedSpeed = 1.0;
-  private static final double kL1FastSpeed = 0.7;
-  private static final double kL1AutoFastSpeed = 0.7;
-  private static final double kL1SlowSpeed = 0.1;
-  private static final double kL4FeedSpeed = 1.0;
   
   private boolean m_coralPresent = false;
 
-  private final DoubleSubscriber m_rightVelocitySub;
-  private final DoubleSubscriber m_leftVelocitySub;
+  private final DoubleSubscriber m_velocitySub;
   private final BooleanPublisher m_coralDetectPub;
   private final BooleanSubscriber m_goToTargetVelocitySub;
   private final BooleanPublisher m_goToTargetVelocityPub;
 
   public CoralDeliverySubsystem() {
      
-    var rightCoralControlConfig = new SparkMaxConfig();
-    rightCoralControlConfig.idleMode(IdleMode.kBrake);
+    var coralControlConfig = new SparkMaxConfig();
+    coralControlConfig.idleMode(IdleMode.kBrake);
 
-    var leftCoralControlConfig = new SparkMaxConfig();
-    leftCoralControlConfig.idleMode(IdleMode.kBrake);
-    leftCoralControlConfig.inverted(true);
-
-    m_rightCoralControlSparkMax.configure(rightCoralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_leftCoralControlSparkMax.configure(leftCoralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_coralControlSparkMax.configure(coralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     final String name = "Coral Delivery Subsystem";
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -74,13 +59,9 @@ public class CoralDeliverySubsystem extends SubsystemBase {
 
     m_coralDetectPub = datatable.getBooleanTopic(name + "/Coral Detect").publish();
 
-    var leftVelocitySub = datatable.getDoubleTopic(name + "/Left Velocity");
-    leftVelocitySub.publish().set(0);
-    m_leftVelocitySub = leftVelocitySub.subscribe(0);
-
-    var rightVelocitySub = datatable.getDoubleTopic(name + "/Right Velocity");
-    rightVelocitySub.publish().set(0);
-    m_rightVelocitySub = rightVelocitySub.subscribe(0);
+    var velocitySub = datatable.getDoubleTopic(name + "/Velocity");
+    velocitySub.publish().set(0);
+    m_velocitySub = velocitySub.subscribe(0);
 
     var goToTargetVelocity = datatable.getBooleanTopic(name + "/go To Target Rotations");
     m_goToTargetVelocityPub = goToTargetVelocity.publish();
@@ -105,8 +86,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   {
     if(m_goToTargetVelocitySub.get())
     {
-      m_leftCoralControlSparkMax.set(m_leftVelocitySub.get());
-      m_rightCoralControlSparkMax.set(m_rightVelocitySub.get());
+      m_coralControlSparkMax.set(m_velocitySub.get());
       m_goToTargetVelocityPub.set(false);
     }
  }
@@ -118,40 +98,21 @@ public class CoralDeliverySubsystem extends SubsystemBase {
         return kIntakeSpeed;
       case Feed:
         return kFeedSpeed;
-      case FeedL4:
-        return kL4FeedSpeed;
-      case L1FastSpeed:
-        return kL1FastSpeed;
-      case L1SlowSpeed:
-        return kL1SlowSpeed;  
-      case L1AutoFastSpeed:
-        return kL1AutoFastSpeed;
       case Stop:     
       default:
         return 0;
     }
   }
-  
-  public void setLeftCoralControlVelocity(CoralControlTargetSpeeds targetSpeed)
-  {
-    var targetLeftEnumSpeed = CoralControlSpeedValue(targetSpeed);
-    m_leftCoralControlSparkMax.set(targetLeftEnumSpeed);
-  }
 
-  public void setRightCoralControlVelocity(CoralControlTargetSpeeds targetSpeed)
+  public void setCoralControlVelocity(CoralControlTargetSpeeds targetSpeed)
   {
     var targetRightEnumSpeed = CoralControlSpeedValue(targetSpeed);
-    m_rightCoralControlSparkMax.set(targetRightEnumSpeed);
+    m_coralControlSparkMax.set(targetRightEnumSpeed);
   }
 
-  public void stopRightCoralControlMotor ()
+  public void stopCoralControlMotor ()
   {
-    setRightCoralControlVelocity(CoralControlTargetSpeeds.Stop);
-  }
-
-  public void stopLeftCoralControlMotor ()
-  {
-    setLeftCoralControlVelocity(CoralControlTargetSpeeds.Stop);
+    setCoralControlVelocity(CoralControlTargetSpeeds.Stop);
   }
 
   public boolean getOpticSensor()

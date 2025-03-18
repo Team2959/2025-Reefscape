@@ -6,30 +6,22 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.CoralDeliverySubsystem;
-import frc.robot.subsystems.LiftSubsystem;
 import frc.robot.subsystems.CoralDeliverySubsystem.CoralControlTargetSpeeds;
-import frc.robot.subsystems.LiftSubsystem.liftTargetLevels;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DeliverCoralCommand extends WaitCommand {
   /** Creates a new DeliverCoralCommand. */
   private CoralDeliverySubsystem m_coralDeliverySubsystem;
-  private CoralControlTargetSpeeds m_targetLeftSpeed;
-  private CoralControlTargetSpeeds m_targetRightSpeed;
-  private LiftSubsystem m_LiftSubsystem;
+  private CoralControlTargetSpeeds m_targetSpeed;
 
   public DeliverCoralCommand(
     double seconds,
     CoralDeliverySubsystem coralDeliverySubsystem,
-    CoralControlTargetSpeeds coralControlLeftTargetSpeed,
-    CoralControlTargetSpeeds coralControlRightTargetSpeed,
-    LiftSubsystem liftSubsystem)
+    CoralControlTargetSpeeds coralControlTargetSpeed)
   {
     super(seconds);
     m_coralDeliverySubsystem = coralDeliverySubsystem;
-    m_targetLeftSpeed = coralControlLeftTargetSpeed;
-    m_targetRightSpeed = coralControlRightTargetSpeed;
-    m_LiftSubsystem = liftSubsystem;
+    m_targetSpeed = coralControlTargetSpeed;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(m_coralDeliverySubsystem);
   }
@@ -39,19 +31,14 @@ public class DeliverCoralCommand extends WaitCommand {
   public void initialize()
   {
     super.initialize();
-    var useL4Speed = m_LiftSubsystem.isAbovePosition(liftTargetLevels.L4SlowSpeedMin);
-    m_coralDeliverySubsystem.setLeftCoralControlVelocity(
-      useL4Speed ? CoralControlTargetSpeeds.FeedL4 : m_targetLeftSpeed);
-    m_coralDeliverySubsystem.setRightCoralControlVelocity(
-      useL4Speed ? CoralControlTargetSpeeds.FeedL4 : m_targetRightSpeed);
+    m_coralDeliverySubsystem.setCoralControlVelocity(m_targetSpeed);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted)
   {
-    m_coralDeliverySubsystem.stopLeftCoralControlMotor();
-    m_coralDeliverySubsystem.stopRightCoralControlMotor();
+    m_coralDeliverySubsystem.stopCoralControlMotor();
     m_coralDeliverySubsystem.setCoralPresent(false);
   }
 }
