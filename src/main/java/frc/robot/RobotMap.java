@@ -45,13 +45,12 @@ public final class RobotMap {
     // Driver Buttons
     public static final int kLeftLockWheels = 3;
     public static final int kRightResetNavXButton = 10;
-    public static final int kLeftTroughButton = 4;
-    public static final int kRightTroughButton = 5;
     public static final int kLeftL4DeliverButton = 10;
     public static final int kLeftAlgaeClawRetractButton = 9;
     public static final int kRightAlignWithReefButton = 2;
     public static final int kLeftExtendClimbButton = 5;
     public static final int kLeftRetractClimbButton = 6;
+    public static final int kRightPathfindToReefButton = 5;
 
     // Co-Piolt Button board
     public static final int kPlaceAtL4Button = 11;

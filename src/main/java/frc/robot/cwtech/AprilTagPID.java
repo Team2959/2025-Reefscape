@@ -165,6 +165,10 @@ public class AprilTagPID
         {
             remapAngle = remapAngle + 360;
         }
+
+        if(Math.abs(remapAngle - m_targetRotationPosition) > 90)
+            remapAngle = remapAngle - 360;
+
         return remapAngle;
     }
 

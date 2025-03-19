@@ -13,12 +13,6 @@
                 "data": {
                   "pathName": "CenterStart to 1"
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Index Coral Center"
-                }
               }
             ]
           }

@@ -23,6 +23,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.IntegerPublisher;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -71,6 +75,11 @@ public class DriveSubsystem extends SubsystemBase {
     private double k5YCoordinate = 5.166;
     private double k6XCoordinate = 5.139;
     private double k6YCoordinate = 5.166;
+
+    private DoublePublisher m_mt2XCoordinatePub;
+    private DoublePublisher m_mt2YCoordinatePub;
+    private DoublePublisher m_mt2RotationPub;
+    private IntegerPublisher m_tidPub;
 
     /** Creates a new DriveSubsystem. */
     public DriveSubsystem()
@@ -139,6 +148,15 @@ public class DriveSubsystem extends SubsystemBase {
         // Handle exception as needed
         e.printStackTrace();
       }
+
+        final String name = "Drive Subsystem";
+        NetworkTableInstance inst = NetworkTableInstance.getDefault();
+        NetworkTable datatable = inst.getTable(name);
+
+        m_mt2XCoordinatePub = datatable.getDoubleTopic("mt2 X-Coordinate").publish();
+        m_mt2YCoordinatePub = datatable.getDoubleTopic("mt2 Y-Coordinate").publish();
+        m_mt2RotationPub = datatable.getDoubleTopic("mt2 Rotation Degrees").publish();
+        m_tidPub = datatable.getIntegerTopic("tid").publish();
     }
 
     public void initialize() {
@@ -174,7 +192,7 @@ public class DriveSubsystem extends SubsystemBase {
         // SmartDashboard.putNumber(getName() + "/Distance X", botpose.getX());
         // SmartDashboard.putNumber(getName() + "/Distance Y", botpose.getY());
         // SmartDashboard.putNumber(getName() + "/Distance Z", botpose.getZ());
-       // dashboardUpdate();
+        dashboardUpdate();
     }
 
     public void dashboardUpdate() {
@@ -182,6 +200,13 @@ public class DriveSubsystem extends SubsystemBase {
         m_frontRight.dashboardUpdate();
         m_backLeft.dashboardUpdate();
         m_backRight.dashboardUpdate();
+
+        var pose2d = m_poseEstimator.getEstimatedPosition();
+        m_mt2XCoordinatePub.set(pose2d.getX());
+        m_mt2YCoordinatePub.set(pose2d.getY());
+        m_mt2RotationPub.set(pose2d.getRotation().getDegrees());
+
+        m_tidPub.set(AprilTagHelper.tidFromLimelight());
     }
 
     private void driveBotRelative(ChassisSpeeds chassisSpeeds)
@@ -226,30 +251,30 @@ public class DriveSubsystem extends SubsystemBase {
     private void updateOdemetry()
     {
         // for bot only odometry
-        // m_odometry.update(getAngle(), getPositions());
+        m_odometry.update(getAngle(), getPositions());
       
         // for bot odometry corrected by MegaTag2
-        m_poseEstimator.update(getAngle(),getPositions()); 
+        // m_poseEstimator.update(getAngle(),getPositions()); 
 
-        if(Math.abs(m_navX.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
-        {
-          return;
-        }
+        // if(Math.abs(m_navX.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
+        // {
+        //   return;
+        // }
 
-        LimelightHelpers.SetRobotOrientation("limelight", m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-        if (mt2.tagCount <= 0)
-        {
-          return;
-        }
+        // LimelightHelpers.SetRobotOrientation("limelight", m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+        // LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+        // if (mt2 == null || mt2.tagCount <= 0)
+        // {
+        //   return;
+        // }
 
-        m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
-        m_poseEstimator.addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
+        // m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+        // m_poseEstimator.addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
     }
 
     public Pose2d getPose() {
-        // return m_odometry.getPoseMeters();
-        return m_poseEstimator.getEstimatedPosition();
+        return m_odometry.getPoseMeters();
+        // return m_poseEstimator.getEstimatedPosition();
     }
     
     public void setDesiredState(SwerveModuleState[] states) {
@@ -264,8 +289,8 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     public void resetOdometry(Pose2d pose) {
-        // m_odometry.resetPosition(getAngle(), getPositions(), pose);
-        m_poseEstimator.resetPosition(getAngle(), getPositions(), pose);
+        m_odometry.resetPosition(getAngle(), getPositions(), pose);
+        // m_poseEstimator.resetPosition(getAngle(), getPositions(), pose);
     }
 
     private SwerveModulePosition[] getPositions() {

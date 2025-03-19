@@ -19,12 +19,11 @@ public final class Autos {
         var container = robotContainer;
         NamedCommands.registerCommand("Index Coral Right", new IndexCoralCommand(container.m_coralIndexSubsystem, CoralIndexTargetPositions.Right));
         NamedCommands.registerCommand("Index Coral Left", new IndexCoralCommand(container.m_coralIndexSubsystem, CoralIndexTargetPositions.Left));
-        NamedCommands.registerCommand("Index Coral Center", new IndexCoralCommand(container.m_coralIndexSubsystem, CoralIndexTargetPositions.Center));
         NamedCommands.registerCommand("Place at Trough Right", new DeliverCoralCommand(container.m_coralDeliverySubsystem.m_troughAutoDeliveryWaitSeconds, container.m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed));
         NamedCommands.registerCommand("Place at Trough Left", new DeliverCoralCommand(container.m_coralDeliverySubsystem.m_troughAutoDeliveryWaitSeconds, container.m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed));
         NamedCommands.registerCommand("Deliver Coral",
             new DeliverCoralCommand(container.m_coralDeliverySubsystem. m_deliveryWaitSeconds, container.m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed)
-            .andThen(new IndexCoralCommand(container.m_coralIndexSubsystem, CoralIndexTargetPositions.Center)));
+            .andThen(new IndexCoralCommand(container.m_coralIndexSubsystem, CoralIndexTargetPositions.Right)));
         NamedCommands.registerCommand("Move Lift to Base", new LiftMoveToLevelCommand(container.m_liftSubsystem, liftTargetLevels.Base));
         NamedCommands.registerCommand("Move Lift to L2", new LiftMoveToLevelCommand(container.m_liftSubsystem, liftTargetLevels.L2));
         NamedCommands.registerCommand("Move Lift to L3", new LiftMoveToLevelCommand(container.m_liftSubsystem, liftTargetLevels.L3));
@@ -33,5 +32,6 @@ public final class Autos {
         // NamedCommands.registerCommand("Low Reef Algae Removal", new AlgaeReefRemovelSequentialCommand(container.m_liftSubsystem, liftTargetPositions.L2, container.m_driveSubsystem, container.m_aprilTagPID, container.m_algaeClawSubsystem));
         // NamedCommands.registerCommand("High Reef Algae Removal", new AlgaeReefRemovelSequentialCommand(container.m_liftSubsystem, liftTargetPositions.L3, container.m_driveSubsystem, container.m_aprilTagPID, container.m_algaeClawSubsystem));
         NamedCommands.registerCommand("Align with Reef", new AlignWithReefCommand(container.m_driveSubsystem, container.m_aprilTagPID));
+        NamedCommands.registerCommand("Pathfind to Reef", container.m_driveSubsystem.driveToReefPose());
     }
 }

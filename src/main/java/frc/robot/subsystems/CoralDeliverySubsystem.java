@@ -50,6 +50,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
      
     var coralControlConfig = new SparkMaxConfig();
     coralControlConfig.idleMode(IdleMode.kBrake);
+    coralControlConfig.inverted(true);
 
     m_coralControlSparkMax.configure(coralControlConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
