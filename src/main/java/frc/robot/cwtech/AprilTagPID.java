@@ -161,13 +161,17 @@ public class AprilTagPID
     private double remapAngle(double fromNavX)
     {
         double remapAngle = fromNavX % 360;
-        if (remapAngle <= -45) 
-        {
-            remapAngle = remapAngle + 360;
-        }
 
-        if(Math.abs(remapAngle - m_targetRotationPosition) > 90)
-            remapAngle = remapAngle - 360;
+        if (remapAngle < m_targetRotationPosition)
+        {
+            if (Math.abs(remapAngle - m_targetRotationPosition) > 90)
+                remapAngle += 360;
+        }
+        else if (remapAngle > m_targetRotationPosition)
+        {
+            if (Math.abs(remapAngle - m_targetRotationPosition) > 90)
+                remapAngle -= 360;
+        }
 
         return remapAngle;
     }

@@ -183,7 +183,9 @@ public class DriveSubsystem extends SubsystemBase {
        if (m_ticks % 15 != 7)
            return;
 
-       SmartDashboard.putNumber(getName() + "/Angle", getAngle().getDegrees());
+
+        m_tidPub.set(AprilTagHelper.tidFromLimelight());
+        SmartDashboard.putNumber(getName() + "/Angle", getAngle().getDegrees());
         // SmartDashboard.putNumber(getName() + "/Roll", m_navX.getRoll());
         // SmartDashboard.putNumber(getName() + "/Pitch", m_navX.getPitch());
         
@@ -192,7 +194,7 @@ public class DriveSubsystem extends SubsystemBase {
         // SmartDashboard.putNumber(getName() + "/Distance X", botpose.getX());
         // SmartDashboard.putNumber(getName() + "/Distance Y", botpose.getY());
         // SmartDashboard.putNumber(getName() + "/Distance Z", botpose.getZ());
-        dashboardUpdate();
+        // dashboardUpdate();
     }
 
     public void dashboardUpdate() {
@@ -205,8 +207,6 @@ public class DriveSubsystem extends SubsystemBase {
         m_mt2XCoordinatePub.set(pose2d.getX());
         m_mt2YCoordinatePub.set(pose2d.getY());
         m_mt2RotationPub.set(pose2d.getRotation().getDegrees());
-
-        m_tidPub.set(AprilTagHelper.tidFromLimelight());
     }
 
     private void driveBotRelative(ChassisSpeeds chassisSpeeds)

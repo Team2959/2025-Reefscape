@@ -25,4 +25,31 @@ public class AprilTagHelper {
         else
             return -1;
     }
+
+    public static int intakeAngleFromTid (int tid)
+    {
+
+        if (tid == 8 || tid == 17)
+            return 246;
+        else if (tid == 6 || tid == 19)
+            return 126;
+        else
+            return -1;
+    }
+
+    public static double intakeTargetZFromTid (int tid, double currentTz)
+    {
+
+        if (tid == 8) 
+            return 3.4;
+        else if (tid == 17)
+            return 3.4;
+        else if (tid == 6) 
+            return 3.4;
+        else if (tid == 19)
+            return 3.5;
+        else
+            return currentTz;
+    }
+
 }

@@ -141,7 +141,7 @@ public class AlgaeClawSubsystem extends SubsystemBase {
     if (m_ticks % 13 != 7)
        return;
 
-    dashboardUpdate();
+    // dashboardUpdate();
   }
 
   private void dashboardUpdate ()

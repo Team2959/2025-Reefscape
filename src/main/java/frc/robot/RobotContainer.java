@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import frc.robot.commands.AlignWithIntakeCommand;
 import frc.robot.commands.AlignWithReefCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.PrepareAlgaeIntakeCommand;
@@ -108,7 +109,8 @@ public class RobotContainer {
     m_rightJoystick.button(RobotMap.kRightAlignWithReefButton).onTrue(new AlignWithReefCommand(m_driveSubsystem, m_aprilTagPID));
    // m_leftJoystick.button(RobotMap.kLeftExtendClimbButton).whileTrue(new InstantCommand(() -> {m_climbSubsystem.extendClimb();}));
    // m_leftJoystick.button(RobotMap.kLeftRetractClimbButton).whileTrue(new InstantCommand(() -> {m_climbSubsystem.retractClimb();}));
-    m_rightJoystick.button(RobotMap.kRightPathfindToReefButton).onTrue(m_driveSubsystem.driveToReefPose());
+    //m_rightJoystick.button(RobotMap.kRightPathfindToReefButton).onTrue(m_driveSubsystem.driveToReefPose());
+    m_rightJoystick.button(RobotMap.kRightAlignWithIntakeButton).onTrue(new AlignWithIntakeCommand(m_driveSubsystem, m_aprilTagPID));
 
     m_buttonBox.button(RobotMap.kIndexCoralLeftButton).onTrue(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Left));
     m_buttonBox.button(RobotMap.kIndexCoralRightButton).onTrue(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Right));

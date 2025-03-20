@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "LeftStart to 6"
+                  "pathName": "CenterStart to 1"
                 }
               },
               {
@@ -24,27 +24,40 @@
           }
         },
         {
-          "type": "named",
+          "type": "sequential",
           "data": {
-            "name": "Move Lift to L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Deliver Coral"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Move Lift to Base"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Move Lift to L4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Deliver Coral"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Move Lift to Base"
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "6 to LInFr"
+            "pathName": "True1 to AlignRInFr"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align with Intake"
           }
         },
         {
@@ -60,7 +73,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "LInFr to 5"
+                  "pathName": "TrueRInFr to Align3"
                 }
               },
               {
@@ -73,76 +86,53 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Move Lift to L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Deliver Coral"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Move Lift to Base"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "5 to LInFr"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Intake Coral from Wall"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "named",
                 "data": {
-                  "pathName": "LInFr to 5"
+                  "name": "Align with Reef"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "Index Coral Left"
+                  "name": "Move Lift to L2"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
+          "type": "sequential",
           "data": {
-            "name": "Move Lift to L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Deliver Coral"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Move Lift to Base"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Move Lift to L4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Deliver Coral"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Move Lift to Base"
+                }
+              }
+            ]
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Align with Reef Autos",
   "choreoAuto": false
 }

@@ -33,5 +33,6 @@ public final class Autos {
         // NamedCommands.registerCommand("High Reef Algae Removal", new AlgaeReefRemovelSequentialCommand(container.m_liftSubsystem, liftTargetPositions.L3, container.m_driveSubsystem, container.m_aprilTagPID, container.m_algaeClawSubsystem));
         NamedCommands.registerCommand("Align with Reef", new AlignWithReefCommand(container.m_driveSubsystem, container.m_aprilTagPID));
         NamedCommands.registerCommand("Pathfind to Reef", container.m_driveSubsystem.driveToReefPose());
+        NamedCommands.registerCommand("Align with Intake", new AlignWithIntakeCommand(container.m_driveSubsystem, container.m_aprilTagPID));
     }
 }
