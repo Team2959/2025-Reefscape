@@ -20,8 +20,8 @@ public class AlignWithIntakeCommand extends Command {
 
   private DriveSubsystem m_driveSubsystem;
   private final AprilTagPID m_AprilTagPID;
-  private double m_targetZ = 3.45; 
-  private double m_targetX = 0.0;
+  private double m_targetZ; 
+  private double m_targetX;
   private double m_targetRotation;
 
   private boolean m_tidFound = false;
@@ -69,11 +69,13 @@ public class AlignWithIntakeCommand extends Command {
     var tid = AprilTagHelper.tidFromLimelight();
     m_targetRotation = AprilTagHelper.intakeAngleFromTid(tid);
     m_tidFound = m_targetRotation >= 0;
-
     if (m_tidFound == false)
     {
-      m_targetRotation = m_driveSubsystem.getAngle().getDegrees();
+      return;
     }
+
+    m_targetZ = AprilTagHelper.intakeTargetZFromTid(tid);
+    m_targetX = AprilTagHelper.intakeTargetXFromTid(tid);
 
     m_targetAnglePub.set(m_targetRotation);
     m_tidPub.set(tid);
@@ -93,7 +95,7 @@ public class AlignWithIntakeCommand extends Command {
       m_AprilTagPID.driveToTarget();
       
       // Calculate alignment progress and update dashboard
-      updateDashboard();
+      // updateDashboard();
 
     } else {
       // If no AprilTag data is available, stop the robot and show 0% progress
@@ -141,7 +143,6 @@ public class AlignWithIntakeCommand extends Command {
     }
     
     m_alignmentProgressPub.set(progressPercentage);
-    
   }
 
 

@@ -90,7 +90,9 @@ public class AlignWithReefCommand extends Command {
       m_AprilTagPID.driveToTarget();
       
       // Calculate alignment progress and update dashboard
-      updateDashboard();
+      boolean isComplete = m_AprilTagPID.atTargetPosition();
+      m_alignmentCompletePub.set(isComplete);
+        // updateDashboard(isComplete);
     } else {
       // If no AprilTag data is available, stop the robot and show 0% progress
       m_driveSubsystem.drive(0, 0, 0, true);
@@ -99,10 +101,7 @@ public class AlignWithReefCommand extends Command {
     }
   }
 
-  private void updateDashboard() {
-    boolean isComplete = m_AprilTagPID.atTargetPosition();
-    m_alignmentCompletePub.set(isComplete);
-    
+  private void updateDashboard(boolean isComplete) {
     // Get the current errors
     double deltaX = m_AprilTagPID.getDeltaX();
     double deltaZ = m_AprilTagPID.getDeltaZ();

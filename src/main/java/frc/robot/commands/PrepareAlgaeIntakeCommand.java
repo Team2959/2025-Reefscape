@@ -49,7 +49,10 @@ public class PrepareAlgaeIntakeCommand extends Command {
   @Override
   public void end(boolean interrupted) {
     m_AlgaeClawSubsystem.intakeAlgae();
-    m_liftsSubsystem.stopAtCurrentPosition();
+    if (interrupted)
+    {
+      m_liftsSubsystem.stopAtCurrentPosition();
+    }
   }
 
   // Returns true when the command should end.

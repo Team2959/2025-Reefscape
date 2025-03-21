@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkMaxAlternateEncoder;
@@ -49,9 +50,9 @@ public class LiftSubsystem extends SubsystemBase {
   private double m_lastTargetPosition;
   private SparkRelativeEncoder m_primaryEncoder;
 
-  private final double kprimaryEncoderToAbsoluteEncoderConversionFactor = 0.0563;
+  private final double kprimaryEncoderToAbsoluteEncoderConversionFactor = 0.1;
 
-  private final double kLiftP = 2.0;
+  private final double kLiftP = 1.0;
   private final double kLiftI = 0;
   private final double kLiftD = 0;
   private final double kLiftFF = 0;
@@ -95,7 +96,8 @@ public class LiftSubsystem extends SubsystemBase {
     m_config.idleMode(IdleMode.kBrake);
     m_config.closedLoop
       .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
-      .pid(kLiftP, kLiftI, kLiftD);
+      .pid(kLiftP, kLiftI, kLiftD)
+      .pid(0.7, 0, 0, ClosedLoopSlot.kSlot1);
     var alternateEncoderConfig = new AlternateEncoderConfig();
     alternateEncoderConfig.setSparkMaxDataPortConfig();
     alternateEncoderConfig.inverted(true);
@@ -198,7 +200,7 @@ public class LiftSubsystem extends SubsystemBase {
       var newD = m_liftD.get();
       var newFF = m_liftFF.get();
 
-      m_config.closedLoop.pidf(newP, newI, newD, newFF);
+      m_config.closedLoop.pidf(newP, newI, newD, newFF, ClosedLoopSlot.kSlot1);
       m_lift.configure(m_config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
       m_updateLiftPIDPub.set(false);
     }
@@ -228,7 +230,14 @@ public class LiftSubsystem extends SubsystemBase {
 
   private void goToTargetPosition(double target)
   {
-    m_liftController.setReference(target, SparkMax.ControlType.kPosition);
+    if (target > getLiftPosition())
+    {
+      m_liftController.setReference(target, SparkMax.ControlType.kPosition, ClosedLoopSlot.kSlot0);
+    }
+    else
+    {
+      m_liftController.setReference(target, SparkMax.ControlType.kPosition, ClosedLoopSlot.kSlot1);
+    }
   }
 
   private double LiftPositionValue(liftTargetLevels target)
@@ -270,7 +279,11 @@ public class LiftSubsystem extends SubsystemBase {
 
   public boolean isAtTargetPosition()
   {
-    var delta = m_useLiftPrimaryEncoder ? 1.12 : 0.05;
+    var delta = 0.05;
+    if (m_useLiftPrimaryEncoder)
+    {
+      delta /= kprimaryEncoderToAbsoluteEncoderConversionFactor;
+    }
     return Math.abs(m_lastTargetPosition - getLiftPosition()) < delta;
   }
 

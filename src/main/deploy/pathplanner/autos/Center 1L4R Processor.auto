@@ -1,0 +1,92 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CenterStart to 1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Prep Algae"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Move Lift to High Algae Intake"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Retract Algae Claw"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Move Lift to L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Deliver Coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Move Lift to L2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1 to Processor"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Deliver Algae in Processor"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Retract Algae Claw"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Move Lift to Base"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

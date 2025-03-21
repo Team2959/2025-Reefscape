@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.CoralDeliverySubsystem.CoralControlTargetSpeeds;
 import frc.robot.subsystems.CoralIndexSubsystem.CoralIndexTargetPositions;
@@ -34,5 +35,9 @@ public final class Autos {
         NamedCommands.registerCommand("Align with Reef", new AlignWithReefCommand(container.m_driveSubsystem, container.m_aprilTagPID));
         NamedCommands.registerCommand("Pathfind to Reef", container.m_driveSubsystem.driveToReefPose());
         NamedCommands.registerCommand("Align with Intake", new AlignWithIntakeCommand(container.m_driveSubsystem, container.m_aprilTagPID));
+        NamedCommands.registerCommand("Prep Algae", new PrepareAlgaeIntakeCommand(container.m_liftSubsystem, container.m_algaeClawSubsystem));
+        NamedCommands.registerCommand("Move Lift to High Algae Intake", new LiftMoveToLevelCommand(container.m_liftSubsystem, liftTargetLevels.HighAlage));
+        NamedCommands.registerCommand("Retract Algae Claw", new InstantCommand(() -> {container.m_algaeClawSubsystem.retractClawArms();}));
+        NamedCommands.registerCommand("Deliver Algae in Processor", new ShootAlgaeCommand(container.m_algaeClawSubsystem));
     }
 }

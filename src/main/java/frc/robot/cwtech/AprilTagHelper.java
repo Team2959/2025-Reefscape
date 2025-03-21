@@ -37,19 +37,37 @@ public class AprilTagHelper {
             return -1;
     }
 
-    public static double intakeTargetZFromTid (int tid, double currentTz)
+    public static double intakeTargetZFromTid (int tid)
     {
-
         if (tid == 8) 
-            return 3.4;
-        else if (tid == 17)
-            return 3.4;
-        else if (tid == 6) 
-            return 3.4;
-        else if (tid == 19)
             return 3.5;
+        else if (tid == 17)
+            return 3.5;
+        else if (tid == 6) 
+            return 3.51;
+        else if (tid == 19)
+            return 3.53;
         else
-            return currentTz;
+        {
+            // we should never get here, it should already be one of the other tids
+            return 3.2;
+        }
     }
 
+    public static double intakeTargetXFromTid (int tid)
+    {
+        if (tid == 8) 
+            return 0.59;
+        else if (tid == 17)
+            return 0.52;
+        else if (tid == 6) 
+            return -0.46;
+        else if (tid == 19)
+            return -0.35;
+        else
+        {
+            // we should never get here, it should already be one of the other tids
+            return 0;
+        }
+    }
 }
