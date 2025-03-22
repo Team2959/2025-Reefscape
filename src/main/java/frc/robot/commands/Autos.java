@@ -20,11 +20,12 @@ public final class Autos {
         var container = robotContainer;
         NamedCommands.registerCommand("Index Coral Right", new IndexCoralCommand(container.m_coralIndexSubsystem, CoralIndexTargetPositions.Right));
         NamedCommands.registerCommand("Index Coral Left", new IndexCoralCommand(container.m_coralIndexSubsystem, CoralIndexTargetPositions.Left));
+        NamedCommands.registerCommand("Index Coral Intake", new IndexCoralCommand(container.m_coralIndexSubsystem, CoralIndexTargetPositions.Intake))
         NamedCommands.registerCommand("Place at Trough Right", new DeliverCoralCommand(container.m_coralDeliverySubsystem.m_troughAutoDeliveryWaitSeconds, container.m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed));
         NamedCommands.registerCommand("Place at Trough Left", new DeliverCoralCommand(container.m_coralDeliverySubsystem.m_troughAutoDeliveryWaitSeconds, container.m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed));
         NamedCommands.registerCommand("Deliver Coral",
             new DeliverCoralCommand(container.m_coralDeliverySubsystem. m_deliveryWaitSeconds, container.m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed)
-            .andThen(new IndexCoralCommand(container.m_coralIndexSubsystem, CoralIndexTargetPositions.Right)));
+            .andThen(new IndexCoralCommand(container.m_coralIndexSubsystem, CoralIndexTargetPositions.Intake)));
         NamedCommands.registerCommand("Move Lift to Base", new LiftMoveToLevelCommand(container.m_liftSubsystem, liftTargetLevels.Base));
         NamedCommands.registerCommand("Move Lift to L2", new LiftMoveToLevelCommand(container.m_liftSubsystem, liftTargetLevels.L2));
         NamedCommands.registerCommand("Move Lift to L3", new LiftMoveToLevelCommand(container.m_liftSubsystem, liftTargetLevels.L3));

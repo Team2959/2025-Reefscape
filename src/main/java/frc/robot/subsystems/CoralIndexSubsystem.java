@@ -29,7 +29,8 @@ public class CoralIndexSubsystem extends SubsystemBase {
   public enum CoralIndexTargetPositions 
   {
     Left,
-    Right
+    Right,
+    Intake
   };
 
   private final SparkMax m_indexSparkMax = new SparkMax(RobotMap.kCoralDeliveryIndexMotor, MotorType.kBrushed);
@@ -45,6 +46,7 @@ public class CoralIndexSubsystem extends SubsystemBase {
 
   private static final double kLeftPosition = -7.37;
   private static final double kRightPosition = -0.1;
+  private static final double kIntakePosition = -3.5;
 
   private final DoublePublisher m_indexPositionPub;
   private final DoublePublisher m_indexAppliedOutputPub;
@@ -158,6 +160,8 @@ public class CoralIndexSubsystem extends SubsystemBase {
         return kLeftPosition;
       case Right:
         return kRightPosition;
+      case Intake
+        return kIntakePosition;
       default:
         return 0;
     }

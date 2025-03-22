@@ -115,15 +115,15 @@ public class RobotContainer {
     m_rightJoystick.button(RobotMap.kRightAlignWithIntakeButton).onTrue(new AlignWithIntakeCommand(m_driveSubsystem, m_aprilTagPID));
     m_leftJoystick.button(RobotMap.kLeftDeliverL1Button)
     .onTrue(new DeliverCoralCommand(m_coralDeliverySubsystem.m_deliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1)
-    .andThen(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Right)));
+    .andThen(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Intake)));
 
     m_buttonBox.button(RobotMap.kIndexCoralLeftButton).onTrue(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Left));
     m_buttonBox.button(RobotMap.kIndexCoralRightButton).onTrue(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Right));
     m_buttonBox.button(RobotMap.kWallIntake).onTrue(new IntakeCoralCommand(m_coralDeliverySubsystem)
-       .alongWith(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Right)));
+       .alongWith(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Intake)));
     m_buttonBox.button(RobotMap.kDeliverCoralButton)
       .onTrue(new DeliverCoralCommand(m_coralDeliverySubsystem.m_deliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed)
-      .andThen(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Right)));
+      .andThen(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Intake)));
 
     m_buttonBox.button(RobotMap.kPlaceAtL2Button).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.L2));
     m_buttonBox.button(RobotMap.kPlaceAtL3Button).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.L3));
