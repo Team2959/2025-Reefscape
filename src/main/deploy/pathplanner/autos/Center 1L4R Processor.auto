@@ -5,22 +5,45 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "CenterStart to 1"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Prep Algae"
-                }
-              }
-            ]
+            "pathName": "CenterStart to 1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Move Lift to L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Deliver Coral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Move Lift to L2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1 to AlgaeExtend1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Prep Algae"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "AlgaeExtend1 to 1"
           }
         },
         {
@@ -39,18 +62,6 @@
           "type": "named",
           "data": {
             "name": "Retract Algae Claw"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Move Lift to L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Deliver Coral"
           }
         },
         {

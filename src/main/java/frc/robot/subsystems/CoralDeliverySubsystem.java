@@ -27,6 +27,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
   {
     Stop,
     Intake,
+    L1,
     Feed
   };
 
@@ -38,6 +39,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
 
   private static final double kIntakeSpeed = 0.35;
   private static final double kFeedSpeed = 1.0;
+  private static final double kL1Speed = 0.2;
   
   private boolean m_coralPresent = false;
 
@@ -80,7 +82,7 @@ public class CoralDeliverySubsystem extends SubsystemBase {
     if (m_ticks % 13 != 11)
         return;
 
-    // updateDashboard();
+     //updateDashboard();
   }
 
   private void updateDashboard ()
@@ -99,6 +101,8 @@ public class CoralDeliverySubsystem extends SubsystemBase {
         return kIntakeSpeed;
       case Feed:
         return kFeedSpeed;
+      case L1:
+        return kL1Speed;
       case Stop:     
       default:
         return 0;

@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.790845070422535,
-        "y": 2.196742957746477
+        "x": 6.077112676056338,
+        "y": 4.0
       },
       "isLocked": false,
-      "linkedName": "True1"
+      "linkedName": "1"
     },
     {
       "anchor": {
-        "x": 1.4574914383561646,
-        "y": 0.6066566780821916
+        "x": 6.2,
+        "y": 4.0
       },
       "prevControl": {
-        "x": 1.8094600135056909,
-        "y": 0.5025329201234786
+        "x": 5.95,
+        "y": 4.0
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Post-Align RInFr"
+      "linkedName": "AlgaeExtend1"
     }
   ],
   "rotationTargets": [],
@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -126.0
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Aligned Paths",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

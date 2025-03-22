@@ -23,8 +23,7 @@ public class ClimbSubsystem extends SubsystemBase {
   private TalonFX m_climbMotor = new TalonFX(RobotMap.kClimbMotor);
   private static final int kClimbCurrentLimitAmps = 100;    //taken from SwerveModuleThrifty
 
-  private double kRetractVelocity = 0.5;
-  private double kExtendVelocity = -0.5;
+  private double m_climbVelocity = 0.5;
 
   private DoublePublisher m_positionPub;
   private DoublePublisher m_appliedOutputPub;
@@ -54,7 +53,7 @@ public class ClimbSubsystem extends SubsystemBase {
   targetVelocityTopic.publish().set(0.0);
   m_targetVelocitySub = targetVelocityTopic.subscribe(0.0);
 
-  var goToTargetVelocityTopic = datatable.getBooleanTopic("go To Target Velocity");
+  var goToTargetVelocityTopic = datatable.getBooleanTopic("update Target Velocity");
   m_goToTargetVelocityPub = goToTargetVelocityTopic.publish();
   m_goToTargetVelocityPub.set(false);
   m_goToTargetVelocitySub = goToTargetVelocityTopic.subscribe(false);
@@ -73,7 +72,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
     if(m_goToTargetVelocitySub.get())
     {
-      m_climbMotor.set(m_targetVelocitySub.get());
+      m_climbVelocity = m_targetVelocitySub.get();
       m_goToTargetVelocityPub.set(false);
     }
   }
@@ -85,11 +84,16 @@ public class ClimbSubsystem extends SubsystemBase {
 
   public void retractClimb()
   {
-    m_climbMotor.set(kRetractVelocity);
+    m_climbMotor.set(m_climbVelocity);
   }
 
   public void extendClimb()
   {
-    m_climbMotor.set(kExtendVelocity);
+    m_climbMotor.set(-m_climbVelocity);
+  }
+
+  public void stopClimb()
+  {
+    m_climbMotor.set(0.0);
   }
 }

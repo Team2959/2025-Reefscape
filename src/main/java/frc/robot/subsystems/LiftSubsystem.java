@@ -279,7 +279,11 @@ public class LiftSubsystem extends SubsystemBase {
 
   public boolean isAtTargetPosition()
   {
-    var delta = 0.05;
+    return isAtTargetPosition(0.07);
+  }
+
+  public boolean isAtTargetPosition(double delta)
+  {
     if (m_useLiftPrimaryEncoder)
     {
       delta /= kprimaryEncoderToAbsoluteEncoderConversionFactor;

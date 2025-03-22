@@ -8,7 +8,9 @@ import frc.robot.commands.AlignWithIntakeCommand;
 import frc.robot.commands.AlignWithReefCommand;
 import frc.robot.commands.Autos;
 import frc.robot.commands.PrepareAlgaeIntakeCommand;
+import frc.robot.commands.RetractClimbCommand;
 import frc.robot.commands.DeliverCoralCommand;
+import frc.robot.commands.ExtendClimbCommand;
 import frc.robot.commands.IndexCoralCommand;
 import frc.robot.commands.IntakeCoralCommand;
 import frc.robot.commands.L4CoralControlSpeed;
@@ -55,7 +57,7 @@ public class RobotContainer {
   public final AlgaeClawSubsystem m_algaeClawSubsystem = new AlgaeClawSubsystem();
   public final AprilTagPID m_aprilTagPID = new AprilTagPID(m_driveSubsystem);
   public final CoralIndexSubsystem m_coralIndexSubsystem = new CoralIndexSubsystem();
- // public final ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
+  //public final ClimbSubsystem m_climbSubsystem = new ClimbSubsystem();
 
   private final SendableChooser<Command> m_autoChooser;
 
@@ -107,10 +109,13 @@ public class RobotContainer {
     m_leftJoystick.button(RobotMap.kLeftL4DeliverButton).whileTrue(new L4CoralControlSpeed(m_coralDeliverySubsystem));
     m_leftJoystick.button(RobotMap.kLeftAlgaeClawRetractButton).onTrue(new InstantCommand(() -> {m_algaeClawSubsystem.retractClawArms();}));
     m_rightJoystick.button(RobotMap.kRightAlignWithReefButton).onTrue(new AlignWithReefCommand(m_driveSubsystem, m_aprilTagPID));
-   // m_leftJoystick.button(RobotMap.kLeftExtendClimbButton).whileTrue(new InstantCommand(() -> {m_climbSubsystem.extendClimb();}));
-   // m_leftJoystick.button(RobotMap.kLeftRetractClimbButton).whileTrue(new InstantCommand(() -> {m_climbSubsystem.retractClimb();}));
+    //m_leftJoystick.button(RobotMap.kLeftExtendClimbButton).whileTrue(new ExtendClimbCommand(m_climbSubsystem));
+    //m_leftJoystick.button(RobotMap.kLeftRetractClimbButton).whileTrue(new RetractClimbCommand(m_climbSubsystem));
     //m_rightJoystick.button(RobotMap.kRightPathfindToReefButton).onTrue(m_driveSubsystem.driveToReefPose());
     m_rightJoystick.button(RobotMap.kRightAlignWithIntakeButton).onTrue(new AlignWithIntakeCommand(m_driveSubsystem, m_aprilTagPID));
+    m_leftJoystick.button(RobotMap.kLeftDeliverL1Button)
+    .onTrue(new DeliverCoralCommand(m_coralDeliverySubsystem.m_deliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1)
+    .andThen(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Right)));
 
     m_buttonBox.button(RobotMap.kIndexCoralLeftButton).onTrue(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Left));
     m_buttonBox.button(RobotMap.kIndexCoralRightButton).onTrue(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Right));
