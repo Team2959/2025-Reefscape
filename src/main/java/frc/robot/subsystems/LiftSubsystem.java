@@ -50,7 +50,7 @@ public class LiftSubsystem extends SubsystemBase {
   private double m_lastTargetPosition;
   private SparkRelativeEncoder m_primaryEncoder;
 
-  private final double kprimaryEncoderToAbsoluteEncoderConversionFactor = 0.1;
+  private final double kprimaryEncoderToAbsoluteEncoderConversionFactor = 0.95;
 
   private final double kLiftP = 1.0;
   private final double kLiftI = 0;
@@ -97,7 +97,7 @@ public class LiftSubsystem extends SubsystemBase {
     m_config.closedLoop
       .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
       .pid(kLiftP, kLiftI, kLiftD)
-      .pid(0.7, 0, 0, ClosedLoopSlot.kSlot1);
+      .pid(0.6, 0, 0, ClosedLoopSlot.kSlot1);
     var alternateEncoderConfig = new AlternateEncoderConfig();
     alternateEncoderConfig.setSparkMaxDataPortConfig();
     alternateEncoderConfig.inverted(true);
@@ -177,7 +177,7 @@ public class LiftSubsystem extends SubsystemBase {
 
     m_sparkLiftRotations.set(m_liftEncoder.getPosition());
 
-    // dashboardUpdate();
+     dashboardUpdate();
   }
 
   public void dashboardUpdate() {

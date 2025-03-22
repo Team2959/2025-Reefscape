@@ -5,9 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "CenterStart to 1"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "CenterStart to 1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Index Coral Right"
+                }
+              }
+            ]
           }
         },
         {

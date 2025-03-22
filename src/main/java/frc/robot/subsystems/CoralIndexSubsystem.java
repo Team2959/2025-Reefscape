@@ -44,9 +44,9 @@ public class CoralIndexSubsystem extends SubsystemBase {
   private final double kIndexFf = 0.0;
   private double m_lastTargetPosition;
 
-  private static final double kLeftPosition = -7.37;
+  private static final double kLeftPosition = -7.77;
   private static final double kRightPosition = -0.1;
-  private static final double kIntakePosition = -3.5;
+  private static final double kIntakePosition = -2.68;
 
   private final DoublePublisher m_indexPositionPub;
   private final DoublePublisher m_indexAppliedOutputPub;
@@ -160,7 +160,7 @@ public class CoralIndexSubsystem extends SubsystemBase {
         return kLeftPosition;
       case Right:
         return kRightPosition;
-      case Intake
+      case Intake:
         return kIntakePosition;
       default:
         return 0;

@@ -189,7 +189,7 @@ public class AprilTagPID
 
     public boolean atTargetPosition()
     {
-       return m_deltaRotation < 0.5 && m_deltaX < 0.05 && m_deltaZ < 0.05;
+       return m_deltaRotation < 3.0 && m_deltaX < 0.05 && m_deltaZ < 0.05;
     }
 
     //gets the current x-axis alignment error

@@ -24,22 +24,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Align with Reef"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Move Lift to L2"
-                }
-              }
-            ]
+            "name": "Align with Reef"
           }
         },
         {
