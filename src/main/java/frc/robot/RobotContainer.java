@@ -31,6 +31,9 @@ import frc.robot.subsystems.LiftSubsystem.liftTargetLevels;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.networktables.DoubleSubscriber;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -64,7 +67,8 @@ public class RobotContainer {
   private final Conditioning m_driveXConditioning = new Conditioning();
   private final Conditioning m_driveYConditioning = new Conditioning();
   private final Conditioning m_turnConditioning = new Conditioning();
-  private static double m_speedMultiplier = 1.0;
+  private static double m_speedMultiplier = 0.25;
+  private final DoubleSubscriber m_speedSub;
 
   private final CommandJoystick m_leftJoystick = new CommandJoystick(RobotMap.kLeftJoystick);
   private final CommandJoystick m_rightJoystick = new CommandJoystick(RobotMap.kRightJoystick);
@@ -89,7 +93,14 @@ public class RobotContainer {
     m_turnConditioning.setExponent(1.4);
     // Configure the trigger bindings
     configureBindings();
-  }
+
+    NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    NetworkTable datatable = inst.getTable("Drive");
+
+    var speedSub = datatable.getDoubleTopic("Speed Multiplier");
+    speedSub.publish().set(m_speedMultiplier);
+    m_speedSub = speedSub.subscribe(m_speedMultiplier);
+}
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -162,6 +173,8 @@ public class RobotContainer {
 
   public void initialize()
   {
+    m_speedMultiplier = m_speedSub.get();
+
     m_driveSubsystem.initialize();
     m_liftSubsystem.initialize();
   }

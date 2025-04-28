@@ -194,7 +194,7 @@ public class DriveSubsystem extends SubsystemBase {
         // SmartDashboard.putNumber(getName() + "/Distance X", botpose.getX());
         // SmartDashboard.putNumber(getName() + "/Distance Y", botpose.getY());
         // SmartDashboard.putNumber(getName() + "/Distance Z", botpose.getZ());
-        // dashboardUpdate();
+         dashboardUpdate();
     }
 
     public void dashboardUpdate() {
