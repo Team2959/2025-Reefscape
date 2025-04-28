@@ -41,6 +41,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final SwerveModuleThrifty m_frontRight;
     private final SwerveModuleThrifty m_backLeft;
     private final SwerveModuleThrifty m_backRight;
+    // private final SwerveModuleThriftyDirectAnalog m_backRight;
     private final AHRS m_navX;
     public final SwerveDrivePoseEstimator m_poseEstimator;
 
@@ -96,6 +97,8 @@ public class DriveSubsystem extends SubsystemBase {
                 RobotMap.kZeroedBackLeft, RobotMap.kBackLeftAnalogInput,  "Back Left");
         m_backRight = new SwerveModuleThrifty(RobotMap.kBackRigvhtModule,
                 RobotMap.kZeroedBackRight, RobotMap.kBackRightAnalogInput, "Back Right");
+        // m_backRight = new SwerveModuleThriftyDirectAnalog(RobotMap.kBackRigvhtModule,
+        //         RobotMap.kZeroedBackRight, "Back Right");
 
         m_odometry = new SwerveDriveOdometry(m_kinematics, getAngle(), getPositions());
     
