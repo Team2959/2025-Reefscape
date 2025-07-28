@@ -70,10 +70,10 @@ public class RobotContainer {
   private static double m_speedMultiplier = 0.25;
   private final DoubleSubscriber m_speedSub;
 
-  private final CommandJoystick m_leftJoystick = new CommandJoystick(RobotMap.kLeftJoystick);
-  private final CommandJoystick m_rightJoystick = new CommandJoystick(RobotMap.kRightJoystick);
-  private final CommandJoystick m_buttonBox = new CommandJoystick(RobotMap.kButtonBox); 
-  // private final CommandXboxController m_driverController = new CommandXboxController(RobotMap.kXboxTester);
+  // private final CommandJoystick m_leftJoystick = new CommandJoystick(RobotMap.kLeftJoystick);
+  // private final CommandJoystick m_rightJoystick = new CommandJoystick(RobotMap.kRightJoystick);
+  // private final CommandJoystick m_buttonBox = new CommandJoystick(RobotMap.kButtonBox); 
+  private final CommandXboxController m_xBox = new CommandXboxController(RobotMap.kXboxTester);
 
   private final Robot m_robot;
 
@@ -115,37 +115,37 @@ public class RobotContainer {
     m_driveSubsystem.setDefaultCommand(new TeleOpDriveCommand(m_driveSubsystem,
       () -> getDriveXInput(), () -> getDriveYInput(), () -> getTurnInput(),
       () -> m_robot.isTeleopEnabled()));
-    m_rightJoystick.button(RobotMap.kRightResetNavXButton).onTrue(new InstantCommand(() -> {m_driveSubsystem.resetNavX();}));
-    m_leftJoystick.button(RobotMap.kLeftLockWheels).whileTrue(m_driveSubsystem.lockWheelsCommand());
-    m_leftJoystick.button(RobotMap.kLeftL4DeliverButton).whileTrue(new L4CoralControlSpeed(m_coralDeliverySubsystem));
-    m_leftJoystick.button(RobotMap.kLeftAlgaeClawRetractButton).onTrue(new InstantCommand(() -> {m_algaeClawSubsystem.retractClawArms();}));
-    m_rightJoystick.button(RobotMap.kRightAlignWithReefButton).onTrue(new AlignWithReefCommand(m_driveSubsystem, m_aprilTagPID));
+    // m_rightJoystick.button(RobotMap.kRightResetNavXButton).onTrue(new InstantCommand(() -> {m_driveSubsystem.resetNavX();}));
+    // m_leftJoystick.button(RobotMap.kLeftLockWheels).whileTrue(m_driveSubsystem.lockWheelsCommand());
+    // m_leftJoystick.button(RobotMap.kLeftL4DeliverButton).whileTrue(new L4CoralControlSpeed(m_coralDeliverySubsystem));
+    // m_leftJoystick.button(RobotMap.kLeftAlgaeClawRetractButton).onTrue(new InstantCommand(() -> {m_algaeClawSubsystem.retractClawArms();}));
+    // m_rightJoystick.button(RobotMap.kRightAlignWithReefButton).onTrue(new AlignWithReefCommand(m_driveSubsystem, m_aprilTagPID));
     //m_leftJoystick.button(RobotMap.kLeftExtendClimbButton).whileTrue(new ExtendClimbCommand(m_climbSubsystem));
     //m_leftJoystick.button(RobotMap.kLeftRetractClimbButton).whileTrue(new RetractClimbCommand(m_climbSubsystem));
     //m_rightJoystick.button(RobotMap.kRightPathfindToReefButton).onTrue(m_driveSubsystem.driveToReefPose());
-    m_rightJoystick.button(RobotMap.kRightAlignWithIntakeButton).onTrue(new AlignWithIntakeCommand(m_driveSubsystem, m_aprilTagPID));
-    m_leftJoystick.button(RobotMap.kLeftDeliverL1Button)
-    .onTrue(new DeliverCoralCommand(m_coralDeliverySubsystem.m_deliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1)
-    .andThen(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Intake)));
+    // m_rightJoystick.button(RobotMap.kRightAlignWithIntakeButton).onTrue(new AlignWithIntakeCommand(m_driveSubsystem, m_aprilTagPID));
+    // m_leftJoystick.button(RobotMap.kLeftDeliverL1Button)
+    // .onTrue(new DeliverCoralCommand(m_coralDeliverySubsystem.m_deliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.L1)
+    // .andThen(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Intake)));
 
-    m_buttonBox.button(RobotMap.kIndexCoralLeftButton).onTrue(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Left));
-    m_buttonBox.button(RobotMap.kIndexCoralRightButton).onTrue(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Right));
-    m_buttonBox.button(RobotMap.kWallIntake).onTrue(new IntakeCoralCommand(m_coralDeliverySubsystem)
+    m_xBox.button(RobotMap.kIndexCoralLeftButton).onTrue(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Left));
+    m_xBox.button(RobotMap.kIndexCoralRightButton).onTrue(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Right));
+    m_xBox.button(RobotMap.kWallIntake).onTrue(new IntakeCoralCommand(m_coralDeliverySubsystem)
        .alongWith(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Intake)));
-    m_buttonBox.button(RobotMap.kDeliverCoralButton)
+    m_xBox.button(RobotMap.kDeliverCoralButton)
       .onTrue(new DeliverCoralCommand(m_coralDeliverySubsystem.m_deliveryWaitSeconds, m_coralDeliverySubsystem, CoralControlTargetSpeeds.Feed)
       .andThen(new IndexCoralCommand(m_coralIndexSubsystem, CoralIndexTargetPositions.Intake)));
 
-    m_buttonBox.button(RobotMap.kPlaceAtL2Button).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.L2));
-    m_buttonBox.button(RobotMap.kPlaceAtL3Button).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.L3));
-    m_buttonBox.button(RobotMap.kPlaceAtL4Button).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.L4));
-    m_buttonBox.button(RobotMap.kMoveLiftToBase).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.Base));
+    m_xBox.button(RobotMap.kPlaceAtL2Button).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.L2));
+    m_xBox.button(RobotMap.kPlaceAtL3Button).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.L3));
+    // m_buttonBox.button(RobotMap.kPlaceAtL4Button).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.L4));
+    m_xBox.button(RobotMap.kMoveLiftToBase).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.Base));
 
-    m_buttonBox.button(RobotMap.kAlgaeIntakePrep).onTrue(new PrepareAlgaeIntakeCommand(m_liftSubsystem, m_algaeClawSubsystem));
-     m_buttonBox.button(RobotMap.kAlgaeIntakeLow).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.LowAlage));
-     m_buttonBox.button(RobotMap.kAlgaeIntakeHigh).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.HighAlage));
-     m_buttonBox.button(RobotMap.kDeliverAlgaeButton).onTrue(new ShootAlgaeCommand(m_algaeClawSubsystem)
-      .andThen(new InstantCommand(() -> {m_algaeClawSubsystem.retractClawArms();})));
+    // m_buttonBox.button(RobotMap.kAlgaeIntakePrep).onTrue(new PrepareAlgaeIntakeCommand(m_liftSubsystem, m_algaeClawSubsystem));
+    // m_buttonBox.button(RobotMap.kAlgaeIntakeLow).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.LowAlage));
+    // m_buttonBox.button(RobotMap.kAlgaeIntakeHigh).onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.HighAlage));
+    // m_buttonBox.button(RobotMap.kDeliverAlgaeButton).onTrue(new ShootAlgaeCommand(m_algaeClawSubsystem)
+    //   .andThen(new InstantCommand(() -> {m_algaeClawSubsystem.retractClawArms();})));
    //    .onTrue(new LiftMoveToLevelCommand(m_liftSubsystem, liftTargetLevels.Processor)
    //    .andThen(new ShootAlgaeCommand(m_algaeClawSubsystem)));
     
@@ -182,7 +182,7 @@ public class RobotContainer {
   public double getDriveXInput()
   {
     // We getY() here because of the FRC coordinate system being turned 90 degrees
-    return m_driveXConditioning.condition(-m_leftJoystick.getY())
+    return m_driveXConditioning.condition(-m_xBox.getLeftY())
             * DriveSubsystem.kMaxSpeedMetersPerSecond
             * m_speedMultiplier;
   }
@@ -190,14 +190,14 @@ public class RobotContainer {
   public double getDriveYInput()
   {
     // We getX() here becasuse of the FRC coordinate system being turned 90 degrees
-    return m_driveYConditioning.condition(-m_leftJoystick.getX())
+    return m_driveYConditioning.condition(-m_xBox.getLeftX())
             * DriveSubsystem.kMaxSpeedMetersPerSecond
             * m_speedMultiplier;
   }
 
   public double getTurnInput()
   {
-    return m_turnConditioning.condition(-m_rightJoystick.getX())
+    return m_turnConditioning.condition(-m_xBox.getRightX())
             * DriveSubsystem.kMaxAngularSpeedRadiansPerSecond
             * m_speedMultiplier;
   }
