@@ -44,7 +44,7 @@ public final class RobotMap {
 
     // Driver Buttons
     public static final int kLeftLockWheels = 4;
-    public static final int kRightResetNavXButton = 10;
+    public static final int kRightResetNavXButton = 8;
     public static final int kLeftL4DeliverButton = 10;
     public static final int kLeftAlgaeClawRetractButton = 9;
     public static final int kRightAlignWithReefButton = 2;
@@ -55,14 +55,14 @@ public final class RobotMap {
     public static final int kLeftDeliverL1Button = 2;
 
     // Co-Piolt Button board
-    public static final int kPlaceAtL4Button = 11;
-    public static final int kPlaceAtL3Button = 6;
-    public static final int kPlaceAtL2Button = 5;
+    public static final int kPlaceAtL4Button = 2;
+    public static final int kPlaceAtL3Button = 4;
+    public static final int kPlaceAtL2Button = 3;
     public static final int kIndexCoralRightButton = 8;
     public static final int kIndexCoralLeftButton = 12;
-    public static final int kDeliverCoralButton = 10;
-    public static final int kMoveLiftToBase = 9;
-    public static final int kWallIntake = 7;
+    public static final int kDeliverCoralButton = 5;
+    public static final int kMoveLiftToBase = 1;
+    public static final int kWallIntake = 6;
     public static final int kAlgaeIntakePrep = 4; 
     public static final int kAlgaeIntakeLow = 3;
     public static final int kAlgaeIntakeHigh = 1;
